@@ -7,7 +7,7 @@ Status: Active
 
 What is a POEM? 
 ===============
-The **P**roposal for **O**penmdao **E**nhance**m**ent (POEM) is a document that serves to propose a new feature addition, API changes, and other signficant modifications to OpenMDAO. 
+The **P**roposal for **O**penmdao **E**nhance**M**ent (POEM) is a document that serves to propose a new feature addition, API change, or other significant modification to the [OpenMDAO code base](https://github.com/OpenMDAO/OpenMDAO). 
 A POEM also serves as a record of community discussion on the proposal, 
 as well as the record of the final decision by the development team as to whether or not to accept the proposal. 
 
