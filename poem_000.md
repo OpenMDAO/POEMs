@@ -1,14 +1,14 @@
-POE: 000
+POEM ID: 000
 Title: POE Purpose and Guidelines 
 Author: Justin S. Gray 
 
 Status: Active 
 
 
-What is a POE? 
+What is a POEM? 
 ===============
-The **P**roposal for **O**penMDAO **E**nhancement (POE) is a document that serves to propose a new feature addition to the OpenMDAO and also record community input and feedback on the proposal. 
-The may be formated as a single txt file, using github flavored markdown, or it may be contained in a folder which includes both a markdown file and additional supporting images to be rendered in the file. 
+The **P**roposal for **O**penmdao **E**nhance**m**ent (POEM) is a document that serves to propose a new feature addition, API changes, and other signficant modifications to OpenMDAO. 
+A POE also serves as a record of community discussion on the proposal, as well as the record of the final decision by the development team as to whether or not to accept the proposal. 
 
 
 POE Audience 
@@ -47,12 +47,18 @@ POE Rules
     - Regardless of final acceptance or rejection, all reasonable POE PRs will be merged 
       to keep a record of community discussion
     
-    - A POE may be submitted, reviewed, and accepted before any code has been written. 
+    - A POE may be submitted, reviewed (and even potentially accepted) before any code has been written. 
       Contributors are encouraged to submit POEs before writing code if they are concerned 
-      about wasting time coding something that would not get accepted. 
+      about wasting time on something that would not get accepted. 
     
-    - A POE may be submitted coincidently with an accompanying PR containing an 
+    - A POE may be submitted coincidently with an accompanying pull request (PR) containing an 
       implementation of the proposed feature. 
+      Alternatively an accompanying PR may be submitted later, after some initial discussion on the POE has happened. 
+      It is up to the POE authors discretion when to submit a PR with an implementation,
+      but in most cases a POE will not be accepted by the dev team without at least a reference implementation. 
+
+    - The dev team may elect, at it discretion, to accept a POE without a reference implementation. 
+      This situation is expected to be rare, but on occasion my be necessary when a POE requires massive changes to the code base. 
 
 
 
