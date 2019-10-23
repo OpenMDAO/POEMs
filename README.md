@@ -21,8 +21,8 @@ Poetry is intended to serve two primary and equally important purposes:
 1) Announce all changes to the user interface of OpenMDAO to users  
 of the framework **before** they are added to the main repository
 
-2) Provide a mechanism for external users to propose changes to the   
-user interface for OpenMDAO
+2) Provide a mechanism for external users to propose  
+changes to the user interface for OpenMDAO
 
 Poetry involves writing, reading, and discussing POEMS (**p**roposal for **O**penMDAO **e**nhance**m**ent). 
 Both the core development team and external users participate, and input on any POEM is welcome from any user at any time. 
