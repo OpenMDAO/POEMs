@@ -107,7 +107,7 @@ Allowed POEM States
 
     active: POEM has been submitted and is currently being discussed by the community 
     
-    requesting decision: POEM 
+    requesting decision: author has decided they are ready to have the POEM reviewed by the Devs.  
     
     accepted: POEM has been accepted by the dev team and an associated PR will be accepted when submitted
     
