@@ -105,11 +105,15 @@ While greatly appreciated, editorial improvements (e.g. grammar, spelling, and r
 Allowed POEM States
 ===================
 
-    - active: POEM has been submitted and is currently being discussed by the community 
-    - requesting decision: POEM 
-    - accepted: POEM has been accepted by the dev team and an associated PR will be accepted when submitted
-    - rejected: POEM has been rejected by the dev team and an associated PR will *NOT* be accepted if it was submitted
-    - integrated: The associated PR for an accepted POEM has been merged into the master branch 
+    active: POEM has been submitted and is currently being discussed by the community 
+    
+    requesting decision: POEM 
+    
+    accepted: POEM has been accepted by the dev team and an associated PR will be accepted when submitted
+    
+    rejected: POEM has been rejected by the dev team and an associated PR will *NOT* be accepted if it was submitted
+    
+    integrated: The associated PR for an accepted POEM has been merged into the master branch 
 
 
 When should a POEM include an Implementation PR? 
