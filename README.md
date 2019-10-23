@@ -29,4 +29,4 @@ Both the core development team and external users participate, and input on any 
 
 Note
 ----
-**Actual poetry is encouraged** in all OpenMDAO POEM documents
+**Actual poetry is encouraged**, but not required, in all OpenMDAO POEM documents
