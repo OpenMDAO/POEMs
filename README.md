@@ -20,6 +20,7 @@ Poetry is intended to serve two primary and equally important purposes:
 
     1) Announce all changes to the user interface of OpenMDAO to users  
     of the framework **before** they are added to the main repository
+    
     2) Provide a mechanism for external users to propose changes to the   
     user interface for OpenMDAO
 
