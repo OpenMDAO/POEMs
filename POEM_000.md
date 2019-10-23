@@ -49,20 +49,25 @@ POEM Rules
     - A POEM must have at least one poet, but may have more than one. 
     All poets must be identified in the POEM header by their github username (and optionally their real name in parenthesis). 
 
-    - It is up to the poet's discretion which community input to accept and which to reject. 
-    Poets are strongly encouraged to seek consensus, to carefully consider feedback, and to incorporate suggestions where appropriate. 
-    However, ultimately it is the sole discretion of the poet what to incorporate into their POEM. 
+    - It is up to the poet's sole discretion which community input to accept and which to reject. 
+    Poets are strongly encouraged to seek consensus, to carefully consider feedback, and to incorporate suggestions where possible. 
+    However, ultimately the poet gets the final decision. 
 
     - In the event of conflicting proposals about a specific topic, competing POEMs may be written by different authors. 
-    In this case, both POEMs must cross reference each other clearly. 
+    This may happen, for instance, if a poet refuses to incorporate suggestions that another community member finds significant. 
+    In this case, both POEMs must explicitly cross reference each other in the `Competing POEMs` line of the POEM header. 
+    If you wish to create a competing POEM, it is your responsibility to 
+    submit a PR to the original POEM adding your new POEM to their header. 
       
     - When a POEM is in the *active* state, PRs related to it will only be accepted if they come from a poet who is explicitly listed in the POEM header. 
 
     - When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when the come form a member of the core development team or from one of the PEOM's poets.
+    The *requesting decision* state serves as a clear indication that the poet has decided to stop accepting additional input on their POEM. 
 
     - The Devs are the only people with authority to move a POEM to either the *accepted* or *rejected* state.
 
-    - Regardless a POEM's final state, all reasonable POEM PRs (from poets associated with that POEM) will be merged to the main repository to keep a record of community discussion.
+    - Regardless a POEM's acceptance or rejection, all reasonable POEMs will be merged to the main repository to keep a record of community discussion. 
+    This merge will only occur once the poet has changed the POEM state to *requesting decision*. 
     
     - A POEM may be submitted coincidently with an accompanying pull request (PR) containing an 
     implementation of the proposed feature. 
@@ -74,6 +79,26 @@ POEM Rules
     
     - The Devs may elect, at their sole discretion, to accept a POEM without a reference implementation. 
     This situation is expected to be rare, but on occasion my be necessary when a POEM requires massive changes to the code base. 
+
+
+How can you contribute to another poet's POEM? 
+==============================================
+You can only contribute to POEMs that are in the *active* state. 
+There are two options to contribute to an active POEM: 
+
+1) You can comment on the PR associated with the specific POEM via github's interface. 
+This comment may be either a broad comment in the discussion thread, or a direct comment on specific lines of the PR. 
+Genearly this can be used to register an opinion or make small suggestions for improvement. 
+This type of contribution usually would not warrant recognition as a poet in the header, though the original poet may choose to include you at their sole discretion. 
+
+2) You can submit your own PR to the poets fork, 
+which they can choose to accept or not. 
+Genearly this would probably entail more significant contribution to the POEM which would likely justify your addition as an additional poet to the POEM. 
+You may indicate your preference for recognition by including your username in the header as part of your PR. 
+
+Poets are encouraged to err on the generous side when making decisions about attribution, but generally speaking contributions must be substantial and impactful on the final state of a POEM to warrant recognition. 
+While greatly appreciated, editorial improvements (e.g. grammar, spelling, and rewording) do not warrant poet status. 
+
 
 
 Allowed POEM States
