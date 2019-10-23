@@ -14,14 +14,6 @@ A POEM also serves as a record of community discussion on the proposal,
 and documents the final decision as to whether or not to accept the proposal. 
 
 
-Should a POEM contain actual poetry? 
-====================================
-A real poem needn't be present  
-but you may find it more pleasant.   
-If you include one in your works   
-you may get useless internet perks  
-
-
 POEM Audience 
 ==============
 POEMs will be written by both the OpenMDAO developers and external community users. 
