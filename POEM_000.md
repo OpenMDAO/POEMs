@@ -1,6 +1,6 @@
 POEM ID: 000  
 Title: POEM Purpose and Guidelines   
-Poet: Justinsgray (Justin S. Gray)   
+Poet: justinsgray (Justin S. Gray)   
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: N/A  
