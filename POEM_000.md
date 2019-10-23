@@ -44,42 +44,42 @@ The Core OpenMDAO Development Team will be referred to as the "Devs" for the res
 POEM Rules 
 ==========
 
-    - The author of a POEM, a.k.a the poet, is responsible for its curation. 
-    Curation includes addressing relevant comments, integrating community feedback, and changing the state of the POEM from *active* to *requesting decision*.
+- The author of a POEM, a.k.a the poet, is responsible for its curation. 
+Curation includes addressing relevant comments, integrating community feedback, and changing the state of the POEM from *active* to *requesting decision*.
 
-    - A POEM must have at least one poet, but may have more than one. 
-    All poets must be identified in the POEM header by their github username (and optionally their real name in parenthesis). 
+- A POEM must have at least one poet, but may have more than one. 
+All poets must be identified in the POEM header by their github username (and optionally their real name in parenthesis). 
 
-    - It is up to the poet's sole discretion which community input to accept and which to reject. 
-    Poets are strongly encouraged to seek consensus, to carefully consider feedback, and to incorporate suggestions where possible. 
-    However, ultimately the poet gets the final decision. 
+- It is up to the poet's sole discretion which community input to accept and which to reject. 
+Poets are strongly encouraged to seek consensus, to carefully consider feedback, and to incorporate suggestions where possible. 
+However, ultimately the poet gets the final decision. 
 
-    - In the event of conflicting proposals about a specific topic, competing POEMs may be written by different authors. 
-    This may happen, for instance, if a poet refuses to incorporate suggestions that another community member finds significant. 
-    In this case, both POEMs must explicitly cross reference each other in the `Competing POEMs` line of the POEM header. 
-    If you wish to create a competing POEM, it is your responsibility to 
-    submit a PR to the original POEM adding your new POEM to their header. 
-      
-    - When a POEM is in the *active* state, PRs related to it will only be accepted if they come from a poet who is explicitly listed in the POEM header. 
+- In the event of conflicting proposals about a specific topic, competing POEMs may be written by different authors. 
+This may happen, for instance, if a poet refuses to incorporate suggestions that another community member finds significant. 
+In this case, both POEMs must explicitly cross reference each other in the `Competing POEMs` line of the POEM header. 
+If you wish to create a competing POEM, it is your responsibility to 
+submit a PR to the original POEM adding your new POEM to their header. 
+  
+- When a POEM is in the *active* state, PRs related to it will only be accepted if they come from a poet who is explicitly listed in the POEM header. 
 
-    - When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when the come form a member of the core development team or from one of the PEOM's poets.
-    The *requesting decision* state serves as a clear indication that the poet has decided to stop accepting additional input on their POEM. 
+- When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when the come form a member of the core development team or from one of the PEOM's poets.
+The *requesting decision* state serves as a clear indication that the poet has decided to stop accepting additional input on their POEM. 
 
-    - The Devs are the only people with authority to move a POEM to either the *accepted* or *rejected* state.
+- The Devs are the only people with authority to move a POEM to either the *accepted* or *rejected* state.
 
-    - Regardless a POEM's acceptance or rejection, all reasonable POEMs will be merged to the main repository to keep a record of community discussion. 
-    This merge will only occur once the poet has changed the POEM state to *requesting decision*. 
-    
-    - A POEM may be submitted coincidently with an accompanying pull request (PR) containing an 
-    implementation of the proposed feature. 
-    Alternatively an accompanying PR may be submitted later, after some initial discussion on the POEM hahappened. 
-    It is up to the poet's discretion when to submit a implementation PR to the [OpenMDAO codbase](https://github.com/OpenMDAO/OpenMDAO). 
+- Regardless a POEM's acceptance or rejection, all reasonable POEMs will be merged to the main repository to keep a record of community discussion. 
+This merge will only occur once the poet has changed the POEM state to *requesting decision*. 
 
-    - A POEM may be submitted, reviewed (and even potentially accepted) before any code has been written. 
-    Contributors are encouraged to submit POEMs before writing code if they are concerned about wasting time on something that would not get accepted. 
-    
-    - The Devs may elect, at their sole discretion, to accept a POEM without a reference implementation. 
-    This situation is expected to be rare, but on occasion my be necessary when a POEM requires massive changes to the code base. 
+- A POEM may be submitted coincidently with an accompanying pull request (PR) containing an 
+implementation of the proposed feature. 
+Alternatively an accompanying PR may be submitted later, after some initial discussion on the POEM hahappened. 
+It is up to the poet's discretion when to submit a implementation PR to the [OpenMDAO codbase](https://github.com/OpenMDAO/OpenMDAO). 
+
+- A POEM may be submitted, reviewed (and even potentially accepted) before any code has been written. 
+Contributors are encouraged to submit POEMs before writing code if they are concerned about wasting time on something that would not get accepted. 
+
+- The Devs may elect, at their sole discretion, to accept a POEM without a reference implementation. 
+This situation is expected to be rare, but on occasion my be necessary when a POEM requires massive changes to the code base. 
 
 
 How can you contribute to another poet's POEM? 
