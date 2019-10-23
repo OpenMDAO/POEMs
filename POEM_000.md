@@ -88,7 +88,7 @@ You can only contribute to POEMs that are in the *active* state.
 There are two options to contribute to an active POEM: 
 
 1) You can comment on the PR associated with the specific POEM via github's interface. 
-This comment may be either a broad comment in the discussion thread, or a direct comment on specific lines of the PR. 
+This comment may be either a broad comment in the discussion thread, or a direct comment on specific lines of the POEM. 
 Genearly this can be used to register an opinion or make small suggestions for improvement. 
 This type of contribution usually would not warrant recognition as a poet in the header, though the original poet may choose to include you at their sole discretion. 
 
