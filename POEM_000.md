@@ -1,13 +1,13 @@
-POEM ID: 000
-Title: POEM Purpose and Guidelines
-Author: justinsgray (Justin S. Gray)
-Competing POEMs: N/A
-Related POEMs: N/A
-Associated implementation PR: N/A
+POEM ID: 000  
+Title: POEM Purpose and Guidelines  
+Author: justinsgray (Justin S. Gray)  
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR: N/A  
 
-Status: Active
+Status: Active  
 
-What is a POEM?
+What is a POEM?  
 ===============
 The **p**roposal for **O**penMDAO **e**nhance**m**ent (POEM) is a document that serves to propose a new feature addition, API change, or other modification to the [OpenMDAO code base](https://github.com/OpenMDAO/OpenMDAO).
 A POEM also serves as a record of community discussion on the proposal,
