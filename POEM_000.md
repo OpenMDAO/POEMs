@@ -94,8 +94,8 @@ This type of contribution usually would not warrant recognition as a poet in the
 
 2) You can submit your own PR to the poets fork, 
 which they can choose to accept or not. 
-Genearly this would probably entail more significant contribution to the POEM which would likely justify your addition as an additional poet to the POEM. 
-You may indicate your preference for recognition by including your username in the header as part of your PR. 
+Genearly this would entail more significant contribution to the POEM which may justify your attribution as another poet in the POEM's header. 
+You may indicate your preference for attribution by including your username in the header as part of your PR. 
 
 Poets are encouraged to err on the generous side when making decisions about attribution, but generally speaking contributions must be substantial and impactful on the final state of a POEM to warrant recognition. 
 While greatly appreciated, editorial improvements (e.g. grammar, spelling, and rewording) do not warrant poet status. 
