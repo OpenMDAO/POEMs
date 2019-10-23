@@ -58,7 +58,7 @@ However, ultimately the poet gets the final decision.
 This may happen, for instance, if a poet refuses to incorporate suggestions that another community member finds significant. 
 In this case, both POEMs must explicitly cross reference each other in the `Competing POEMs` line of the POEM header. 
 If you wish to create a competing POEM, it is your responsibility to 
-submit a PR to the original POEM adding your new POEM ID to their header. 
+submit a pull request (PR) to the original POEM adding your new POEM ID to their header. 
   
 - When a POEM is in the *active* state, PRs related to it will only be accepted if they come from a poet who is explicitly listed in the POEM header. 
 
@@ -70,10 +70,10 @@ The *requesting decision* state serves as a clear indication that the poet has d
 - Regardless a POEM's acceptance or rejection, all reasonable POEMs will be merged to the main repository to keep a record of community discussion. 
 This merge will only occur once the poet has changed the POEM state to *requesting decision*. 
 
-- A POEM may be submitted coincidently with an accompanying pull request (PR) containing an 
+- A POEM may be submitted coincidently with an accompanying PR to the [OpenMDAO codbase](https://github.com/OpenMDAO/OpenMDAO) containing an 
 implementation of the proposed feature. 
-Alternatively an accompanying PR may be submitted later, after some initial discussion on the POEM hahappened. 
-It is up to the poet's discretion when to submit a implementation PR to the [OpenMDAO codbase](https://github.com/OpenMDAO/OpenMDAO). 
+Alternatively an accompanying PR may be included in the POEM later, after some initial discussion on the POEM has happened. 
+It is up to the poet's discretion when to submit a implementation PR to the, but when the PR is made it should be noted in the `Associated implementation PR` field of the POEM header. 
 
 - A POEM may be submitted, reviewed (and even potentially accepted) before any code has been written. 
 Contributors are encouraged to submit POEMs before writing code if they are concerned about wasting time on something that would not get accepted. 
