@@ -17,9 +17,9 @@ and records the final decision as to whether or not to accept the proposal.
 Should a POEM contain actual poetry? 
 ====================================
 a real poem needn't be present
-but you may find it becomes more pleasant 
+but you may find it more pleasant 
 to include one in your work
-for you will get an internet point perk 
+so you get an internet point perk 
 
 
 POEM Audience 
