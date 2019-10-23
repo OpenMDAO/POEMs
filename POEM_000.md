@@ -75,7 +75,7 @@ implementation of the proposed feature.
 Alternatively an accompanying PR may be included in the POEM later, after some initial discussion on the POEM has happened. 
 It is up to the poet's discretion when to submit a implementation PR to the, but when the PR is made it should be noted in the `Associated implementation PR` field of the POEM header. 
 
-- A POEM may be submitted, reviewed (and even potentially accepted) before any code has been written. 
+- A POEM may be submitted, reviewed, and even potentially accepted before any code has been written. 
 Contributors are encouraged to submit POEMs before writing code if they are concerned about wasting time on something that would not get accepted. 
 
 - The Devs may elect, at their sole discretion, to accept a POEM without a reference implementation. 
