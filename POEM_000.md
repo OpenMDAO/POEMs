@@ -1,9 +1,9 @@
-POEM ID: 000\ 
-Title: POEM Purpose and Guidelines\
-Author: justinsgray (Justin S. Gray)\
-Competing POEMs: N/A\
-Related POEMs: N/A\
-Associated implementation PR: N/A\
+POEM ID: 000  
+Title: POEM Purpose and Guidelines  
+Author: justinsgray (Justin S. Gray)  
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR: N/A  
 
 Status: Active  
 
