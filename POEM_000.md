@@ -89,12 +89,12 @@ There are two options to contribute to an active POEM:
 
 1) You can comment on the PR associated with the specific POEM via github's interface. 
 This comment may be either a broad comment in the discussion thread, or a direct comment on specific lines of the POEM. 
-Genearly this can be used to register an opinion or make small suggestions for improvement. 
+Generally this can be used to register an opinion or make small suggestions for improvement. 
 This type of contribution usually would not warrant recognition as a poet in the header, though the original poet may choose to include you at their sole discretion. 
 
 2) You can submit your own PR to the poets fork, 
 which they can choose to accept or not. 
-Genearly this would entail more significant contribution to the POEM which may justify your attribution as another poet in the POEM's header. 
+Generally this would entail more significant contribution to the POEM which may justify your attribution as another poet in the POEM's header. 
 You may indicate your preference for attribution by including your username in the header as part of your PR. 
 
 Poets are encouraged to err on the generous side when making decisions about attribution, but generally speaking contributions must be substantial and impactful on the final state of a POEM to warrant recognition. 
@@ -156,5 +156,5 @@ To submit a POEM, fork this repository and add new POEM either as a single markd
 or as a folder with both markdown and images. 
 When naming your POEM, assign it the next highest available integer (e.g. 001, 002, 003, etc.). 
 Note that all POEMs must start in the **active** state (as indicated in the state line of the POEM template). 
-When ready for your POEM to be read, submit a PR to the [main repository][https://github.com/OpenMDAO/Poetry] on the OpenMDAO organization. 
+When ready for your POEM to be read, submit a PR to the [main repository](https://github.com/OpenMDAO/Poetry) on the OpenMDAO organization. 
 
