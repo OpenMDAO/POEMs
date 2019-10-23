@@ -58,7 +58,7 @@ However, ultimately the poet gets the final decision.
 This may happen, for instance, if a poet refuses to incorporate suggestions that another community member finds significant. 
 In this case, both POEMs must explicitly cross reference each other in the `Competing POEMs` line of the POEM header. 
 If you wish to create a competing POEM, it is your responsibility to 
-submit a PR to the original POEM adding your new POEM to their header. 
+submit a PR to the original POEM adding your new POEM ID to their header. 
   
 - When a POEM is in the *active* state, PRs related to it will only be accepted if they come from a poet who is explicitly listed in the POEM header. 
 
