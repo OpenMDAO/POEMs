@@ -3,8 +3,11 @@ Violets are blue.
 If you would like,  
 please contribute to OpenMDAO too! 
 
+
 OpenMDAO Poetry 
 ===============
+
+Before you ask... No, this isn't a joke. Yes, "Poetry" is the real name for this important OpenMDAO process. 
  
 The Poetry process is the official mechanism for proposing, discussing, revising, and ultimately approving or rejecting all changes to the [OpenMDAO](https://openmdao.org) project which effect its user interaction. 
 The process involves writing, reading, and discussing documents called POEMs (**p**roposal for **O**penMDAO **e**nhance**m**ent). 
