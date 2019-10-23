@@ -1,6 +1,11 @@
+Roses are red.
+Violets are blue. 
+If you would like,
+You can contribute to OpenMDAO too! 
+
 OpenMDAO Poetry 
 ===============
-
+ 
 The Poetry process is the official mechanism for proposing, discussing, revising, and ultimately approving or rejecting all changes to the [OpenMDAO](https://openmdao.org) project which effect its user interaction. 
 Poetry governs all API changes, feature additions, and feature removals to the OpenMDAO project. 
 Poetry is also recursive, because it also governs any changes to the Poetry process itself. 
