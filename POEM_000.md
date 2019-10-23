@@ -18,8 +18,8 @@ Should a POEM contain actual poetry?
 ====================================
 a real poem needn't be present  
 but you may find it more pleasant   
-to include one in your work  
-so you get an internet point perk 
+to include one in your works
+so you get internet point perks
 
 
 POEM Audience 
