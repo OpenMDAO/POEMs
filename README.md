@@ -21,7 +21,7 @@ changes to the user interface for OpenMDAO
 How does it work?
 -----------------
 
-The rules and process of poetry are described in the [POEM_000.md](https://github.com/OpenMDAO/Poetry/blob/master/poem_000.md) file in this repository. 
+The rules and process of poetry are described in the [POEM_000.md](https://github.com/OpenMDAO/Poetry/blob/master/POEM_000.md) file in this repository. 
 
 The OpenMDAO poetry repository (i.e. this repo) contains a full record of all POEMS submitted, starting November 1st, 2019. 
 
