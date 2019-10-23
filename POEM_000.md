@@ -116,37 +116,38 @@ Allowed POEM States
     integrated: The associated PR for an accepted POEM has been merged into the master branch 
 
 
-When should a POEM include an Implementation PR? 
+When should a POEM include an implementation PR? 
 ================================================
 
-While implementation PRs are not strictly requires, in most cases a POEM will not be accepted without one. 
-If you are proposing a new feature addition (e.g. a new driver, solver, or component) then an accompanying PR to the [OpenMDAO code base](https://github.com/OpenMDAO/OpenMDAO) will be required before acceptance. 
+While implementation PRs are not strictly required, they are strongly encouraged. 
+Most POEMs will not be accepted without one. 
+If you are proposing a new feature addition (e.g. a new driver, solver, or component) then an associated implementation PR to the [OpenMDAO code base](https://github.com/OpenMDAO/OpenMDAO) will very likely required before acceptance. 
 
 You are welcome to submit a POEM with out the implementation PR at first, 
 especially if you are concerned that it won't be accepted by the Devs. 
 It is reasonable to submit a POEM and ask for an initial opinion by the Devs before investing a lot of time and effort into an implementation. 
 
-In some cases, specifically in the case of API changes to existing functionality, 
-it is expected that a POEM will be submitted without an accompanying implementation PR. 
-Furthermore, the POEM may undergo a lot of discussion and progress all the way to the accepted state without having an implementation PR. 
-It is up to the Devs discretion whether or not to request the poet provide an implementation before accepting. 
+In some cases, such as API changes to existing functionality, 
+it is acceptable that a POEM be submitted without an associated implementation PR. 
+Furthermore, a POEM may undergo a lot of discussion and modification all the way to the accepted state without having an implementation PR. 
+It is up to the Devs sole discretion whether or not to insists the poet provide an implementation before accepting a POEM. 
 
 
 What if my POEM is rejected?
 ============================
 
-There are many reasons why a POEM may be rejected, most of which have nothing to do with the proposals merits or value to the community. 
+In some cases a POEM may be rejected despite it being well thought out, well written, and its offering significant value to the community. 
 A rejection is not in any way intended to be a commentary on the value of the POEM. 
 
 The Devs are very specifically concerned with the overall maintainability and stability of the code base. 
 If a POEM requires new code to be added then the Devs must make a careful consideration as to whether they are willing to take the responsibility of maintenance for that code moving forward. 
-If they can't take that responsibility, then they will reject what is otherwise a very good POEM. 
+If they do not feel they can take that responsibility, then they will reject what is otherwise a very good POEM. 
 
-In the case of rejection, if possible, poets are highly encouraged to move their POEM into a stand-alone repository and create an OpenMDAO plugin by listing OpenMDAO as a dependency for their code in the `setup.py` file. 
-This will enable other users to install their code and use it, but will avoid having the Devs take responsibility for the code. 
+In the case of rejection, if possible, poets are highly encouraged to move their work into a separate python package in a stand-alone repository that lists OpenMDAO as a dependency in the `setup.py` file. 
+This will create an OpenMDAO plugin that will enable other users to install their code and use it, but will avoid having the Devs take responsibility for the code. 
 
 If you have produced a plugin based on a rejected POEM, but at some later date you feel that it should be re-considered for inclusion into the main code-base, then you can re-submit the POEM by changing its state back to *requesting decision*. 
-Alternatively, the Devs may choose to revive your POEM at a later date if they feel it is worth reconsidering. 
+Alternatively, the Devs may choose to revive your POEM at a later date if they feel they can now support the feature in the core codebase. 
 
 
 Submitting a POEM
