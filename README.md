@@ -24,7 +24,7 @@ of the framework **before** they are added to the main repository
 2) Provide a mechanism for external users to propose  
 changes to the user interface for OpenMDAO
 
-Poetry involves writing, reading, and discussing POEMS (**p**roposal for **O**penMDAO **e**nhance**m**ent). 
+Poetry involves writing, reading, and discussing documents called POEMs (**p**roposal for **O**penMDAO **e**nhance**m**ent). 
 Both the core development team and external users participate, and input on any POEM is welcome from any user at any time. 
 
 Note
