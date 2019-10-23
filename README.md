@@ -1,7 +1,7 @@
 Roses are red.  
 Violets are blue.   
 If you would like,  
-You can contribute to OpenMDAO too! 
+please contribute to OpenMDAO too! 
 
 OpenMDAO Poetry 
 ===============
