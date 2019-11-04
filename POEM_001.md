@@ -1,6 +1,6 @@
 POEM ID: 001  
 Title: Units update  
-authors: [robfalck] ([real name] -- optional)   
+authors: [robfalck]
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1101
