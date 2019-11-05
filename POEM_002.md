@@ -15,7 +15,7 @@ Status:
 
 
 Motivation
-----------
+==========
 The SNOPT optimizer provides a way to cleanly terminate an optimization by returning a status of -2
 or lower from the model function and gradient evaluation functions. This allows for a clean and
 graceful exit from optimization. To take advantage of this under a wide range of operating
@@ -24,10 +24,10 @@ model to tell it to return a -2 to pyoptsparse/SNOPT so that we can terminate cl
 
 
 Description
------------
+===========
 
 Sending Signals from the OS
-===========================
+---------------------------
 Unix provides a selection of signals [1] that are used for interprocess communication. Microsoft
 Windows also provides a smaller set of signals [2] for the same purpose. The discussion here will
 focus on Unix signals, as these cover Unix and OSX systems.  Many of the signals already have
@@ -46,7 +46,7 @@ signal will be used to initiate clean termination.  A reasonable default value i
 
 
 Handling Signals in pyOptSparseDriver
-=====================================
+-------------------------------------
 The Python standard library includes a library [3] for dealing with signals, including a way to
 associate a handler function with a particular signal, so that when that signal is detected, the
 handler function is called. When this feature is enabled by the user, a handler will be placed
@@ -56,7 +56,7 @@ to -2.
 
 
 User Interface for Enabling New Capability
-============================================
+------------------------------------------
 A new option named "user_termination" will be added to the pyOptSparseDriver, with the default
 value of False.  When the user sets this to True, the capability to signal a clean termination will
 be enabled.
@@ -67,7 +67,7 @@ number.
 
 
 Changes needed to pyoptsparse
-=============================
+-----------------------------
 Unfortunately, mdolab/pyoptsparse will need to be updated to support this upgrade. Presently,
 `Optimizer` in pyOpt_optimizer.py squelches the returned error code by turning it into a
 strict boolean. This will need to be modified so that a user-requested termination flag
