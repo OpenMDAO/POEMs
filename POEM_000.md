@@ -14,14 +14,6 @@ A POEM also serves as a record of community discussion on the proposal,
 and documents the final decision as to whether or not to accept the proposal. 
 
 
-Should a POEM contain actual poetry? 
-====================================
-A real poem needn't be present  
-but you may find it more pleasant.   
-If you include one in your works   
-you may get useless internet perks  
-
-
 POEM Audience 
 ==============
 POEMs will be written by both the OpenMDAO developers and external community users. 
@@ -62,7 +54,7 @@ submit a pull request (PR) to the original POEM adding your new POEM ID to their
   
 - When a POEM is in the *active* state, PRs related to it will only be accepted if they come from an author who is explicitly listed in the POEM header. 
 
-- When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when they come form a member of the core development team or from one of the PEOM's authors.
+- When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when they come from a member of the core development team or from one of the PEOM's authors.
 The *requesting decision* state serves as a clear indication that the author has decided to stop accepting additional input on their POEM. 
 
 - The Devs are the only people with authority to move a POEM to either the *accepted* or *rejected* state.
@@ -72,14 +64,14 @@ This merge will only occur once the author has changed the POEM state to *reques
 
 - A POEM may be submitted coincidently with an accompanying PR to the [OpenMDAO codebase](https://github.com/OpenMDAO/OpenMDAO) containing an 
 implementation of the proposed feature. 
-Alternatively an accompanying PR may be included in the POEM later, after some initial discussion on the POEM has happened. 
+Alternatively, an accompanying PR may be included in the POEM later, after some initial discussion on the POEM has happened. 
 It is up to the author's discretion when to submit an implementation PR, but when the PR is made it should be noted in the `Associated implementation PR` field of the POEM header. 
 
-- A POEM may be submitted, reviewed, and even potentially accepted before any code has been written. 
-Contributors are encouraged to submit POEMs before writing code if they are concerned about wasting time on something that would not get accepted. 
+- A POEM may be submitted, reviewed, and potentially accepted before any code has been written. 
+Contributors are encouraged to submit POEMs before writing code if they are concerned about wasting time on work that would not get accepted. 
 
 - The Devs may elect, at their sole discretion, to accept a POEM without a reference implementation. 
-This situation is expected to be rare, but on occasion my be necessary when a POEM requires massive changes to the codebase. 
+This situation is expected to be rare, but on occasion may be necessary when a POEM requires significant changes to the codebase. 
 
 
 How can you contribute to another author's POEM? 

@@ -23,6 +23,11 @@ The rules are described in the [POEM_000.md](https://github.com/OpenMDAO/POEMs/b
 The OpenMDAO POEMs repository (i.e. this repo) contains a full record of all POEMs submitted, starting November 1st, 2019. 
 Both the core development team and external users participate, and input on any POEM is welcome from any user at any time. 
 
-Note
-----
-**Actual poetry is allowed** --- but not required --- in all OpenMDAO POEM documents
+
+How can I keep up to date on POEMs?
+-----------------------------------
+
+All POEM activity is managed within this repository, via PRs and comments to those PRs. 
+The best way to track that activity is to star and watch this repository. 
+That way, github's built in notification system to get emails when things are changing. 
+[Github has lots of great docs on this!](https://help.github.com/en/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-repositories)
