@@ -1,11 +1,17 @@
 POEM ID: 001  
-Title: Units update  
-authors: [robfalck]
+Title: Units update for better astrodynamics support  
+authors: [robfalck]  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1101
+Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1101  
 
-Status: Active  
+Status:
+  
+- [x] Active
+- [ ] Requesting decision
+- [ ] Accepted
+- [ ] Rejected
+- [ ] Integrated
 
 
 Motivation
@@ -24,7 +30,7 @@ Astronomical Union (IAU) standard of `au`. [1]
 * The definition of the astronomical unit is changed from `1.49597870691e11*m`
 to the IAU standard of `1.49597870700e11*m` [1]
 * The definition of light year is changed from `9.46073e15*m` to the IAU
-definition of `299792458.*m/s*365.25*d` [2]
+definition of `c0*365.25*d` [2]
 * The unit of parsec with abbreviation of `pc` is added with a definition
 of `648000/pi*au` [3]
 
