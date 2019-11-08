@@ -20,7 +20,7 @@ The SNOPT optimizer provides a way to cleanly terminate an optimization by retur
 or lower from the model function and gradient evaluation functions. This allows for a clean and
 graceful exit from optimization. To take advantage of this under a wide range of operating
 scenarios (serial, MPI, job queue submission), we need a way to send a signal to a running OpenMDAO
-model to tell it to return a -2 to pyoptsparse/SNOPT so that we can terminate cleanly.
+model to tell it to return an error code  to pyoptsparse/SNOPT so that we can terminate cleanly.
 
 
 Description
@@ -57,24 +57,19 @@ to -2.
 
 User Interface for Enabling New Capability
 ------------------------------------------
-A new option named "user_termination" will be added to the pyOptSparseDriver, with the default
-value of False.  When the user sets this to True, the capability to signal a clean termination will
-be enabled.
-
-A new option named "user_termination_signal" will be added to the pyOptSparseDriver, with the
+A new option named "user_terminate_signal" will be added to the pyOptSparseDriver, with the
 default value of `signals.SIGUSR1`.  The user can change this to any other valid signal name or
-number.
+number. The user can also set it to False to prevent the addition of any handlers.
 
 
 Changes needed to pyoptsparse
 -----------------------------
 Unfortunately, mdolab/pyoptsparse will need to be updated to support this upgrade. Presently,
 `Optimizer` in pyOpt_optimizer.py squelches the returned error code by turning it into a
-strict boolean. This will need to be modified so that a user-requested termination flag
-is also passed.  All optimizer wrappers will also need to be modified to expect this new
-argument from the masterFunc calls.
+strict boolean. This will need to be modified so that an integer is passed back to the optimizer
+wrappers. A value of 2 will signify a user-requested termination.
 
-Implementation details may need to be worked out with caretakers of pyoptsparse.
+Implementation details are being worked out with caretakers of pyoptsparse.
 
 
 References
