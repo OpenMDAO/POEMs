@@ -5,7 +5,12 @@ Competing POEMs: N/A
 Related POEMs: N/A  
 Associated implementation PR: N/A  
 
-Status: Active
+Status: 
+
+ - [x] Active
+ - [ ] Requesting decision
+ - [ ] Accepted
+ - [ ] Rejected
 
 
 Problem statement
