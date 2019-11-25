@@ -3,7 +3,7 @@ Title: New capability for user to send a termination signal to an OpenMDAO proce
 Authors: [Kenneth-T-Moore]  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
-Associated implementation PR:  
+Associated implementation PR:https://github.com/Kenneth-T-Moore/blue/tree/signal  
 
 Status:
 
