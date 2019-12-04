@@ -109,7 +109,7 @@ Suppose a user has a set of points that describe a curve. In our example we are 
     comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x)
     prob.model.add_subsystem('akima1', comp)
 
-    comp.add_spline(y_cp_name='y_val', y_interp_name='y_val', y_cp_val=y_cp)
+    comp.add_spline(y_cp_name='ycp', y_interp_name='y_val', y_cp_val=y_cp)
 
     y_interp = prob['akima1.y_val']
 ```
