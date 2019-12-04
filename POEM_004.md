@@ -15,25 +15,85 @@ Status:
 
 
 Motivation
-----------
+==========
 
-Community feedback on spline component usage from Garett Barter (NREL) and Andrew Ning
+Community feedback on spline component usage from Garett Barter (NREL) and Andrew Ning highlighted a few shortcomings of the current implementation.
 
-The current implementation requires a user to create a different component for each interpolator. In addition, the API between the two components significantly diverge. Please see the reference section for links to the current implementation.
+* The current implementation requires a user to create a different Component for each interpolator even if they use the same control point and interpolated point locations.
+* The API between the two currently implemented spline components (AkimaSplineComp, BsplineComp) significantly diverges.
+* The interpolation algorithms should be available for standalone use.
+* The interpolater implementations in the spline components (in particular Akima) are separate from those in the StructuredMetaModel Component and should be combined to eliminate code duplication.
 
+Please see the reference section for links to the current implementation.
 
 Description
------------
+===========
 
-This POEM seeks to integrate `akima_spline_comp` and `bspline_comp` into a single spline component with an API that is self consistent with the two meta model components ([StructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelstructured_comp.html),  [UnstructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelunstructured_comp.html) as of 2.9.1).
+This POEM seeks to integrate `AkimaSplineComp` and `BsplineComp` into a single spline component with an API that is consistent with the two meta model components ([StructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelstructured_comp.html),  [UnstructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelunstructured_comp.html) as of 2.9.1).
 
-First, we will talk about the difference between the new `SplineComp` and existing `StructuredMetaModelComp`.
+The fundamental difference between the proposed `SplineComp` and the existing `StructuredMetaModelComp` are as follows:
 
-* `StructuredMetaModel` is used when the user has a known set of x and y training points and want to interpolate between those training points. For this component, the user will need an array of training points for each `add_input` and `add_output` that they will add to the component. `StructuredMetaModel` is used for multi dimentional design spaces where as `SplineComp` is used for 1D splines.
+* `StructuredMetaModel` is used when the user has a known set of x and y training points on a structured grid and wants to interpolate a new y value at a new x location that lies between those points. For this component, the user needs an array of training points for each input and output dimension; generally, these remain constant. `StructuredMetaModel` can be used for multi dimensional design spaces, whereas `SplineComp` is restricted to one input.
 
-* `SplineComp` is used when a user has the coefficients (*control points*) of a regression line and want to interpolate at *N* points. To do this, a user needs three things: `x_control_points`, `y_control_points`, and `x_interp`. With this information, `SplineComp` calculates the y value of each `x_interp` value to give. This is helpful if you do not have any training data but need an interpolated spline between the regression line coefficients (*control points*). 
+* `SplineComp` is used when a user wants to represent a large dimensional variable as a smaller dimensional variable. The smaller dimension is represented by its x and y values which are called control points. The larger dimension consists of the interpolated points. Typically the x location of the control points and the interpolated points is known, and the y value at the interpolated point is calculated for each new y at the control point. 
 
-Next we'll show an example of when `SplineComp` would be used.
+With these difference in mind, we crafted the new SplineComp API to have a similar workflow to the StructuredMetaModel Component. 
+
+SplineComp API
+--------------------
+```
+    class SplineComp(ExplicitComponent):
+```
+
+Below are the signatures of the proposed class:
+
+```
+    def __init__(self, method, x_cp_val, x_interp, x_cp_name='x_cp', x_interp_name='x_interp',
+                 x_units=None, vec_size=1, interp_options={}):
+        """
+        Initialize all attributes.
+
+        Parameters
+        ----------
+        method : str
+            Interpolation method. Valid values are ['akima', 'bspline', (more to come)]
+        x_cp_val : list or ndarray
+            List/array of x control point values, must be monotonically increasing.
+        x_interp : list or ndarray
+            List/array of x interpolated point values.
+        x_cp_name : str
+            Name for the x control points input.
+        x_interp_name : str
+            Name of the x interpolated points input.
+        x_units : str or None
+            Units of the x variable.
+        vec_size : int
+            The number of independent splines to interpolate.
+        interp_options : dict
+            Dict contains the name and value of options specific to the chosen interpolation method.
+        """
+```
+
+```
+    def add_spline(self, y_cp_name, y_interp_name, y_cp_val=None, y_units=None):
+        """
+        Add a single spline output to this component.
+
+        Parameters
+        ----------
+        y_cp_name : str
+            Name for the y control points input.
+        y_interp_name : str
+            Name of the y interpolated points output.
+        y_cp_val : list or ndarray
+            List/array of default y control point values.
+        y_units : str or None
+            Units of the y variable.
+        """
+```
+
+Simple Example of SplineComp API
+---------------------------------
 
 Suppose a user has a set of points that describe a curve. In our example we are trying to generate interpolated points between our control points. To set the x position of control points in `SplineComp` we pass `x_cp` into `x_control_points` and pass `x` into `x_interp` to set the position of points we would like to interpolate at (Figure 1). Now, we will pass in the y position of the control points `y_cp` into `y_control_points` through the `add_spline` method (Figure 2). `SplineComp` calculates the `y_interp` values and gives the output of interpolated points (Figure 3).
 
@@ -46,10 +106,10 @@ Suppose a user has a set of points that describe a curve. In our example we are 
 
     prob = om.Problem()
 
-    comp = om.SplineComp(x_cp_val=x_cp, x_interp=x, x_interp_name='x_val', method='akima')
+    comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x)
     prob.model.add_subsystem('akima1', comp)
 
-    comp.add_spline(y_interp_name='y_val', y_cp_val=y_cp)
+    comp.add_spline(y_cp_name='y_val', y_interp_name='y_val', y_cp_val=y_cp)
 
     y_interp = prob['akima1.y_val']
 ```
@@ -63,29 +123,12 @@ Suppose a user has a set of points that describe a curve. In our example we are 
 
 ![step4](POEM_004/figure_4.png) 
 
-
-SplineComp API
---------------------
-```
-    class SplineComp(ExplicitComponent):
-```
-
-Below are the signatures of the proposed class:
-
-```
-    def __init__(self, x_cp_val, x_interp, x_cp_name=None, x_interp_name=None, method=None,
-                 axis_units=None, vec_size=1):
-```
-
-```
-    def add_spline(self, y_interp_name, y_cp_name=None, y_cp_val=None, axis_units=None, **kwargs):
-```
-
-Next are a few examples of what the proposed API might look like:
-
+Further Examples
+----------------
+Next are a few examples of what the proposed API looks like for a few specific cases:
 
 **Multiple Splines, One Interpolant Method Example**  
-Each spline you add will use the same `x_cp_val`, `x_interp`, and `default_method` arguments.  
+Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` arguments.  
 ```
     x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]) / 12.0
     y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
@@ -94,19 +137,17 @@ Each spline you add will use the same `x_cp_val`, `x_interp`, and `default_metho
 
     prob = om.Problem()
 
-    comp = om.SplineComp(x_cp_val=x_cp, x_interp=x, x_interp_name='x_val', method='akima')
+    comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x, x_interp_name='x_val')
     prob.model.add_subsystem('akima1', comp)
 
-    comp.add_spline(y_interp_name='y_val1', y_cp_val=y_cp)
-    comp.add_spline(y_interp_name='y_val2', y_cp_val=y_cp2)
+    comp.add_spline(y_cp_name='ycp1', y_interp_name='y_val1', y_cp_val=y_cp)
+    comp.add_spline(y_cp_name='ycp2', y_interp_name='y_val2', y_cp_val=y_cp2)
 
     y_interp = prob['akima1.y_val1']
-
-    print(y_interp)
-    print(prob['akima1.x_val'])
 ```
 
-**Passing Optional Arguments To Akima**
+**Passing Optional Arguments To Akima**  
+In this example we are passing in `delta_x` and `eps` which are specific to the akima method.
 ```
     x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]) / 12.0
     y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
@@ -114,17 +155,15 @@ Each spline you add will use the same `x_cp_val`, `x_interp`, and `default_metho
 
     prob = om.Problem()
 
-    comp = om.SplineComp(x_cp_val=x_cp, x_interp=x, x_cp_name='xcp', 
-                         x_interp_name='x_val', method='akima', axis_units='km')
+    akima_option = {'delta_x': 0.2, 'eps': 1e-30}
+    comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x, x_cp_name='xcp', 
+                         x_interp_name='x_val',  x_units='km', interp_options=akima_options)
 
     prob.model.add_subsystem('atmosphere', comp)
 
-    comp.add_spline(y_interp_name='alt', y_cp_name='alt_cp', y_cp_val=y_cp, 
-                    axis_units='kft', delta_x=0.2, eps=1e-30)
+    comp.add_spline(y_cp_name='alt_cp', y_interp_name='alt', y_cp_val=y_cp, y_units='kft')
 
     y_interp_spline1 = prob['atmosphere.alt']
-
-    print(y_interp_spline1)
 ```
 
 **Passing Optional Arguments To BSpline**
@@ -135,49 +174,38 @@ Each spline you add will use the same `x_cp_val`, `x_interp`, and `default_metho
 
     prob = om.Problem()
 
-    comp = om.SplineComp(x_cp_val=x_cp, x_interp=x, x_cp_name='xcp', x_interp_name='x_val', 
-                         method='bspline', axis_units='km')
+    bspline_options = {'order': 5}
+    comp = om.SplineComp(method='bspline', x_cp_val=x_cp, x_interp=x, x_cp_name='xcp', 
+                         x_interp_name, x_interp_name='x_val', x_units='km', 
+                         interp_options=bspline_options)
 
     prob.model.add_subsystem('atmosphere', comp)
 
-    comp.add_spline(y_interp_name='temp', y_cp_name='temp_cp', y_cp_val=y_cp2, axis_units='C', 
-                    order=5)
+    comp.add_spline(y_cp_name='temp_cp', y_interp_name='temp', y_cp_val=y_cp2, y_units='C')
 
     y_interp_spline1 = prob['atmosphere.temp']
-
-    print(y_interp_spline1)
 ```
+
+Standalone usage of the interpolants
+------------------------------------
+See message from Ken
+
 
 Backwards Incompatible Changes From 2.9.1
 ------------------------------------------
 
 Removing distribution argument from spline comp.
 
-* We are removing both `distribution` and `eval_at` component options because they were both specifying a distribution of control points on the spline. These two are being replaced with the `x_cp_val` option. Grid input distribution helper functions will be added to provide distributed control points to the class. This can be seen below using the *Single Spline Example* case
+In the new SplineComp, the following options are not preserved: 
+* `distribution` from BsplinesComp
+* `eval_at` from AkimaSplineComp
 
-```
-    from openmdao.components.SplineInterpDistributions import sin_dist
-    # Data
-    x_cp = sin_dist(np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]))
-    y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
-    x = np.linspace(1.0, 12.0, 20)
-
-    prob = om.Problem()
-
-    comp = om.SplineComp(x_cp_val=x_cp, x_interp=x, x_interp_name='x_val', method='akima')
-    prob.model.add_subsystem('akima1', comp)
-
-    comp.add_spline(y_interp_name='y_val', y_cp_val=y_cp)
-
-    y_interp = prob['akima1.y_val']
-```
-
-* While we are looking to remove `distribution` and `eval_at`, we are preserving `delta_x`, `eps`, and `order` and they will still be passable to their respective interpolation methods. (Depending on how we decide to input the spline method specific kwargs this might change)
+These options are being removed in favor of requiring the user to specify the x locations of the control point and interpolated points. However, we are open for discussion on preserving the capability in some way, such as a helper library or additional API functions.
 
 Renaming StructuredMetaModel
 -----------------------------
 
-Because `StructuredMetaModel` can interpolate for more than one dimension, we think it is appropriate to rename the `StructuredMetaModel` component to `InterpNdComp`. We will apply a deprecation warning to StructuredMetaModel in the PR associated with this.
+We are considering changing the name of StructuredMetaModelComp to InterpNdComp (or InterpNDComp) to differentiate it from UnstructuredMetaModelComp.
 
 References
 -----------
