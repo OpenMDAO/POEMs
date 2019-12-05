@@ -95,7 +95,7 @@ Below are the signatures of the proposed class:
 Simple Example of SplineComp API
 ---------------------------------
 
-Suppose a user has a set of points that describe a curve. In our example we are trying to generate interpolated points between our control points. To set the x position of control points in `SplineComp` we pass `x_cp` into `x_control_points` and pass `x` into `x_interp` to set the position of points we would like to interpolate at (Figure 1). Now, we will pass in the y position of the control points `y_cp` into `y_control_points` through the `add_spline` method (Figure 2). `SplineComp` calculates the `y_interp` values and gives the output of interpolated points (Figure 3).
+Suppose a user has a set of points that describe a curve. In our example we are trying to generate interpolated points between our control points. To set the x position of control points in `SplineComp` we pass `x_cp` into `x_cp_val` and pass `x` into `x_interp` to set the position of points we would like to interpolate at (Figure 1). Now, we will pass in the y position of the control points `y_cp` into `y_cp_val` through the `add_spline` method (Figure 2). `SplineComp` calculates the `y_interp` values and gives the output of interpolated points (Figure 3).
 
 **Single Spline Example of Proposed API**
 ```
@@ -138,12 +138,12 @@ Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` argum
     prob = om.Problem()
 
     comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x, x_interp_name='x_val')
-    prob.model.add_subsystem('akima1', comp)
+    prob.model.add_subsystem('akima_component', comp)
 
     comp.add_spline(y_cp_name='ycp1', y_interp_name='y_val1', y_cp_val=y_cp)
     comp.add_spline(y_cp_name='ycp2', y_interp_name='y_val2', y_cp_val=y_cp2)
 
-    y_interp = prob['akima1.y_val1']
+    y_interp = prob['akima_component.y_val1']
 ```
 
 **Passing Optional Arguments To Akima**  
