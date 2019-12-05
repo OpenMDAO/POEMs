@@ -22,7 +22,7 @@ Community feedback on spline component usage from Garett Barter (NREL) and Andre
 * The current implementation requires a user to create a different Component for each interpolator even if they use the same control point and interpolated point locations.
 * The API between the two currently implemented spline components (AkimaSplineComp, BsplineComp) significantly diverges.
 * The interpolation algorithms should be available for standalone use.
-* The interpolater implementations in the spline components (in particular Akima) are separate from those in the StructuredMetaModel Component and should be combined to eliminate code duplication.
+* The interpolator implementations in the spline components (in particular Akima) are separate from those in the StructuredMetaModel Component and should be combined to eliminate code duplication.
 
 Please see the reference section for links to the current implementation.
 
@@ -33,9 +33,9 @@ This POEM seeks to integrate `AkimaSplineComp` and `BsplineComp` into a single s
 
 The fundamental difference between the proposed `SplineComp` and the existing `StructuredMetaModelComp` are as follows:
 
-* `StructuredMetaModel` is used when the user has a known set of x and y training points on a structured grid and wants to interpolate a new y value at a new x location that lies between those points. For this component, the user needs an array of training points for each input and output dimension; generally, these remain constant. `StructuredMetaModel` can be used for multi dimensional design spaces, whereas `SplineComp` is restricted to one input.
+* `StructuredMetaModel` is used when the user has a known set of x and y training points on a structured grid and wants to interpolate a new y value at a new x location that lies between those points. For this component, the user needs an array of training points for each input and output dimension; generally, these remain constant. `StructuredMetaModel` can be used for multi-dimensional design spaces, whereas `SplineComp` is restricted to one input.
 
-* `SplineComp` is used when a user wants to represent a large dimensional variable as a smaller dimensional variable. The smaller dimension is represented by its x and y values which are called control points. The larger dimension consists of the interpolated points. Typically the x location of the control points and the interpolated points is known, and the y value at the interpolated point is calculated for each new y at the control point. 
+* `SplineComp` is used when a user wants to represent a large dimensional variable as a smaller dimensional variable. The smaller dimension is represented by its x and y values which are called control points. The larger dimension consists of the interpolated points. Typically, the x location of the control points and the interpolated points is known, and the y value at the interpolated point is calculated for each new y at the control point. 
 
 With these difference in mind, we crafted the new SplineComp API to have a similar workflow to the StructuredMetaModel Component. 
 
@@ -163,7 +163,7 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
 
     comp.add_spline(y_cp_name='alt_cp', y_interp_name='alt', y_cp_val=y_cp, y_units='kft')
 
-    y_interp_spline1 = prob['atmosphere.alt']
+    y_interp = prob['atmosphere.alt']
 ```
 
 **Passing Optional Arguments To BSpline**
@@ -183,12 +183,54 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
 
     comp.add_spline(y_cp_name='temp_cp', y_interp_name='temp', y_cp_val=y_cp2, y_units='C')
 
-    y_interp_spline1 = prob['atmosphere.temp']
+    y_interp = prob['atmosphere.temp']
 ```
 
-Standalone usage of the interpolants
+Standalone Usage of The Interpolants
 ------------------------------------
-See message from Ken
+
+We also propse a functional standalone interface for directly using any of the interpolants. 
+```
+    def interp(method, x_data, y_data, x):
+        """
+        Compute y and its derivatives for a given x by interpolating on x_data and y_data.
+        Parameters
+        ----------
+        method : str
+            Method to use, choose from all available openmmdao methods.
+        x_data : ndarray or list
+            Input data for x, should be monotonically increasing. For higher dimensional grids,
+            x_data should be a list containing the x data for each dimension.
+        y_data : ndarray
+            Input values for y. For higher dimensional grids, the index order should be the same as
+            in x_data.
+        x : float or iterable or ndarray
+            Location(s) at which to interpolate.
+        Returns
+        -------
+        float or ndarray
+            Interpolated values y
+        ndarray
+            Derivative of y with respect to x
+        ndarray
+            Derivative of y with respect to x_data
+        ndarray
+            Derivative of y with respect to y_data
+        """
+```
+This simple standalone function is intended to be used for standard interpolation (including for multidimensional data sets) and for constructing a higher dimension curve from a low dimensional representation, as we use the spline components. This simplicity and flexibility comes at the cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for ues in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
+
+Standard interpolation would look like this:
+```
+    y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_train, y_train, x) 
+```
+where we want to compute new y for new x.  
+
+For a spline, the usage looks like this:
+```
+    y, dy_dx, dy_dxcp, dy_dycp = interp('akima', xcp, ycp, x) 
+```
+where we want to compute new y for new values of the control points ycp. The differences are subtle, but the usage is hopefully not confusing.
 
 
 Backwards Incompatible Changes From 2.9.1
