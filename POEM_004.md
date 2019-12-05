@@ -17,7 +17,7 @@ Status:
 Motivation
 ==========
 
-Community feedback on spline component usage from Garett Barter (NREL) and Andrew Ning highlighted a few shortcomings of the current implementation.
+Community feedback on spline component usage from Garett Barter (NREL) and Andrew Ning (BYU) highlighted a few shortcomings of the current implementation.
 
 * The current implementation requires a user to create a different Component for each interpolator even if they use the same control point and interpolated point locations.
 * The API between the two currently implemented spline components (AkimaSplineComp, BsplineComp) significantly diverges.
@@ -100,7 +100,7 @@ Suppose a user has a set of points that describe a curve. In our example we are 
 **Single Spline Example of Proposed API**
 ```
     # Data
-    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]) / 12.0
+    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
     y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
     x = np.linspace(1.0, 12.0, 20)
 
@@ -130,7 +130,7 @@ Next are a few examples of what the proposed API looks like for a few specific c
 **Multiple Splines, One Interpolant Method Example**  
 Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` arguments.  
 ```
-    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]) / 12.0
+    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
     y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
     y_cp2 = np.array([1.0, 5.0, 7.0, 8.0, 13.0, 16.0])
     x = np.linspace(1.0, 12.0, 50)
@@ -149,7 +149,7 @@ Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` argum
 **Passing Optional Arguments To Akima**  
 In this example we are passing in `delta_x` and `eps` which are specific to the akima method.
 ```
-    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]) / 12.0
+    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
     y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
     x = np.linspace(1.0, 12.0, 50)
 
@@ -168,7 +168,7 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
 
 **Passing Optional Arguments To BSpline**
 ```
-    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0]]) / 12.0
+    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
     y_cp2 = np.array([1.0, 5.0, 7.0, 8.0, 13.0, 16.0])
     x = np.linspace(1.0, 12.0, 50)
 
@@ -220,17 +220,16 @@ We also propse a functional standalone interface for directly using any of the i
 ```
 This simple standalone function is intended to be used for standard interpolation (including for multidimensional data sets) and for constructing a higher dimension curve from a low dimensional representation, as we use the spline components. This simplicity and flexibility comes at the cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for ues in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
 
-Standard interpolation would look like this:
+Standard interpolation would look like this where we want to compute new y for new x: 
 ```
-    y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_train, y_train, x) 
+    y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_train, y_train, x)
 ```
-where we want to compute new y for new x.  
 
-For a spline, the usage looks like this:
+For a spline, the usage looks like this where we want to compute new y for new values of the control points ycp:
 ```
     y, dy_dx, dy_dxcp, dy_dycp = interp('akima', xcp, ycp, x) 
 ```
-where we want to compute new y for new values of the control points ycp. The differences are subtle, but the usage is hopefully not confusing.
+The differences are subtle, but the usage is hopefully not confusing.
 
 
 Backwards Incompatible Changes From 2.9.1
