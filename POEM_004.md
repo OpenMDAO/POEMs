@@ -176,7 +176,7 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
 
     bspline_options = {'order': 5}
     comp = om.SplineComp(method='bspline', x_cp_val=x_cp, x_interp=x, x_cp_name='xcp', 
-                         x_interp_name, x_interp_name='x_val', x_units='km', 
+                         x_interp_name='x_val', x_units='km', 
                          interp_options=bspline_options)
 
     prob.model.add_subsystem('atmosphere', comp)
@@ -189,7 +189,7 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
 Standalone Usage of The Interpolants
 ------------------------------------
 
-We also propse a functional standalone interface for directly using any of the interpolants. 
+We also propose a functional standalone interface for directly using any of the interpolants. 
 ```
     def interp(method, x_data, y_data, x):
         """
