@@ -29,13 +29,13 @@ Please see the reference section for links to the current implementation.
 Description
 ===========
 
-This POEM seeks to integrate `AkimaSplineComp` and `BsplineComp` into a single spline component with an API that is consistent with the two meta model components ([StructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelstructured_comp.html),  [UnstructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelunstructured_comp.html) as of 2.9.1).
+This POEM seeks to integrate `AkimaSplineComp` and `BsplineComp` into a single spline component with an API that is consistent with the two meta model components ([StructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelstructured_comp.html),  [UnstructuredMetaModel](http://openmdao.org/twodocs/versions/2.9.1/features/building_blocks/components/metamodelunstructured_comp.html) as of 2.9.1). Additionally, it will also unify the underlying interpolation routines between `AkimaSplineComp` and `StructuredMetaModel` and define an API for them to be used independently of the components themselves. 
 
 The fundamental difference between the proposed `SplineComp` and the existing `StructuredMetaModelComp` are as follows:
 
 * `StructuredMetaModel` is used when the user has a known set of x and y training points on a structured grid and wants to interpolate a new y value at a new x location that lies between those points. For this component, the user needs an array of training points for each input and output dimension; generally, these remain constant. `StructuredMetaModel` can be used for multi-dimensional design spaces, whereas `SplineComp` is restricted to one input.
 
-* `SplineComp` is used when a user wants to represent a large dimensional variable as a smaller dimensional variable. The smaller dimension is represented by its x and y values which are called control points. The larger dimension consists of the interpolated points. Typically, the x location of the control points and the interpolated points is known, and the y value at the interpolated point is calculated for each new y at the control point. 
+* `SplineComp` is used when a user wants to interpolate to a large array of values from a small array of control points. The smaller control points are defined by their x and y values. Typically, the x location of the control points and the interpolated points are known a priori, and the y value at the interpolated point is calculated for each new y at the control point. 
 
 With these difference in mind, we crafted the new SplineComp API to have a similar workflow to the StructuredMetaModel Component. 
 
@@ -43,11 +43,7 @@ SplineComp API
 --------------------
 ```
     class SplineComp(ExplicitComponent):
-```
 
-Below are the signatures of the proposed class:
-
-```
     def __init__(self, method, x_cp_val, x_interp, x_cp_name='x_cp', x_interp_name='x_interp',
                  x_units=None, vec_size=1, interp_options={}):
         """
@@ -92,7 +88,7 @@ Below are the signatures of the proposed class:
         """
 ```
 
-Simple Example of SplineComp API
+Example Usage of SplineComp API
 ---------------------------------
 
 Suppose a user has a set of points that describe a curve. In our example we are trying to generate interpolated points between our control points. To set the x position of control points in `SplineComp` we pass `x_cp` into `x_cp_val` and pass `x` into `x_interp` to set the position of points we would like to interpolate at (Figure 1). Now, we will pass in the y position of the control points `y_cp` into `y_cp_val` through the `add_spline` method (Figure 2). `SplineComp` calculates the `y_interp` values and gives the output of interpolated points (Figure 3).
@@ -127,7 +123,7 @@ Further Examples
 ----------------
 Next are a few examples of what the proposed API looks like for a few specific cases:
 
-**Multiple Splines, One Interpolant Method Example**  
+**Multiple Splines, One Interpolant Method**  
 Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` arguments.  
 ```
     x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
@@ -186,6 +182,10 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
     y_interp = prob['atmosphere.temp']
 ```
 
+**Using non-uniform distributions of control points**
+[TODO: Danny add an example of sin, node centered and cell centered]
+
+
 Standalone Usage of The Interpolants
 ------------------------------------
 
@@ -218,30 +218,26 @@ We also propose a functional standalone interface for directly using any of the 
             Derivative of y with respect to y_data
         """
 ```
-This simple standalone function is intended to be used for standard interpolation (including for multidimensional data sets) and for constructing a higher dimension curve from a low dimensional representation, as we use the spline components. This simplicity and flexibility comes at the cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for ues in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
+This simple standalone function is intended to be used for standard interpolation (including for multidimensional data sets) and for constructing a higher dimension curve from a low dimensional representation, as we use the spline components. This simplicity and flexibility comes at a small cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for use in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
 
-Standard interpolation would look like this where we want to compute new y for new x: 
+Usage looks like this where we want to compute new y for new x: 
 ```
     y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_train, y_train, x)
 ```
 
-For a spline, the usage looks like this where we want to compute new y for new values of the control points ycp:
-```
-    y, dy_dx, dy_dxcp, dy_dycp = interp('akima', xcp, ycp, x) 
-```
-The differences are subtle, but the usage is hopefully not confusing.
 
-
-Backwards Incompatible Changes From 2.9.1
+API Changes From 2.9.1
 ------------------------------------------
 
-Removing distribution argument from spline comp.
+Deprecation of `AkimaSplineComp` and `BsplineComp` and replacement with unified `SplineComp`. 
+
 
 In the new SplineComp, the following options are not preserved: 
 * `distribution` from BsplinesComp
 * `eval_at` from AkimaSplineComp
 
-These options are being removed in favor of requiring the user to specify the x locations of the control point and interpolated points. However, we are open for discussion on preserving the capability in some way, such as a helper library or additional API functions.
+These options are being removed in favor of requiring the user to specify the x locations of the control point and interpolated points. 
+We will provide helper functions for the common uses cases (e.g. cell-centered, node-centered, sine/cosine distributions)
 
 Renaming StructuredMetaModel
 -----------------------------
