@@ -20,7 +20,7 @@ Motivation
 Community feedback on spline component usage from Garett Barter (NREL) and Andrew Ning (BYU) highlighted a few shortcomings of the current implementation.
 
 * The current implementation requires a user to create a different Component for each interpolator even if they use the same control point and interpolated point locations.
-* The API between the two currently implemented spline components (AkimaSplineComp, BsplineComp) significantly diverges.
+* The API between the two currently implemented spline components (`AkimaSplineComp`, `BsplineComp`) significantly diverges.
 * The interpolation algorithms should be available for standalone use.
 * The interpolator implementations in the spline components (in particular Akima) are separate from those in the StructuredMetaModel Component and should be combined to eliminate code duplication.
 
@@ -182,9 +182,29 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
     y_interp = prob['atmosphere.temp']
 ```
 
-**Using non-uniform distributions of control points**
-[TODO: Danny add an example of sin, node centered and cell centered]
+**Non-uniform Distributions Example**
+```
+    from openmdao.utils.spline_distributions import CellCentered, NodeCentered, SineDistribution
+    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
+    y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
+    x_cell_centered = CellCentered(xcp, num_points=20)
+    x_node_centered = NodeCentered(xcp, num_points=20)
+    x_sin_dist = SineDistribution(xcp, num_points=20)
 
+    prob = om.Problem()
+
+    comp1 = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x_cell_centered)
+    comp2 = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x_node_centered)
+    comp3 = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x_sin_dist)
+
+    prob.model.add_subsystem('akima1', comp1)
+    prob.model.add_subsystem('akima2', comp2)
+    prob.model.add_subsystem('akima3', comp3)
+
+    comp1.add_spline(y_cp_name='ycp', y_interp_name='y_val', y_cp_val=y_cp)
+    comp2.add_spline(y_cp_name='ycp', y_interp_name='y_val', y_cp_val=y_cp)
+    comp3.add_spline(y_cp_name='ycp', y_interp_name='y_val', y_cp_val=y_cp)
+```
 
 Standalone Usage of The Interpolants
 ------------------------------------
@@ -218,13 +238,12 @@ We also propose a functional standalone interface for directly using any of the 
             Derivative of y with respect to y_data
         """
 ```
-This simple standalone function is intended to be used for standard interpolation (including for multidimensional data sets) and for constructing a higher dimension curve from a low dimensional representation, as we use the spline components. This simplicity and flexibility comes at a small cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for use in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
+This simple standalone function is intended to be used for standard interpolation (`StructuredMetaModel`), including for multidimensional data sets, and for constructing a higher dimension curve from a low dimensional representation (`SplineComp`), as we use the spline components. This simplicity and flexibility comes at a small cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for use in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
 
 Usage looks like this where we want to compute new y for new x: 
 ```
-    y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_train, y_train, x)
+    y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_input, y_input, x)
 ```
-
 
 API Changes From 2.9.1
 ------------------------------------------
