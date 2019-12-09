@@ -261,7 +261,7 @@ We will provide helper functions for the common uses cases (e.g. cell-centered, 
 Renaming StructuredMetaModel
 -----------------------------
 
-We are considering changing the name of StructuredMetaModelComp to InterpNdComp (or InterpNDComp) to differentiate it from UnstructuredMetaModelComp.
+We are considering changing the name of `StructuredMetaModelComp` to `InterpNdComp` (or `InterpolationNDComp`) to differentiate it from `UnstructuredMetaModelComp`.
 
 References
 -----------
