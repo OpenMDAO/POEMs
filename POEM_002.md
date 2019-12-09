@@ -3,7 +3,7 @@ Title: New capability for user to send a termination signal to an OpenMDAO proce
 Authors: [Kenneth-T-Moore]  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
-Associated implementation PR:https://github.com/Kenneth-T-Moore/blue/tree/signal  
+Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1138
 
 Status:
 
@@ -64,12 +64,10 @@ number. The user can also set it to False to prevent the addition of any handler
 
 Changes needed to pyoptsparse
 -----------------------------
-Unfortunately, mdolab/pyoptsparse will need to be updated to support this upgrade. Presently,
-`Optimizer` in pyOpt_optimizer.py squelches the returned error code by turning it into a
-strict boolean. This will need to be modified so that an integer is passed back to the optimizer
-wrappers. A value of 2 will signify a user-requested termination.
+This POEM is tied to release 1.1 of pyoptsparse.
 
-Implementation details are being worked out with caretakers of pyoptsparse.
+In pyoptsparse 1.1, The `Optimizer` class was upated to allow a value of 2 to be passed back
+to the SNOPT callback function wrapper.
 
 
 References
