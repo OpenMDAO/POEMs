@@ -19,7 +19,7 @@ Motivation
 
 Community feedback on spline component usage from Garett Barter (NREL) and Andrew Ning (BYU) highlighted a few shortcomings of the current implementation.
 
-* The current implementation requires a user to create a different Component for each interpolator even if they use the same control point and interpolated point locations.
+* The current implementation requires a user to create a different Component for each interpolator even if they use the same control points and interpolated point locations.
 * The API between the two currently implemented spline components (`AkimaSplineComp`, `BsplineComp`) significantly diverges.
 * The interpolation algorithms should be available for standalone use.
 * The interpolator implementations in the spline components (in particular Akima) are separate from those in the StructuredMetaModel Component and should be combined to eliminate code duplication.
@@ -91,7 +91,7 @@ SplineComp API
 Example Usage of SplineComp API
 ---------------------------------
 
-Suppose a user has a set of points that describe a curve. In our example we are trying to generate interpolated points between our control points. To set the x position of control points in `SplineComp` we pass `x_cp` into `x_cp_val` and pass `x` into `x_interp` to set the position of points we would like to interpolate at (Figure 1). Now, we will pass in the y position of the control points `y_cp` into `y_cp_val` through the `add_spline` method (Figure 2). `SplineComp` calculates the `y_interp` values and gives the output of interpolated points (Figure 3).
+In our example, we have a pre-generated curve that is described by `x_cp` and `y_cp` below which we interpolate between. We also have pre-generated points to interpolate at, which in our case is: `x`. To set the x position of control and interpolation points in `SplineComp` we pass `x_cp` and `x` into their respective contstructor arguments (Figure 1). Next we'll add our `y_cp` data in by calling the `add_spline` method and passing `y_cp` into the argument `y_cp_val` (Figure 2). `SplineComp` calculates the `y_interp` values and gives the output of interpolated points (Figure 3).
 
 **Single Spline Example of Proposed API**
 ```
