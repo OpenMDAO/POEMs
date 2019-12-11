@@ -65,6 +65,22 @@ the plugin.  The following entry point types are all handled in this way:
 * case_recorders
 
 
+Here's an example of how to specify the *entry_points* arg to the *setup* call in `setup.py`
+for a component plugin class called `MyComponent` in a package called `my_plugins_package`
+in a module called `my_comp_plugin.py`:
+
+```python
+entry_points={
+    'openmdao_components': [
+        'mycompplugin=my_plugins_package.my_comp_plugin:MyComponent'
+    ]
+}
+```
+
+Note that the actual name of the entry point, `mycompplugin`, is not used for anything in a
+'typical' entry point.
+
+
 ### case_readers
 
 
@@ -148,4 +164,21 @@ def _hello_exec(options, user_args):
 The final entry in the tuple returned by function referred to by the entry point (in this case *_hello_setup*)
 is a string containing a high level description of the command.  This description will be displayed
 along with the name of the command when a user runs `openmdao -h`.
+
+Here's an example of how to specify the *entry_points* arg to the *setup* call in `setup.py`
+for our command line tool described above if it were inside of a package called `my_plugins_package`
+in a file called `hello_cmd.py`:
+
+
+```python
+entry_points={
+        'openmdao_commands': [
+            'hello=my_plugins_package.hello_cmd:_hello_setup'
+        ]
+}
+```
+
+In this case, the name of our entry point, `hello`, will be the name of the openmdao command line
+tool, so the user will activate the tool by typing `openmdao hello`.
+
 
