@@ -165,7 +165,7 @@ def _hello_setup():
 ```
 
 The *setup_parser_func* is a function taking a single *parser* argument that adds any arguments
-expected by the plugin to the *parser* object.  The *parser* is an **argparse.ArgumentParser* object.
+expected by the plugin to the *parser* object.  The *parser* is an *argparse.ArgumentParser* object.
 For example, the following code sets up a subparser for a `openmdao hello` command that adds a file 
 argument and a `--repeat` option:
 
