@@ -39,16 +39,17 @@ Creating a plugin that is fully integrated into the OpenMDAO framework will requ
 The following table shows the entry point groups that OpenMDAO recognizes.
 
 
-Entry Point Group       | Type              | Entry Point Refers To
-:---------------------- | :---------------- | :--------------------
-openmdao_components     | Component         | class or factory funct
-openmdao_groups         | Group             | class or factory funct
-openmdao_drivers        | Driver            | class or factory funct
-openmdao_lin_solvers    | LinearSolver      | class or factory funct
-openmdao_nl_solvers     | NonlinearSolver   | class or factory funct
-openmdao_case_recorders | CaseRecorder      | class or factory funct
-openmdao_case_readers   | BaseCaseReader    | funct returning (file_extension, class or factor funct)
-openmdao_commands       | command line tool | funct returning (setup_parser_func, exec_func, help_string)
+Entry Point Group         | Type              | Entry Point Refers To
+:------------------------ | :---------------- | :--------------------
+openmdao_components       | Component         | class or factory funct
+openmdao_groups           | Group             | class or factory funct
+openmdao_drivers          | Driver            | class or factory funct
+openmdao_lin_solvers      | LinearSolver      | class or factory funct
+openmdao_nl_solvers       | NonlinearSolver   | class or factory funct
+openmdao_surrogate_models | SurrogateModel    | class or factory funct
+openmdao_case_recorders   | CaseRecorder      | class or factory funct
+openmdao_case_readers     | BaseCaseReader    | funct returning (file_extension, class or factor funct)
+openmdao_commands         | command line tool | funct returning (setup_parser_func, exec_func, help_string)
 
 
 ## Discovery of Plugins
@@ -86,7 +87,9 @@ entry point group, producing output like the following:
 
 
 Note that there is only one actual plugin, `MyComponent`, in the entry points listed above.  
-The others are built-in components that are part of the OpenMDAO framework.
+The others are built-in components that are part of the OpenMDAO framework.  Also, the 
+`openmdao list_installed` command line tool will have include and exclude options to allow
+filtering of packages to control what is displayed.
 
 
 ### Discovery of Plugins Available on PyPI
@@ -121,6 +124,7 @@ the plugin.  The following entry point types are all handled in this way:
 * drivers
 * nl_solvers
 * lin_solvers
+* surrogate_models
 * case_recorders
 
 
