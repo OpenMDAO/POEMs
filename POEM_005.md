@@ -24,33 +24,92 @@ easily discoverable and installable without requiring that it be added to the Op
 
 # Description
 
-
 Creating a plugin that is fully integrated into the OpenMDAO framework will require the following:
 
-    1. An entry point will be added to the appropriate entry point group (see below) of the
-       *entry_points* argument passed to the *setup* call in the *setup.py* file for the
-       python package containing the plugin.
-    2. The same entry point group string mentioned above will be added to the *keywords* arg passed
-       to the *setup* call in the *setup.py* file for the python package containing the plugin.
+1. The plugin will be part of an installable python package.
+2. An entry point will be added to the appropriate entry point group (see below) of the
+    *entry_points* argument passed to the *setup* call in the *setup.py* file for the
+    python package containing the plugin.
+3. The same entry point group string mentioned above will be added to the *keywords* arg passed
+    to the *setup* call in the *setup.py* file for the python package containing the plugin.
 
+
+## Entry Point Groups
+
+The following table shows the entry point groups that OpenMDAO recognizes.
 
 
 Entry Point Group       | Type              | Entry Point Refers To
------------------------ | ----------------- | ---------------------
+:---------------------- | :---------------- | :--------------------
 openmdao_components     | Component         | class or factory funct
 openmdao_groups         | Group             | class or factory funct
 openmdao_drivers        | Driver            | class or factory funct
 openmdao_lin_solvers    | LinearSolver      | class or factory funct
 openmdao_nl_solvers     | NonlinearSolver   | class or factory funct
 openmdao_case_recorders | CaseRecorder      | class or factory funct
-openmdao_case_readers   | BaseCaseReader    | funct returning (file_extension, class)
+openmdao_case_readers   | BaseCaseReader    | funct returning (file_extension, class or factor funct)
 openmdao_commands       | command line tool | funct returning (setup_parser_func, exec_func, help_string)
+
+
+## Discovery of Plugins
+
+### Discovery of Installed Plugins
+
+A new command line tool will be added to OpenMDAO to allow a user to discover plugins that
+have been installed in the user's python environment.  This command, `openmdao list_installed`,
+will list all entry points belonging to specified entry point groups.  For example, the command
+`openmdao list_installed components` will list all entry points in the `openmdao_components`
+entry point group, producing output like the following:
+
+
+    Installed components:
+
+    Class Name                Module
+    ----------                ------
+    MyComponent               (my_plugins_package.my_comp_plugin)
+    AddSubtractComp           (openmdao.components.add_subtract_comp)
+    AkimaSplineComp           (openmdao.components.akima_spline_comp)
+    BsplinesComp              (openmdao.components.bsplines_comp)
+    CrossProductComp          (openmdao.components.cross_product_comp)
+    DemuxComp                 (openmdao.components.demux_comp)
+    DotProductComp            (openmdao.components.dot_product_comp)
+    EQConstraintComp          (openmdao.components.eq_constraint_comp)
+    ExecComp                  (openmdao.components.exec_comp)
+    ExternalCodeComp          (openmdao.components.external_code_comp)
+    KSComp                    (openmdao.components.ks_comp)
+    MatrixVectorProductComp   (openmdao.components.matrix_vector_product_comp)
+    MetaModelStructuredComp   (openmdao.components.meta_model_structured_comp)
+    MetaModelUnStructuredComp (openmdao.components.meta_model_unstructured_comp)
+    MuxComp                   (openmdao.components.mux_comp)
+    VectorMagnitudeComp       (openmdao.components.vector_magnitude_comp)
+    IndepVarComp              (openmdao.core.indepvarcomp)
+
+
+Note that there is only one actual plugin, `MyComponent`, in the entry points listed above.  
+The others are built-in components that are part of the OpenMDAO framework.
+
+
+### Discovery of Plugins Available on PyPI
+
+The PyPI web API will be used to search for packages available on PyPI that have included
+`openmdao` and/or one or more of the openmdao entry point group names in their `keywords`.
+
+
+### Discovery of Plugins on GitHub
+
+To make a github repository containing OpenMDAO plugins easily discoverable by users, the
+appropriate openmdao entry point group name(s) should be added as *topics* to the repository.
+This will allow users to search github by, for example, the `openmdao_components` topic and
+see any public repositories having that *topic*.
+
+
+# Implementation Details
 
 
 ## Types of Entry Points
 
 
-### 'typical' entry points
+### 'Typical' entry points
 
 
 Most types of entry points are handled in exactly the same way.  The entry point merely refers
@@ -77,11 +136,11 @@ entry_points={
 }
 ```
 
-Note that the actual name of the entry point, `mycompplugin`, is not used for anything in a
-'typical' entry point.
+Note that the actual name of the entry point, `mycompplugin` in this case, is not used for anything
+in a 'typical' entry point.
 
 
-### case_readers
+### Entry Points in openmdao_case_readers
 
 
 The entry point for a case reader should point to a function that returns a tuple of the form
@@ -91,7 +150,7 @@ an instance of the plugin.  The file extension is used to provide an automatic m
 correct case reader based on the file extension of the file being read.
 
 
-### commands
+### Entry Points in openmdao_commands
 
 
 An entry point for an OpenMDAO command line tool plugin should point to a function that returns
@@ -101,15 +160,14 @@ a tuple of the form (setup_parser_func, exec_func, help_string).  For example:
 def _hello_setup():
     """
     This is registered as an 'openmdao_commands' entry point.
-
-    It should return a tuple of the form (setup_parser_func, exec_func, help_string).
     """
     return (_hello_setup_parser, _hello_exec, 'Print hello message after final setup.')
 ```
 
 The *setup_parser_func* is a function taking a single *parser* argument that adds any arguments
-expected by the plugin to the *parser* object.  For example, the following code sets up a
-subparser for a `openmdao hello` command:
+expected by the plugin to the *parser* object.  The *parser* is an **argparse.ArgumentParser* object.
+For example, the following code sets up a subparser for a `openmdao hello` command that adds a file 
+argument and a `--repeat` option:
 
 
 ```python
