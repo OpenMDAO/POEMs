@@ -1,9 +1,9 @@
 POEM ID: 003  
 Title: Adding a pre_setup method to create objects and communicators  
-Author: anilyil (Anil Yildirim)  
+Author: anilyil (Anil Yildirim); justinsgray (Justin Gray)
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: N/A  
+Associated implementation PR: [https://github.com/OpenMDAO/OpenMDAO/pull/1140, ]
 
 Status: 
 
@@ -16,96 +16,104 @@ Status:
 Problem statement
 =================
 
-OpenMDAO problems contain a method called `setup`, which is called by the user after the user specifies all components and connections.
-No fundamental changes to the components can be done after this method is called; in particular, sizes of the intputs and outputs for any component cannot be changed.
-Furthermore, the communicators are not created until `setup` is called, therefore users cannot initialize supplementary Python objects that require access to the communicator.
+OpenMDAO components and groups utilize a `setup` method to get themselves properly built up and ready for execution. 
+By the time a particular `setup` method that component or group already has access to its comm object. 
+For groups, though they have their own comm, any children that they create during setup do not get their child-comms within that groups setup method. 
+This is because the `setup` method recurses down the model tree, building it as it goes. 
 
-Frequently, these objects that require the communicator needs to be initialized to determine the input and output sizes for their components, effectively creating a circular dependency.
-This factor makes it difficult to integrate complied analysis codes in OpenMDAO components in a modular way.
-This problem is currently avoided by ad hoc implementations, where the Python objects pass information in a layer hidden from OpenMDAO, which is not ideal and limits the flexibility of the framework.
+This works fine as all children in a group can be created using only information already known to that group, but do not require any information from their siblings in the hierarchy. 
+That is not to say that there can't be connections between children, but rather that no child needs information that any sibling would create in its `setup` --- which has not yet been called while still inside the parent group's `setup`. 
+
+In cases where one child needs information from a sibling's `setup` call, then the current timing of the setup-stack is not sufficient. 
+One example of when this might occur is when dealing with a CFD solver that requires access to its comm to load its mesh and figure out the sizes of its state vector on each process. 
+Until the component has the comm, the I/O can't be created. Many things downstream of the CFD component might need to know the size of the state vector, or its distribution across the processors. 
+That kind of setup process can't be accommodated with the current top-down setup method in group. 
+
+So there needs to be a way for children of groups to do key setup tasks such as add I/O and issue connections, after the full hierarchy has been constructed and all groups/components all the way down have their comms. 
+What is needed is a method that can be defined on groups which gets called in a bottoms-up manner, after the full hierarchy has been built. 
+Groups already have a `configure` method, which is called with precisely this timing, but as of V2.9.1 you could only make changes to solver setups and issue connections. 
+You could not make changes to the I/O configuration of components within the `configure` method. 
+
+This POEM proposes modifying OpenMDAO so that I/O can be created in the `configure` method, to enable this use case. 
+Along with the change in functionality, several other smaller changes also need to be included. 
+Users must also be able to query children of a group for information about I/O status from within the `configure` method. 
+In addition, the `setup` and `configure` method names themselves are ambiguous, so new names are proposed (with the old ones being deprecated)
 
 
+Proposed API Changes
+====================
 
-
-Suggested solution
-==================
-
-We suggest adding a `pre_setup` method to the `Problem` class in OpenMDAO.
-This method will:
-
-1. Create the communicators,
-2. traverse down the model hierarchy and call the `pre_setup` method on all components, and
-3. traverse up the model hierarchy and call the `pre_configure` method on all components.
-
-After `pre_setup` is called, the user will still be able to make new connections in the model, and define new input and outputs for any component.
-Furthermore, the user will be able to access the communicators, and the objects created for each component as attributes of the OpenMDAO `problem` instance.
-The model hierarchy can be fixed after this step.
-We do not have any strict requirements on any of the method names. The 3rd step is open to discussion, however, our main suggestion is adding step 2.
-
-Our goal with this approach is to define a way to initialize the communicators and Python objects, before any of the input and output vector sizes are frozen.
-This enables compiled analysis codes that require access to the communicators to be initialized and saved as attributes of their OpenMDAO components that contain them.
-
-Because the user can still add new inputs and outputs, and make new connections after this stage, the user can access the created Python objects and communicate across components at the top level script.
-This enables mimicking the Python-based optimization frameworks such as the MACH framework developed by the MDO Lab.
 
 Example script
 ==============
 
-The pseudo-code for an example optimization script is listed below:
-
-
 ```python
-from openmdao.api import Problem
-from MACH-Aero import DVGeometryComp, ADflowComp
+import numpy as np
+import openmdao.api as om
 
-# initialize the OpenMDAO problem
-p = Problem()
+class FlightDataComp(om.ExplicitComponent):
+    """
+    Simulate data generated by an external source/code
+    """
+    def setup_hierarchy(self):
+        # number of points not known till after setup is called
+        n = 3
 
-# add geometry component
-p.model.add_subsystem('geometry', DVGeometryComp())
+        self.add_input('scaler', 4)
 
-# add solver component
-p.model.add_subsystem('solver', ADflowComp())
+        # The vector represents forces at n time points (rows) in 2 dimensional plane (cols)
+        self.add_output(name='thrust', shape=(n, 2), units='kN')
+        self.add_output(name='drag', shape=(n, 2), units='kN')
+        self.add_output(name='lift', shape=(n, 2), units='kN')
+        self.add_output(name='weight', shape=(n, 2), units='kN')
 
-# call pre_setup
-# all communicators and components are initialized with this method
-p.pre_setup()
+    def setup_IO(self, inputs, outputs):
+        outputs['thrust'][:, 0] = scaler*np.array([500, 600, 700])
+        outputs['drag'][:, 0]  = scaler*np.array([400, 400, 400])
+        outputs['weight'][:, 1] = scaler*np.array([1000, 1001, 1002])
+        outputs['lift'][:, 1]  = scaler*np.array([1000, 1000, 1000])
 
-# add geometry design variables
-# this method also adds 'twist' as an output of the comp
-p.model.geometry.addDVGeoGlobal('twist')
 
-# get surface coordinates from solver
-surfaceCoords = p.model.solver.getSurfaceCoordinates()
+class ForceModel(om.Group):
+    def setup_hierarchy(self):
+        self.add_subsystem('flightdatacomp', FlightDataComp(),
+                           promotes_outputs=['thrust', 'drag', 'lift', 'weight'])
 
-# add them as an output to the geometry component
-# this method also adds 'cfd_surface' as an output of the comp
-p.model.geometry.addPointSet(surfaceCoords, 'cfd_surface')
+        self.add_subsystem('totalforcecomp', om.AddSubtractComp())
 
-# connect surface output from geometry to the CFD
-p.model.connect('geometry.cfd_surface', 'solver.surfaceCoordinates')
+    def setup_IO(self):
+        # Some models that require self-interrogation need to be able to add
+        # I/O in components from the configure method of their containing groups.
+        # In this case, we can only determine the 'vec_size' for totalforcecomp
+        # after flightdatacomp has been setup.
 
-# call setup
+        flight_data = dict(self.flightdatacomp.list_outputs(shape=True, out_stream=None))
+        data_shape = flight_data['thrust']['shape']
+
+        self.totalforcecomp.add_equation('total_force',
+                                         input_names=['thrust', 'drag', 'lift', 'weight'],
+                                         vec_size=data_shape[0], length=data_shape[1],
+                                         scaling_factors=[1, -1, 1, -1], units='kN')
+
+        p.model.connect('thrust', 'totalforcecomp.thrust')
+        p.model.connect('drag', 'totalforcecomp.drag')
+        p.model.connect('lift', 'totalforcecomp.lift')
+        p.model.connect('weight', 'totalforcecomp.weight')
+
+
+p = om.Problem(model=ForceModel())
 p.setup()
-
-# run
 p.run_model()
+
+print(p.get_val('totalforcecomp.total_force', units='kN'))
 ```
-
-In this example, we add two components to the model; one for manipulating the geometry, and a CFD solver.
-The geometry component takes in geometric design variables, and outputs the updated surface definition of the CFD problem.
-However, until the CFD solver is initialized, we cannot access the size and values of the output for the surface coordinates.
-
-The `pre_setup` method enables us to initialize the geometry and solver components before the actual `setup` call, and therefore we can access the surface coordinates that define the CFD problem and add these as an output to the geometry component.
-
-In this example code, we kept every call in the actual run script for transparency.
-However, we can hide the generic connection calls (e.g. `getSurfaceCoordinates`, `addPointSet`) from the user by using utility functions, since these connections can be defined as standard interfaces between the geometry and solver components, and will remain the same across problems.
-As a result, we can only keep the problem specific calls in the actual run script, like adding design variables.
 
 Contributors
 ============
 
-This proposal is made by the MDO Lab at University of Michigan.
+This proposal is originally made by the MDO Lab at University of Michigan.
 People who are actively involved in the proposal (in no particular order):
 Anil Yildirim, Joshua L. Anibal, Benjamin J. Brelje, Nicolas P. Bons, Charles A. Mader, Joaquim R.R.A. Martins
+
+Contributions were also made by the OpenMDAO Dev team. 
 
