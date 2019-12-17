@@ -184,14 +184,13 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
 
 **Non-uniform Distributions Example**
 ```
-    from openmdao.utils.spline_distributions import SplineDistribution
+    from openmdao.utils.spline_distributions import cell_centered, node_centered, sine_distribution
     x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
     y_cp = np.array([5.0, 12.0, 14.0, 16.0, 21.0, 29.0])
 
-    dist = SplineDistribution()
-    x_cell_centered = dist.cell_centered(xcp, num_points=20)
-    x_node_centered = dist.node_centered(xcp, num_points=20)
-    x_sin_dist = dist.sine_distribution(xcp, num_points=20, phase=np.pi)
+    x_cell_centered = cell_centered(xcp, num_points=20)
+    x_node_centered = node_centered(xcp, num_points=20)
+    x_sin_dist = sine_distribution(xcp, num_points=20, phase=np.pi)
 
     prob = om.Problem()
 
