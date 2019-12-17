@@ -89,8 +89,11 @@ entry point group, producing output like the following:
 Note that there is only one actual plugin, `MyComponent`, in the entry points listed above.  
 The others are built-in components that are part of the OpenMDAO framework.  Also, the 
 `openmdao list_installed` command line tool will have include `(-i)` and exclude `(-x)` options 
-to allow filtering of packages to control what is displayed.  For example, to show only plugins
-and hide all of the 'built-in' openmdao entry points, you could do `openmdao list_installed -x openmdao`.
+to allow filtering of packages to control what is displayed.  For example, to show only component plugins
+and hide all of the 'built-in' openmdao components, you could do 
+`openmdao list_installed components -x openmdao`.
+Docstrings for the entry point targets can be displayed using the `-d` arg, for example:
+`openmdao list_installed components -d`.
 
 
 ### Discovery of Plugins Available on PyPI
