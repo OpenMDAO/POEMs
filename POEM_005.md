@@ -88,8 +88,9 @@ entry point group, producing output like the following:
 
 Note that there is only one actual plugin, `MyComponent`, in the entry points listed above.  
 The others are built-in components that are part of the OpenMDAO framework.  Also, the 
-`openmdao list_installed` command line tool will have include and exclude options to allow
-filtering of packages to control what is displayed.
+`openmdao list_installed` command line tool will have include `(-i)` and exclude `(-x)` options 
+to allow filtering of packages to control what is displayed.  For example, to show only plugins
+and hide all of the 'built-in' openmdao entry points, you could do `openmdao list_installed -x openmdao`.
 
 
 ### Discovery of Plugins Available on PyPI
@@ -140,8 +141,11 @@ entry_points={
 }
 ```
 
-Note that the actual name of the entry point, `mycompplugin` in this case, is not used for anything
-in a 'typical' entry point.
+The actual name of the entry point, `mycompplugin` in this case, is not used for anything
+in a 'typical' entry point.  Also, note that all of the types listed above will function perfectly 
+well in OpenMDAO without defining any entry points.  The entire purpose of the entry points in this
+case is to allow the user to discover all of the components/groups/etc that have been
+installed in the current python environment.
 
 
 ### Entry Points in openmdao_case_readers
@@ -223,7 +227,7 @@ def _hello_exec(options, user_args):
     _load_and_exec(script, user_args)
 ```
 
-The final entry in the tuple returned by function referred to by the entry point (in this case *_hello_setup*)
+The final entry in the tuple returned by the function referred to by the entry point (in this case *_hello_setup*)
 is a string containing a high level description of the command.  This description will be displayed
 along with the name of the command when a user runs `openmdao -h`.
 
