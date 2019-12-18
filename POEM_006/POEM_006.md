@@ -20,9 +20,9 @@ The primary motivations for this POEM are:
 
 * The N2 user interface currently is limited in the number of operations that can be applied to the items in the 
 hierarchy on the left. Only two
-operations can be done via left and right click. These let the user do zooming and collapsing, respectively. There
-is an need to let users do additional operations such as getting metadata on a system. The UI controls need 
-to be updated to enable that.
+operations can be done via left and right click. These let the user do zooming and collapsing, respectively. Users 
+should be able to perform additional operations on a system, such as getting metadata. The UI controls must be 
+enhanced to allow that.
 * The current toolbar does not make it obvious what capabilities exist. This is due to icons that don't reflect the
 function and also the grouping of buttons is less than ideal.
 * Screen real estate is an issue. Ideally the user could see the GUI controls (e.g. the toolbar and search box), 
@@ -30,6 +30,8 @@ the N2 diagram,
 and the legend all without scrolling. That is currently not possible for even medium-sized models.
 * Additional N2 features need to be considered for the future UI. For example, there was some talk about
  merging the connection viewer with N2, and/or providing more info about connections, like units.
+* For very large models, it is difficult to zoom into a sub tree of the hierarchy and still have the context of where
+you are in the overall model
 
 Description
 ===========
@@ -52,7 +54,13 @@ include both an icon and text in the button
 
 ![toolbar with graphic and text buttons](/POEM_006/toolbar_with_graphic_and_text_buttons.png)
 
-* Use card sorting with team members and key users to group buttons on the toolbar
+* Use [card sorting][2] with team members and key users to determine how to group buttons in the toolbar
+* Implement tabs in the UI. This would enable having two tabs for the N2 diagram and the connections
+viewer, unifying those two tools into one. 
+* To deal with the issue of large models and losing context when zooming into sub hierarchies, consider implementing
+[multi-scale scalable insets][3]. Scalable Insets is a new technique for interactively 
+exploring and navigating large numbers of annotated patterns or features in multiscale visualizations.
+
 
 Prototypes and Mockups
 ----------------------
@@ -77,4 +85,6 @@ References
 
 
  [1]: https://www.nngroup.com/articles/modes/ "Modes in User Interfaces: When They Help and When They Hurt Users"
+ [2]: https://www.usability.gov/how-to-and-tools/methods/card-sorting.html "Card Sorting"
+ [3]: http://scalable-insets.lekschas.de/ "Scalable Insets"
 
