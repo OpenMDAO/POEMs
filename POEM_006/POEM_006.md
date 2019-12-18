@@ -1,6 +1,6 @@
 POEM ID: 003  
 Title: Re-work the user experience in the N2 diagram  
-Authors: [hschilling]
+Authors: [hschilling(Herb Schilling)]
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated implementation PR:
@@ -31,7 +31,7 @@ and the legend all without scrolling. That is currently not possible for even me
 * Additional N2 features need to be considered for the future UI. For example, there was some talk about
  merging the connection viewer with N2, and/or providing more info about connections, like units.
 * For very large models, it is difficult to zoom into a sub tree of the hierarchy and still have the context of where
-you are in the overall model
+you are in the overall model.
 
 Description
 ===========
@@ -40,7 +40,8 @@ This POEM proposes the following changes:
 
 * Add to the toolbar a way to choose modes for left-click and double-click. Applications like Photoshop use 
 to interact with items in the app. This could be done using buttons and/or keyboard shortcuts. Mode changes
-should be indicated by changes in the pointer icon. See [Modes in User Interfaces: When They Help and When They Hurt Users][1]
+should be indicated by changes in the pointer icon. 
+See [Modes in User Interfaces: When They Help and When They Hurt Users][1].
 * Enable a contextual menu using right-click to let the user select additional operations
 on hierachy items such as displaying metadata about the system
 * Explore different options for the layout of the major elements of the diagram: N2 diagram, toolbar, search box 
@@ -50,11 +51,11 @@ Options include:
     * Have the toolbar frozen on the top so when the user scrolls on the page, the toolbar is always present
 * Improve the usability and usefullness of the toolbar. Research and draw inspiration from existing applications 
 with toolbars such as Microsoft Office apps and Photoshop. Redesign many of the icons in the toolbar. Possibly 
-include both an icon and text in the button
+include both an icon and text in the button.
 
 ![toolbar with graphic and text buttons](/POEM_006/toolbar_with_graphic_and_text_buttons.png)
 
-* Use [card sorting][2] with team members and key users to determine how to group buttons in the toolbar
+* Use [card sorting][2] with team members and key users to determine how to group buttons in the toolbar.
 * Implement tabs in the UI. This would enable having two tabs for the N2 diagram and the connections
 viewer, unifying those two tools into one. 
 * To deal with the issue of large models and losing context when zooming into sub hierarchies, consider implementing
