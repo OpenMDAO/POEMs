@@ -70,11 +70,11 @@ Additional mockups being worked on.
 References
 ----------
 1. Some ideas taken from presentation by 2019 summer intern UX designer, Sophia Hamed-Ramos
-2. [1]: https://www.nngroup.com/articles/modes/ "Modes in User Interfaces: When They Help and When They Hurt Users"
 2. [Modes in User Interfaces: When They Help and When They Hurt Users](https://www.nngroup.com/articles/modes/)
 3. [UI Garage](https://uigarage.net/)
 4. [UI Patterns](http://ui-patterns.com/)
 5. [User Interface Design in Modern Web Applications](https://www.smashingmagazine.com/user-interface-design-in-modern-web-applications/) see the section on hover controls
 
 
- 
+ [1]: https://www.nngroup.com/articles/modes/ "Modes in User Interfaces: When They Help and When They Hurt Users"
+
