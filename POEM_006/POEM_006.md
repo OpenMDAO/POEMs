@@ -1,4 +1,4 @@
-POEM ID: 003  
+POEM ID: 006  
 Title: Re-work the user experience in the N2 diagram  
 Authors: [hschilling(Herb Schilling)]
 Competing POEMs: [N/A]  
