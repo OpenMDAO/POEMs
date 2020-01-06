@@ -1,5 +1,5 @@
 POEM ID:  008  
-Title:   Nonlinear Solver Refactor
+Title:   Nonlinear Solver Refactor  
 authors: [DKilkenny] (Danny Kilkenny)    
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
