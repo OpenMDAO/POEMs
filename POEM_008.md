@@ -23,7 +23,7 @@ Feedback from the 2019 OpenMDAO Workshop indicated that the `solve_subsystems` o
 should be a requirement for the user to set either as an argument or setting the option
 independently. 
 
-The second part of the feedback was a new option for nonlinear solvers to reraise any AnalysisError 
+The second part of this POEM was feedback from Eliot Aretskin-Hariton (NASA). This feedback was to create a new option for nonlinear solvers to reraise any AnalysisError 
 that might arise during a subsolve.
 
 Description
@@ -36,11 +36,11 @@ the constructor and independently setting the option.
 
  
 ```
-def test_feature_newton_basic(self):
+def solve_subsystems_example():
     """ Setting solve_subsystems through the constructor """
 
-    prob = om.Problem(solve_subsystems=False)
-    nlsolver = om.NewtonSolver()
+    prob = om.Problem()
+    nlsolver = om.NewtonSolver(solve_subsystems=False)
     prob.model = SellarDerivatives(nonlinear_solver=nlsolver,
                                    linear_solver=om.LinearBlockGS())
     
@@ -49,7 +49,7 @@ def test_feature_newton_basic(self):
 ```
 
 ```
-def test_feature_newton_basic(self):
+def solve_subsystems_example():
     """ Setting solve_subsystems independently with options """
 
     prob = om.Problem()
