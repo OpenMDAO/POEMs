@@ -105,9 +105,11 @@ The PyPI web API will be used to search for packages available on PyPI that have
 ### Discovery of Plugins on GitHub
 
 To make a github repository containing OpenMDAO plugins easily discoverable by users, the
-appropriate openmdao entry point group name(s) should be added as *topics* to the repository.
-This will allow users to search github by, for example, the `openmdao_components` topic and
-see any public repositories having that *topic*.
+appropriate openmdao entry point group name(s) should be added as *topics* to the repository
+after converting any underscores (`_`) to hyphens (`-`).  This is necessary because underscores
+are illegal in github topic names and hyphens are illegal in entry point group names.
+Adding such a topic to a github repository will make that repository show up when someone
+searches github using the hyphenated entry point group name.
 
 
 # Implementation Details
