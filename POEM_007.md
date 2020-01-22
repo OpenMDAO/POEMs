@@ -8,8 +8,8 @@ Associated Implementation PR:
 Status:
 
 - [ ] Active
-- [x] Requesting decision
-- [ ] Accepted
+- [ ] Requesting decision
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
