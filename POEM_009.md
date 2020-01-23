@@ -7,12 +7,13 @@ Associated implementation PR: N/A
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
 
+This POEM is being merged with 003 since it resolves the issues discussed there.
 
 Motivation
 ==========
