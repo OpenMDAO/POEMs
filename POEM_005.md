@@ -62,28 +62,39 @@ will list all entry points belonging to specified entry point groups.  For examp
 `openmdao list_installed components` will list all entry points in the `openmdao_components`
 entry point group, producing output like the following:
 
+Installed components:
 
-    Installed components:
+  Package: openmdao  Version: 2.9.1 
 
-    Class Name                Module
-    ----------                ------
-    MyComponent               (my_plugins_package.my_comp_plugin)
-    AddSubtractComp           (openmdao.components.add_subtract_comp)
-    AkimaSplineComp           (openmdao.components.akima_spline_comp)
-    BsplinesComp              (openmdao.components.bsplines_comp)
-    CrossProductComp          (openmdao.components.cross_product_comp)
-    DemuxComp                 (openmdao.components.demux_comp)
-    DotProductComp            (openmdao.components.dot_product_comp)
-    EQConstraintComp          (openmdao.components.eq_constraint_comp)
-    ExecComp                  (openmdao.components.exec_comp)
-    ExternalCodeComp          (openmdao.components.external_code_comp)
-    KSComp                    (openmdao.components.ks_comp)
-    MatrixVectorProductComp   (openmdao.components.matrix_vector_product_comp)
-    MetaModelStructuredComp   (openmdao.components.meta_model_structured_comp)
-    MetaModelUnStructuredComp (openmdao.components.meta_model_unstructured_comp)
-    MuxComp                   (openmdao.components.mux_comp)
-    VectorMagnitudeComp       (openmdao.components.vector_magnitude_comp)
-    IndepVarComp              (openmdao.core.indepvarcomp)
+    Class or Function                 Module  
+    -----------------                 ------  
+    AddSubtractComp                   openmdao.components.add_subtract_comp
+    AkimaSplineComp                   openmdao.components.akima_spline_comp
+    BalanceComp                       openmdao.components.balance_comp
+    BsplinesComp                      openmdao.components.bsplines_comp
+    CrossProductComp                  openmdao.components.cross_product_comp
+    DemuxComp                         openmdao.components.demux_comp
+    DotProductComp                    openmdao.components.dot_product_comp
+    EQConstraintComp                  openmdao.components.eq_constraint_comp
+    ExecComp                          openmdao.components.exec_comp
+    ExternalCodeComp                  openmdao.components.external_code_comp
+    ExternalCodeImplicitComp          openmdao.components.external_code_comp
+    KSComp                            openmdao.components.ks_comp
+    LinearSystemComp                  openmdao.components.linear_system_comp
+    MatrixVectorProductComp           openmdao.components.matrix_vector_product_comp
+    MetaModelStructuredComp           openmdao.components.meta_model_structured_comp
+    MetaModelUnStructuredComp         openmdao.components.meta_model_unstructured_comp
+    MultiFiMetaModelUnStructuredComp  openmdao.components.multifi_meta_model_unstructured_comp
+    MuxComp                           openmdao.components.mux_comp
+    VectorMagnitudeComp               openmdao.components.vector_magnitude_comp
+    IndepVarComp                      openmdao.core.indepvarcomp
+
+  Package: my_plugins_package  Version: 0.1 
+
+    Class or Function                 Module  
+    -----------------                 ------  
+    MyComponent                       my_plugins_package.my_comp_plugin
+
 
 
 Note that there is only one actual plugin, `MyComponent`, in the entry points listed above.  
@@ -150,7 +161,7 @@ The actual name of the entry point, `mycompplugin` in this case, is not used for
 in a 'typical' entry point.  Also, note that all of the types listed above will function perfectly 
 well in OpenMDAO without defining any entry points.  The entire purpose of the entry points in this
 case is to allow the user to discover all of the components/groups/etc that have been
-installed in the current python environment.
+installed in the current python environment using the `openmdao list_installed` command.
 
 
 ### Entry Points in openmdao_case_readers
@@ -172,7 +183,7 @@ a tuple of the form (setup_parser_func, exec_func, help_string).  For example:
 ```python
 def _hello_setup():
     """
-    This is registered as an 'openmdao_commands' entry point.
+    This command prints a hello message after final setup.
     """
     return (_hello_setup_parser, _hello_exec, 'Print hello message after final setup.')
 ```
@@ -232,7 +243,8 @@ def _hello_exec(options, user_args):
     _load_and_exec(script, user_args)
 ```
 
-The final entry in the tuple returned by the function referred to by the entry point (in this case *_hello_setup*)
+The final entry in the tuple returned by the function referred to by the entry point 
+(in this case *_hello_setup*)
 is a string containing a high level description of the command.  This description will be displayed
 along with the name of the command when a user runs `openmdao -h`.
 
