@@ -3,7 +3,7 @@ Title:   Nonlinear Solver Refactor
 authors: [DKilkenny] (Danny Kilkenny)    
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
-Associated Implementation PR:    
+Associated Implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1157  
 
 Status:
 
