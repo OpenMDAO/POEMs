@@ -1,5 +1,5 @@
 POEM ID: 003  
-Title: Adding a pre_setup method to create objects and communicators  
+Title: Allowing addition if I/O during Configure
 Author: anilyil (Anil Yildirim); justinsgray (Justin Gray); robfalck (Rob Falck)
 Competing POEMs: N/A  
 Related POEMs: N/A  
