@@ -42,7 +42,7 @@ With these difference in mind, we crafted the new SplineComp API to have a simil
 SplineComp API
 --------------------
 ```
-    class SplineComp(ExplicitComponent):
+class SplineComp(ExplicitComponent):
 
     def __init__(self, method, x_cp_val, x_interp, x_cp_name='x_cp', x_interp_name='x_interp',
                  x_units=None, vec_size=1, interp_options={}):
@@ -212,38 +212,38 @@ Standalone Usage of The Interpolants
 
 We also propose a functional standalone interface for directly using any of the interpolants. 
 ```
-    def interp(method, x_data, y_data, x):
+    class InterpND(values, points=None, interp_method="slinear", x_interp=None, bounds_error=True,
+                   **kwargs):
         """
-        Compute y and its derivatives for a given x by interpolating on x_data and y_data.
+        Initialize instance of interpolation class.
+
         Parameters
         ----------
-        method : str
-            Method to use, choose from all available openmmdao methods.
-        x_data : ndarray or list
-            Input data for x, should be monotonically increasing. For higher dimensional grids,
-            x_data should be a list containing the x data for each dimension.
-        y_data : ndarray
-            Input values for y. For higher dimensional grids, the index order should be the same as
-            in x_data.
-        x : float or iterable or ndarray
-            Location(s) at which to interpolate.
-        Returns
-        -------
-        float or ndarray
-            Interpolated values y
-        ndarray
-            Derivative of y with respect to x
-        ndarray
-            Derivative of y with respect to x_data
-        ndarray
-            Derivative of y with respect to y_data
+        values : array_like, shape (m1, ..., mn, ...)
+            The data on the regular grid in n dimensions.
+        points : tuple of ndarray of float, with shapes (m1, ), ..., (mn, )
+            The points defining the regular grid in n dimensions.
+        interp_method : str or list of str, optional
+            Name of interpolation method(s).
+        x_interp : ndarry or None
+            If we are always interpolating at a fixed set of increasing locations, then that can be
+            specified here.
+        bounds_error : bool, optional
+            If True, when interpolated values are requested outside of the domain of the input
+            data, a ValueError is raised. If False, then the methods are allowed to extrapolate.
+            Default is True (raise an exception).
+        **kwargs : dict
+            Interpolator-specific options to pass onward.
         """
 ```
-This simple standalone function is intended to be used for standard interpolation (`StructuredMetaModel`), including for multidimensional data sets, and for constructing a higher dimension curve from a low dimensional representation (`SplineComp`), as we use the spline components. This simplicity and flexibility comes at a small cost of some performance, particularly when using the 'b-spline' method, as we aren't pre-computing any values for use in subsequent calls. To do so would require independent APIs for standard interpolation and usage as a spline.
+This simple standalone function is intended to be used for standard interpolation (`StructuredMetaModel`), including for multidimensional data sets, and for constructing a higher dimension curve from a low dimensional representation (`SplineComp`), as we use the spline components.
 
 Usage looks like this where we want to compute new y for new x: 
 ```
-    y, dy_dx, dy_dx_train, dy_dy_train = interp('akima', x_input, y_input, x)
+    akima_options = {'delta_x': 0.1}
+    interp = InterpND(points=[xcp], values=ycp, interp_method='akima', x_interp=x,
+                      bounds_error=True, **akima_options)
+    y = interp.evaluate_spline(np.expand_dims(ycp, axis=0))
 ```
 
 API Changes From 2.9.1
