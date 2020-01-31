@@ -241,7 +241,7 @@ This simple standalone function is intended to be used for standard interpolatio
 Usage looks like this where we want to compute new y for new x: 
 ```
     akima_options = {'delta_x': 0.1}
-    interp = InterpND(points=[xcp], values=ycp, interp_method='akima', x_interp=x,
+    interp = InterpND(values=ycp, points=xcp, interp_method='akima', x_interp=x,
                       bounds_error=True, **akima_options)
     y = interp.evaluate_spline(np.expand_dims(ycp, axis=0))
 ```
