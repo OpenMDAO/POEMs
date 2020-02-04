@@ -65,6 +65,8 @@ class SplineComp(ExplicitComponent):
             Units of the x variable.
         vec_size : int
             The number of independent splines to interpolate.
+        num_cp : int
+            Number of points to interpolate at
         interp_options : dict
             Dict contains the name and value of options specific to the chosen interpolation method.
         """
@@ -102,7 +104,7 @@ In our example, we have a pre-generated curve that is described by `x_cp` and `y
 
     prob = om.Problem()
 
-    comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp=x)
+    comp = om.SplineComp(method='akima', x_cp_val=x_cp, x_interp_val=x)
     prob.model.add_subsystem('akima1', comp)
 
     comp.add_spline(y_cp_name='ycp', y_interp_name='y_val', y_cp_val=y_cp)
@@ -142,6 +144,28 @@ Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` argum
     y_interp = prob['akima_component.y_val1']
 ```
 
+**Basic Bspline Example**  
+Each spline you add will use the same `x_cp_val`, `x_interp`, and `method` arguments.  
+```
+    n_cp = 80
+    n_point = 160
+
+    t = np.linspace(0, 3.0*np.pi, n_cp)
+    tt = np.linspace(0, 3.0*np.pi, n_point)
+    x = np.sin(t)
+
+    prob = om.Problem()
+
+    bspline_options = {'order': 4}
+    comp = om.SplineComp(method='bsplines', x_interp_val=tt, num_cp=n_cp,
+                         interp_options=bspline_options)
+    prob.model.add_subsystem('interp', comp)
+
+    comp.add_spline(y_cp_name='h_cp', y_interp_name='h', y_cp_val=x, y_units='km')
+
+    xx = prob['interp.h']
+```
+
 **Passing Optional Arguments To Akima**  
 In this example we are passing in `delta_x` and `eps` which are specific to the akima method.
 ```
@@ -160,26 +184,6 @@ In this example we are passing in `delta_x` and `eps` which are specific to the 
     comp.add_spline(y_cp_name='alt_cp', y_interp_name='alt', y_cp_val=y_cp, y_units='kft')
 
     y_interp = prob['atmosphere.alt']
-```
-
-**Passing Optional Arguments To BSpline**
-```
-    x_cp = np.array([1.0, 2.0, 4.0, 6.0, 10.0, 12.0])
-    y_cp2 = np.array([1.0, 5.0, 7.0, 8.0, 13.0, 16.0])
-    x = np.linspace(1.0, 12.0, 50)
-
-    prob = om.Problem()
-
-    bspline_options = {'order': 5}
-    comp = om.SplineComp(method='bspline', x_cp_val=x_cp, x_interp=x, x_cp_name='xcp', 
-                         x_interp_name='x_val', x_units='km', 
-                         interp_options=bspline_options)
-
-    prob.model.add_subsystem('atmosphere', comp)
-
-    comp.add_spline(y_cp_name='temp_cp', y_interp_name='temp', y_cp_val=y_cp2, y_units='C')
-
-    y_interp = prob['atmosphere.temp']
 ```
 
 **Non-uniform Distributions Example**
