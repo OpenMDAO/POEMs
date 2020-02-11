@@ -20,8 +20,10 @@ The `MetaModelTestCase.test_sin_metamodel_preset_data` in `components/tests/test
 
 For example, for these versions of `numpy` and `scipy`:
 
+```
 numpy==1.18.1
 scipy==1.4.1
+```
 
 then `MetaModelTestCase.test_sin_metamodel_preset_data` fails with
 
@@ -75,12 +77,14 @@ default behavior be reliable rather than fast, but give an option to use either 
 
 Description
 -----------
-An API change will be made to the KrigingSurrogate constructor. An optional argument, `lapack_driver` will be added. The 
+An API change will be made to the `KrigingSurrogate` constructor. An optional argument, `lapack_driver` will be added. The 
 default will be `'gesvd'`. The user can choose to use the other LAPACK driver by setting the argument to `'gesvd'`.
 
 For example,
 
-    ```om.KrigingSurrogate(lapack_driver='gesdd')```
+```
+om.KrigingSurrogate(lapack_driver='gesdd')
+```
 
 
 
