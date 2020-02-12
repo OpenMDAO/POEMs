@@ -77,8 +77,8 @@ default behavior will be reliable rather than fast, but the user is given an opt
 
 Description
 -----------
-An API change will be made to the `KrigingSurrogate` constructor. An optional argument, `lapack_driver` will be added. The 
-default will be `'gesvd'`. The user can choose to use the other LAPACK driver by setting the argument to `'gesvd'`.
+An API change will be made to the `KrigingSurrogate` constructor. An optional parameter, `lapack_driver` will be added. The 
+default will be `'gesvd'`. The user can choose to use the other LAPACK driver by setting the parameter to `'gesvd'`.
 
 For example,
 
