@@ -1,5 +1,5 @@
 POEM ID: 012 
-Title: Give the user the option to select the LAPACK driver for use in the SVD used in meta model  
+Title: Give the user the option to select the LAPACK driver for use in the SVD used in KrigingSurrogate  
 authors: [hschilling] ([Herb Schilling])   
 Competing POEMs:
 Related POEMs: 
@@ -25,7 +25,7 @@ numpy==1.18.1
 scipy==1.4.1
 ```
 
-then `MetaModelTestCase.test_sin_metamodel_preset_data` fails with
+the `MetaModelTestCase.test_sin_metamodel_preset_data` fails with
 
 ```
 Traceback (most recent call last):
@@ -66,13 +66,13 @@ raise LinAlgError("SVD did not converge")
 numpy.linalg.LinAlgError: SVD did not converge
 ```
 
-The `KrigingSurrogate` makes use of scipy's `linalg.svd` function in its `_calculate_reduced_likelihood_params method`. 
+The `KrigingSurrogate` makes use of scipy's `linalg.svd` function in its `_calculate_reduced_likelihood_params` method`. 
 The function `linalg.svd` has an option to set the LAPACK driver that it uses. `KrigingSurrogate` uses the default LAPACK driver, `'gesdd'`. The other option is `'gesvd'`.
 
 Onlne research showed that `'gesdd'` is faster but not as robust. The other driver,`'gesvd'`, is slower but more reliable.
 
-It was decided that while speed is important, robustness is more important. It was decied to make the
-default behavior be reliable rather than fast, but give an option to use either LAPACK driver, `'gesdd'` or `'gesvd'`.
+It was decided that while speed is important, robustness is more important so the
+default behavior will be reliable rather than fast, but the user is given an option to use either LAPACK driver, `'gesdd'` or `'gesvd'`.
 
 
 Description
