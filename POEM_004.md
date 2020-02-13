@@ -7,9 +7,9 @@ Associated Implementation PR:
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
@@ -263,10 +263,6 @@ In the new SplineComp, the following options are not preserved:
 These options are being removed in favor of requiring the user to specify the x locations of the control point and interpolated points. 
 We will provide helper functions for the common uses cases (e.g. cell-centered, node-centered, sine/cosine distributions)
 
-Renaming StructuredMetaModel
------------------------------
-
-We are considering changing the name of `StructuredMetaModelComp` to `InterpNdComp` (or `InterpolationNDComp`) to differentiate it from `UnstructuredMetaModelComp`.
 
 References
 -----------
