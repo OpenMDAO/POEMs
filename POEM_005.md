@@ -41,15 +41,15 @@ The following table shows the entry point groups that OpenMDAO recognizes.
 
 Entry Point Group         | Type              | Entry Point Refers To
 :------------------------ | :---------------- | :--------------------
-openmdao_components       | Component         | class or factory funct
-openmdao_groups           | Group             | class or factory funct
-openmdao_drivers          | Driver            | class or factory funct
-openmdao_lin_solvers      | LinearSolver      | class or factory funct
-openmdao_nl_solvers       | NonlinearSolver   | class or factory funct
-openmdao_surrogate_models | SurrogateModel    | class or factory funct
-openmdao_case_recorders   | CaseRecorder      | class or factory funct
-openmdao_case_readers     | BaseCaseReader    | funct returning (file_extension, class or factor funct)
-openmdao_commands         | command line tool | funct returning (setup_parser_func, exec_func, help_string)
+openmdao_component        | Component         | class or factory funct
+openmdao_group            | Group             | class or factory funct
+openmdao_driver           | Driver            | class or factory funct
+openmdao_lin_solver       | LinearSolver      | class or factory funct
+openmdao_nl_solver        | NonlinearSolver   | class or factory funct
+openmdao_surrogate_model  | SurrogateModel    | class or factory funct
+openmdao_case_recorder    | CaseRecorder      | class or factory funct
+openmdao_case_reader      | BaseCaseReader    | funct returning (file_extension, class or factor funct)
+openmdao_command          | command line tool | funct returning (setup_parser_func, exec_func, help_string)
 
 
 ## Discovery of Plugins
@@ -59,7 +59,7 @@ openmdao_commands         | command line tool | funct returning (setup_parser_fu
 A new command line tool will be added to OpenMDAO to allow a user to discover plugins that
 have been installed in the user's python environment.  This command, `openmdao list_installed`,
 will list all entry points belonging to specified entry point groups.  For example, the command
-`openmdao list_installed components` will list all entry points in the `openmdao_components`
+`openmdao list_installed components` will list all entry points in the `openmdao_component`
 entry point group, producing output like the following:
 
 Installed components:
@@ -136,13 +136,13 @@ Most types of entry points are handled in exactly the same way.  The entry point
 to the class definition of the plugin or to some factory function that returns an instance of
 the plugin.  The following entry point types are all handled in this way:
 
-* components
-* groups
-* drivers
-* nl_solvers
-* lin_solvers
-* surrogate_models
-* case_recorders
+* component
+* group
+* driver
+* nl_solver
+* lin_solver
+* surrogate_model
+* case_recorder
 
 
 Here's an example of how to specify the *entry_points* arg to the *setup* call in `setup.py`
@@ -151,7 +151,7 @@ in a module called `my_comp_plugin.py`:
 
 ```python
 entry_points={
-    'openmdao_components': [
+    'openmdao_component': [
         'mycompplugin=my_plugins_package.my_comp_plugin:MyComponent'
     ]
 }
@@ -164,7 +164,7 @@ case is to allow the user to discover all of the components/groups/etc that have
 installed in the current python environment using the `openmdao list_installed` command.
 
 
-### Entry Points in openmdao_case_readers
+### Entry Points in openmdao_case_reader
 
 
 The entry point for a case reader should point to a function that returns a tuple of the form
@@ -174,7 +174,7 @@ an instance of the plugin.  The file extension is used to provide an automatic m
 correct case reader based on the file extension of the file being read.
 
 
-### Entry Points in openmdao_commands
+### Entry Points in openmdao_command
 
 
 An entry point for an OpenMDAO command line tool plugin should point to a function that returns
@@ -255,7 +255,7 @@ in a file called `hello_cmd.py`:
 
 ```python
 entry_points={
-        'openmdao_commands': [
+        'openmdao_command': [
             'hello=my_plugins_package.hello_cmd:_hello_setup'
         ]
 }
