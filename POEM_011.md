@@ -34,14 +34,14 @@ things which can be recorded.
 | record_derivatives      |   x    |        |        |    o    |
 | record_responses        |   x    |        |        |    x    |
 | record_inputs           |   x    |    x   |    x   |    o    |
-| record_outputs          |        |    x   |    x   |    o    |
-| record_residuals        |        |    x   |        |    o    |
-| record_metadata         |        |    x   |    x   |         |
-| record_model_metadata   |   x    |    x   |        |    o    |
-| record_abs_error        |        |        |    x   |         |
-| record_rel_error        |        |        |    x   |         |
-| record_solver_residuals |        |        |    x   |         |
-| options_excludes        |        |    x   |        |         |
+| record_outputs          |   o    |    x   |    x   |    o    |
+| record_residuals        |   o    |    x   |    o   |    o    |
+| record_metadata         |   o    |    x   |    x   |    o    |
+| record_model_metadata   |   x    |    x   |    o   |    o    |
+| record_abs_error        |        |        |    x   |    o    |
+| record_rel_error        |        |        |    x   |    o    |
+| record_solver_residuals |        |        |    x   |    o    |
+| options_excludes        |        |    x   |        |    o    |
 
 x - Existing option
 o - Proposed new option
@@ -60,6 +60,15 @@ this POEM proposes that the following recording options be allowed for Problem:
 
 There's a particular hangup with derivatives, since `compute_totals` can be called with somewhat different behavior
 by either the Driver or the Problem.  This option would require that Problem.compute_totals be called if set to True.
+
+This POEM suggest the following rules of thumb for recorders:
+
+* Systems should support recording inputs, outputs, residuals, metadata, model_metadata
+* Drivers should support options for their associated system, as well as the driver-specific options for recording objectives, constraints, desvars, responses, and derivatives.
+* Solvers should support options for their associated system, as well as the solver-specific options for recording abs_err, rel_err, and solver residuals
+* Problem recorders should support the recording options of the underlying systems, drivers, and **all** underlying solvers.  If the problem recorder is given the options to _record_solver_residuals_, we should record those for all the solvers in the model when `problem.record_iteration()` is called
+
+In addition, we should make the `record_metadata` and `record_model_metadata` options more clear.  What's the distinction between them.  Since we've replaced `metadata` with `options` we should probably change these to reflect that.
 
 References
 ----------
