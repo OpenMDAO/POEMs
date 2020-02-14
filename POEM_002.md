@@ -3,15 +3,15 @@ Title: New capability for user to send a termination signal to an OpenMDAO proce
 Authors: [Kenneth-T-Moore]  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
-Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1138
+Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1138 (43dcc0a3e0ca5ebcce9f8712f1be620b8b1d3089) 
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation
