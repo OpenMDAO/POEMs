@@ -54,7 +54,7 @@ submit a pull request (PR) to the original POEM adding your new POEM ID to their
   
 - When a POEM is in the *active* state, PRs related to it will only be accepted if they come from an author who is explicitly listed in the POEM header. 
 
-- When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when they come from a member of the core development team or from one of the PEOM's authors.
+- When a POEM is in the *requesting decision* state, PRs related to it will only be accepted when they come from a member of the core development team or from one of the POEM's authors.
 The *requesting decision* state serves as a clear indication that the author has decided to stop accepting additional input on their POEM. 
 
 - The Devs are the only people with authority to move a POEM to either the *accepted* or *rejected* state.
