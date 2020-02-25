@@ -27,7 +27,7 @@ Description
 
 This enhancement involves two changes:
 1. `openmdao.utils.units.convert_units` will be added to `openmdao.api`
-2. A new method `unit_conversion(from, to)` will be added to `openmdao.api` which returns the multiplier and offset used to get from the `from` units to the `to` units.
+2. `openmdao.utils.units.get_conversion(from, to)` will be added to `openmdao.api` and renamed to `unit_conversion(from, to)`.  The existing `get_conversion` will be deprecated.
 
 References
 ----------
