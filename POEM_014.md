@@ -20,14 +20,16 @@ Motivation
 
 Now that OpenMDAO has better support for third-party plugins, we are
 removing the XDSM viewer from OpenMDAO.  It is a significant code base
-and best maintained byt the original developers.
+and best maintained by the original developers.
 
 
 Description
 ===========
 
 XDSM generation will no longer be available via OpenMDAO command line
-or functions.  Users should use the plugin available at https://github.com/onodip/OpenMDAO-XDSM
+or functions unless they install the third party plugin.
+
+Users should use the plugin available at https://github.com/onodip/OpenMDAO-XDSM
 
 References
 ----------
