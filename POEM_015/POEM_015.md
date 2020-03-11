@@ -91,7 +91,7 @@ Both component `C0` and `C1` have an output `Y`, but only `C1` has promoted that
 
 The following are all valid `natural_names` and matched up `source_names` for this model.
 
-| natural name  |  source name  |
+| `natural_name`| `source_name` |
 |---------------|---------------|
 | auto_ivc.V0   | auto_ivc.V0   |
 | G0.X          | auto_ivc.V0   |
