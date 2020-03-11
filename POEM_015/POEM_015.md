@@ -102,6 +102,26 @@ The following are all valid `natural_names` and matched up `source_names` for th
 | G0.Y          | G0.C1.Y       |
 
 
+| Record Options          | Driver | System | Solver | Problem |
+|-------------------------|--------|--------|--------|---------|
+| includes                |   x    |    x   |    x   |    x    |
+| excludes                |   x    |    x   |    x   |    x    |
+| record_constraints      |   x    |        |        |    x    |
+| record_desvars          |   x    |        |        |    x    |
+| record_objectives       |   x    |        |        |    x    |
+| record_derivatives      |   x    |        |        |    o    |
+| record_responses        |   x    |        |        |    x    |
+| record_inputs           |   x    |    x   |    x   |    o    |
+| record_outputs          |   o    |    x   |    x   |    o    |
+| record_residuals        |   o    |    x   |    o   |    o    |
+| record_metadata         |   o    |    x   |    x   |    o    |
+| record_model_metadata   |   x    |    x   |    o   |    o    |
+| record_abs_error        |        |        |    x   |    o    |
+| record_rel_error        |        |        |    x   |    o    |
+| record_solver_residuals |        |        |    x   |    o    |
+| options_excludes        |        |    x   |        |    o    |
+
+
 
 
 
