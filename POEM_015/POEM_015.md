@@ -83,7 +83,7 @@ Stated another way, re-iterate, users will no longer be able to set input values
 Instead, all variable names will be resolved to their `source_name` before set/get operations. 
 
 **Example:**
-![example model to understand `natural name` vs `source name`](/POEM_015/poem_015_sample_model.jpg)]
+![example model to understand `natural name` vs `source name`](/POEM_015/poem_015_example_model.jpg)]
 
 In this example, you have two components (`C0`, `C1`), down inside two nested groups (`G0`, and `G1`). 
 Both `C0` and `C1` have an input `X` which has been promoted up to the level of `G0`. 
