@@ -89,7 +89,7 @@ In this example, you have two components (`C0`, `C1`), down inside two nested gr
 Both `C0` and `C1` have an input `X` which has been promoted up to the level of `G0`. 
 Both component `C0` and `C1` have an output `Y`, but only `C1` has promoted that output to the level of `G0`. 
 
-The following are all valid `natural_names` and matched up `source_names` for this models: 
+The following are all valid `natural_names` and matched up `source_names` for this model
 
 | natural_name  |  source_name  |
 ---------------------------------
