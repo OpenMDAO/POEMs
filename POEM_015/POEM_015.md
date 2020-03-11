@@ -100,7 +100,6 @@ The following are all valid `natural_names` and matched up `source_names` for th
 | G0.C0.Y       | G0.C0.Y       |
 | G0.C1.Y       | G0.C1.Y       |
 | G0.Y          | G0.C1.Y       |
----------------------------------
 
 
 
