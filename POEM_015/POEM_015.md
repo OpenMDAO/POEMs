@@ -21,14 +21,14 @@ IndepVarComp outputs have always been a weird aspect of OpenMDAO models.
 For one thing, users often think of them as "model inputs" but they are created with an `add_output` method. 
 Though most users quickly learn how to use them, they are still somewhat annoying to have to add to models, especially in certain specific situations: 
 
-    * If you have a group that is meant to both stand-alone and be 
-    used as a subsytem in a larger model, then you sometimes have 
-    to add some if statements to control whether or not IndepVarComps 
-    should be created in your group 
+* If you have a group that is meant to both stand-alone and be 
+used as a subsytem in a larger model, then you sometimes have 
+to add some if statements to control whether or not IndepVarComps 
+should be created in your group 
 
-    * If you are using a group that already has IndepVarComp outputs inside it, 
-    and you want to pass variables into that group instead you then need to 
-    modify the group itself so you can issue the connections 
+* If you are using a group that already has IndepVarComp outputs inside it, 
+and you want to pass variables into that group instead you then need to 
+modify the group itself so you can issue the connections 
 
 From a user perspective, the need is to allow any particular variables (that is otherwise unconnected to anything) to either behave as its own source or design variable (i.e. its own IndepVarComp output) or to be connected into by some other source.
 However, due to internal details of OpenMDAO and the MAUD equations it uses you can't actually implement things that way.
@@ -149,35 +149,35 @@ Otherwise, the units/value of whatever the connected output are will be used.
 
 Notes:
 
-    * `add_input` at the group level will take the same arguments as `add_input` at the component level 
-    * the unit information given in `add_input` will define the units used when setting/getting values using that `natural_name`
-    * there is no `add_output` at the group level!
+* `add_input` at the group level will take the same arguments as `add_input` at the component level 
+* the unit information given in `add_input` will define the units used when setting/getting values using that `natural_name`
+* there is no `add_output` at the group level!
 
 Backwards Incompatible API Changes
 ----------------------------------
 
-    * Problem.model can no longer be a single component
+* Problem.model can no longer be a single component
 
-    * If you have an uny promoted, but unconnected inputs with different values/units then you must call `add_input` at the group level. 
-    Otherwise an error will be thrown during setup, because the it is not possible to infer the units/value for the auto_ivc output. 
+* If you have an uny promoted, but unconnected inputs with different values/units then you must call `add_input` at the group level. 
+Otherwise an error will be thrown during setup, because the it is not possible to infer the units/value for the auto_ivc output. 
 
-    * Previously, if you had a model with an unconnected promoted input at the group level, you could manually set the  values of each of the component inputs to a different value by addressing each one by its absolute name (i.e. its full path name). 
-    Now, when you set the value of any input by its full-path-name, you will also be setting the value of all other inputs to same value (or the equivalent value converted to the local units of the other inputs). 
-    (there doesn't seem to be any obvious reason why a user would have set inputs in this way,  but if you are doing that then you will see different behavior)
+* Previously, if you had a model with an unconnected promoted input at the group level, you could manually set the  values of each of the component inputs to a different value by addressing each one by its absolute name (i.e. its full path name). 
+Now, when you set the value of any input by its full-path-name, you will also be setting the value of all other inputs to same value (or the equivalent value converted to the local units of the other inputs). 
+(there doesn't seem to be any obvious reason why a user would have set inputs in this way,  but if you are doing that then you will see different behavior)
 
 
 Implementations Details
 ---------------------
 
-    * This POEM will cause a modest increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
-    * There will be an additional data-transfer involved with the new automatically created IVC output, which will cause some additional overhead. 
-    The magnitude of these effects will depend on how many unconnected inputs you have, but we anticipate the overall impact to be relatively small. 
-    It is possible that some internal refactoring on the data-vectors may be able to mitigate the increased memory needs, but the additional data transfer will still be there. 
-    Before acceptance, some performance benchmarking will need to be performed to ensure performance remains high. 
-    * Because of the backwards incompatible change associated with `group.add_input`, we need to provide a smooth upgrade path for users.
-    So, as part of this implementation OpenMDAO would first release a version with `group.add_input` defined, but non-functional. 
-    Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.add_input` was added for that group (or an IVC was manually connected to the promoted name). 
-    Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality. 
+* This POEM will cause a modest increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
+* There will be an additional data-transfer involved with the new automatically created IVC output, which will cause some additional overhead. 
+The magnitude of these effects will depend on how many unconnected inputs you have, but we anticipate the overall impact to be relatively small. 
+It is possible that some internal refactoring on the data-vectors may be able to mitigate the increased memory needs, but the additional data transfer will still be there. 
+Before acceptance, some performance benchmarking will need to be performed to ensure performance remains high. 
+* Because of the backwards incompatible change associated with `group.add_input`, we need to provide a smooth upgrade path for users.
+So, as part of this implementation OpenMDAO would first release a version with `group.add_input` defined, but non-functional. 
+Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.add_input` was added for that group (or an IVC was manually connected to the promoted name). 
+Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality. 
 
 
 
