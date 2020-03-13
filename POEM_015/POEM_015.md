@@ -177,7 +177,8 @@ Before acceptance, some performance benchmarking will need to be performed to en
 * Because of the backwards incompatible change associated with `group.add_input`, we need to provide a smooth upgrade path for users.
 So, as part of this implementation OpenMDAO would first release a version with `group.add_input` defined, but non-functional. 
 Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.add_input` was added for that group (or an IVC was manually connected to the promoted name). 
-Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality. 
+Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality.
+* The diagram and description of the variable naming paradigm in POEM_015 will be added to the docs. 
 
 
 
