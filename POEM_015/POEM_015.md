@@ -137,13 +137,15 @@ It is with this expanded ability to set values that users should take care,
 and why it will be recommended that you use the `set_val` and `get_val` methods if there is any possibility of ambiguitity. 
 
 
-Setting defaults for promoted inputs in groups 
------------------------------------------------
+Setting defaults for unconnected promoted inputs in groups 
+----------------------------------------------------------
 
-In cases where the auto-ivc output connects to a single input, the value and unit of that output can be taken directly from the input. 
-When there is are two or more inputs promoted to a group level, the default value and unit can become ambiguous if any of the values/units differ amongst the promoted set. In the case of any amiguity, users can call `group.add_input(...)` and provide the necessary default information. 
+In cases where the auto-ivc output connects to a single input, the value and unit of that output can be determined directly from the input. 
+When there are two or more inputs promoted to a group level but nothing is connected to that promoted name, the defaults can become ambiguous if any of the values/units differ amongst the promoted set. In the case of any amiguity, users must call `group.add_input(...)` and provide the necessary default information. 
 
 An auto-ivc output will be created and connected to any group level variable declared by `add_input` *if and only if* there is no source connected to that input when `probem.setup()` is called. 
+Thus the units/value given in the `group.add_input` call will only be used if an auto_ivc output is connected to that `natural_name`. 
+Otherwise, the units/value of whatever the connected output are will be used. 
 
 Notes:
 
@@ -155,19 +157,29 @@ Backwards Incompatible API Changes
 ----------------------------------
 
     - Problem.model can no longer be a single component
+
+    - If you have an uny promoted, but unconnected inputs with different values/units then you must call `add_input` at the group level. 
+    Otherwise an error will be thrown during setup, because the it is not possible to infer the units/value for the auto_ivc output. 
+
     - Previously, if you had a model with an unconnected promoted input at the group level, you could manually set the  values of each of the component inputs to a different value by addressing each one by its absolute name (i.e. its full path name). 
     Now, when you set the value of any input by its full-path-name, you will also be setting the value of all other inputs to same value (or the equivalent value converted to the local units of the other inputs). 
     (there doesn't seem to be any obvious reason why a user would have set inputs in this way,  but if you are doing that then you will see different behavior)
 
 
-Implementations Risks
+Implementations Details
 ---------------------
 
     - This POEM will cause a modest increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
     - There will be an additional data-transfer involved with the new automatically created IVC output, which will cause some additional overhead. 
-
     The magnitude of these effects will depend on how many unconnected inputs you have, but we anticipate the overall impact to be relatively small. 
     It is possible that some internal refactoring on the data-vectors may be able to mitigate the increased memory needs, but the additional data transfer will still be there. 
     Before acceptance, some performance benchmarking will need to be performed to ensure performance remains high. 
+    - Because of the backwards incompatible change associated with `group.add_input`, we need to provide a smooth upgrade path for users.
+    So, as part of this implementation OpenMDAO would first release a version with `group.add_input` defined, but non-functional. 
+    Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.add_input` was added for that group (or an IVC was manually connected to the promoted name). 
+    Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality. 
+
+
+
 
 
