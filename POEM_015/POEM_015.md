@@ -44,9 +44,6 @@ Description
 If you like your manually created IndepVarComps, you can keep them. 
 However, the goal of this POEM is to make them largley obsolete.
 
-To maintain backwards compatibility, users can pass `auto_ivc=True` or `auto_ivc=False` as arguments to setup. 
-When `auto_ivc=False` OpenMDAO will effectively behave the same way it does now, though it will still opperate under the new variable naming paradigm.
-
 Variable Naming Paradigm
 ------------------------
 As of V3.0 users address all outputs using their `promoted name` and all inputs using the `absolute name`.
@@ -65,7 +62,7 @@ There will no longer be unique names for outputs or inputs, but rather every var
 Users will set/get variables with any valid `natural_name`, 
 and OpenMDAO will resolve that to the source name before performing the set/get operation on true source. 
 
-Stated another way, with `auto_ivc=True`, users will no longer be able to set input values for anything directly. 
+Stated another way, users will no longer be able to set input values for anything directly. 
 Instead, all variable names will be resolved to their `source_name` (which will be an output) before set/get operations. 
 
 **Example:**
