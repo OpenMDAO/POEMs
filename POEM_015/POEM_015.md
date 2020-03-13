@@ -93,7 +93,7 @@ The framework will create explicit connections between any `auto_ivc` output and
 
 `auto_ivc` output naming
 -------------------------
-To keep thing simple, and because in any normal usage the user will never have to directly address any auto_ivc outputs by their own name, the outputs of the `auto_ivc` component will be named as : ['v0', 'v1', 'v2', ... 'v<n>'] where `n` is 1 less than the number of unconnected input variables in the model before `setup()` was called
+To keep thing simple, and because in any normal usage the user will never have to directly address any auto_ivc outputs by their own name, the outputs of the `auto_ivc` component will be named as : ['v0', 'v1', 'v2', ... 'v<n>'] where `n` is 1 less than the number of unconnected input variables in the model before `setup()` was called.
 
 `problem.model` must always be a group
 --------------------------------------
