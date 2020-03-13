@@ -43,20 +43,36 @@ Description
 ===========
 If you like your manually created IndepVarComps, you can keep them. 
 However, the goal of this POEM is to make them largley obsolete.
+This POEM proposes that all models would have an `auto_ivc` component that will automatically 
+create output variables for any inputs that were left unconnected after the setup process was completed. 
+
+These automatically created variables will have automatically generated names, 
+but users will not need to address those names ever. 
+Instead changes will be made to variable name resolution (e.g. `prob['<some_var>']`) so that
+no matter what name you specify (assuming it is a valid name) it will always be resolved to the associated output name. 
+That will be true whether the associated output is one specified by your model via connection/promotion, 
+or one automatically created in the `auto_ivc` component. 
+
+
+`auto_ivc` output naming
+-------------------------
+To keep thing simple, and because in any normal usage the user will never have to directly address any auto_ivc outputs by their own name, the outputs of the `auto_ivc` component will be named as: ['v0', 'v1', 'v2', ... 'v<n>'] where `n` is 1 less than the number of unconnected input variables in the model before `setup()` was called.
 
 Variable Naming Paradigm
 ------------------------
 As of V3.0 users address all outputs using their `promoted name` and all inputs using the `absolute name`.
-Both the `promoted_name` and the `absolute_name` are unique (one pointed to the unique source, the other to the unique input). 
+Both the `promoted_name` and the `absolute_name` are unique (one poins to the unique source, the other to the unique input). 
 90% of the time, you just set values to the promoted names for things. 
 The exception happens when you have unconnected inputs. 
 If you have a single unconnected input, then you set that value using the absolute path name for that input. 
-However, if you have promoted multiple inputs in a group to the same name and left that promoted path unconnected, then you have a weird situation. 
+However, if you have promoted multiple inputs in a group to the same name and left that promoted path unconnected, 
+then you have a weird situation. 
 To set the value for that promoted-but-unconnected input you must manually set the value to the absolute path of all the individual inputs that are promoted to the same name. 
-To work around this, users will normally create an IndepVarComp in the same group as the promoted-but-unconnected input, add an output to it and  promote that output to the same name as the input. 
-Then you could set/get using the promoted name.  
+To work around this, users normally create an IndepVarComp in the same group as the promoted-but-unconnected input, 
+add an output to it and  promote that output to the same name as the input. 
+Then you can set/get using the promoted name.  
 
-This POEM will change this paradigm. 
+POEM_015 will change this paradigm. 
 Since there will be no unconnected inputs any more, every single variable will have an associated output and hence will have an associated source.
 There will no longer be unique names for outputs or inputs, but rather every variable at every level of the hierarhcy has a `natural_name`, which can always be resolved to its source. 
 Users will set/get variables with any valid `natural_name`, 
@@ -68,7 +84,7 @@ Instead, all variable names will be resolved to their `source_name` (which will 
 **Example:**
 ![example model to understand `natural name` vs `source name`](/POEM_015/poem_015_example_model.jpg)]
 
-In this example, you have two components (`C0`, `C1`), down inside two nested groups (`G0`, and `G1`). 
+In this example, you have two components (`C0`, `C1`), down inside a group (`G0`). 
 Both `C0` and `C1` have an input `X` which has been promoted up to the level of `G0`. 
 Both component `C0` and `C1` have an output `Y`, but only `C1` has promoted that output to the level of `G0`. 
 
@@ -88,31 +104,37 @@ The following are all valid `natural_names` and matched up `source_names` for th
 Where the `auto_ivc` component will live
 ----------------------------------------
 All automatically created IVC outputs will live in the `auto_ivc` component which will automatically get added to the top level of any model. 
-This component will always be present in all models, and will be visible in the n2 diagram. 
-The framework will create explicit connections between any `auto_ivc` output and its assocaited inputs. 
+This component will always be present in all models (even if there are no automatically created outputs), and will be visible in the n2 diagram. 
+OpenMDAO will create explicit connections between any `auto_ivc` output and its assocaited inputs. 
 
-`auto_ivc` output naming
--------------------------
-To keep thing simple, and because in any normal usage the user will never have to directly address any auto_ivc outputs by their own name, the outputs of the `auto_ivc` component will be named as : ['v0', 'v1', 'v2', ... 'v<n>'] where `n` is 1 less than the number of unconnected input variables in the model before `setup()` was called.
 
 `problem.model` must always be a group
 --------------------------------------
 As of V3.0, it was allowable for the top level of a model to be either an instance of `Component` or of `Group` (i.e. any instance of `System`). 
-
-Now, the framework will be automatically adding an `auto_ivc` component to the top level of model, that top level must always be a group. 
+Now the framework will be automatically adding an `auto_ivc` component to the top level of model, that top level must always be a group. 
 
 Resolving which unit should be applied
 --------------------------------------
 
 Though there are potentially many valid `natural_names` all pointing to the same source name, 
 it is not required that all the inputs have the same units defined. 
-When using the `Problem.__getitem__` and `Problem.__setitem__` (e.g. `prob['some_var'] = 3`) the unit will be matched to the specific unit defined with that `natural_name`.
+When using the `Problem.__getitem__` and `Problem.__setitem__` (e.g. `prob['some_var'] = 3`) the unit will be matched to the specific unit defined with that `natural_name`. 
 
 Consider the example from above. 
 If `G0.C0.X` was defined in centimeters, and `G0.C1.X` was defined in meters then 
 `prob['G0.C0.X'] = 3` will mean something different than `prob['G0.C1.X'] = 3`. 
 
 To combat this, users can be more explicit via the `Problem.get_val` and `Problem.set_val` which allow for a `units=<something>` argument to be given so the intent is clear. 
+
+Note: In OpenMDAO V3.0, users almost always set values using the `promoted_name` of the output, and the units that were assumed matched the output units. 
+POEM_015 will not change this behavior. 
+If you set/get using the equivalent `natural_name` to what would have been the `promoted_name` of any output variable In V3.0, then the infered units will still be the ones associated with the output. 
+
+So with regard to infered unit when setting values regard POEM_015 is 100% backwards compatible. 
+It does however increase user options for how to set the value, 
+since it will now be valid to set via any associated input name as well.
+It is with this expanded ability to set values that users should take care, 
+and why it will be recommended that you use the `set_val` and `get_val` methods if there is any possibility of ambiguitity. 
 
 
 Setting defaults for promoted inputs in groups 
