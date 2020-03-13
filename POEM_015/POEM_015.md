@@ -22,25 +22,30 @@ For one thing, users often think of them as "model inputs" but they are created 
 Though most users quickly learn how to use them, they are still somewhat annoying to have to add to models, especially in certain specific situations: 
 
     - If you have a group that is meant to both stand-alone and be 
-    used as a subsytem in a larger model, then you sometimes have to add some if statements to control whether or not IndepVarComps should be created in your group 
-    - If you are using a group that already has IndepVarComp outputs inside it, and you want to pass variables into that group instead you then need to modify the group itself so you can issue the connections 
+    used as a subsytem in a larger model, then you sometimes have 
+    to add some if statements to control whether or not IndepVarComps 
+    should be created in your group 
+
+    - If you are using a group that already has IndepVarComp outputs inside it, 
+    and you want to pass variables into that group instead you then need to 
+    modify the group itself so you can issue the connections 
 
 From a user perspective, the need is to allow any particular variables (that is otherwise unconnected to anything) to either behave as its own source or design variable (i.e. its own IndepVarComp output) or to be connected into by some other source.
 However, due to internal details of OpenMDAO and the MAUD equations it uses you can't actually implement things that way.
-Only IndepVarComp outputs can be design variables, but no outputs can be the target side of a connection. 
+In OpenMDAO V3.0 once an input is connected to an IndepVarComp output (i.e. you wanted to use it as a design variable), you can no longer connect anything else into that input variable. 
 
-Util the integration of POEM_003 --- allowing the addition of I/O during configure --- there was no way around this problem. 
+Until the integration of POEM_003 --- allowing the addition of I/O during configure --- there was no way around this problem. 
 Post 003, there is now a solution. 
 As the very last step in the setup-stack (after all user setup and configure operations have been called), the framework can find all of the unconnected inputs, create an associated IndepVarComp output and connect it to that hanging input.
 
 
 Description
 ===========
-If you like your manually craeted IndepVarComps, you can keep them. 
+If you like your manually created IndepVarComps, you can keep them. 
 However, the goal of this POEM is to make them largley obsolete.
 
 To maintain backwards compatibility, users can pass `auto_ivc=True` or `auto_ivc=False` as arguments to setup. 
-When `auto_ivc=False` OpenMDAO will effectively behave the same way it does now, though it will still opperate under the new variable naming paradigm
+When `auto_ivc=False` OpenMDAO will effectively behave the same way it does now, though it will still opperate under the new variable naming paradigm.
 
 Variable Naming Paradigm
 ------------------------
@@ -139,5 +144,11 @@ Backwards Incompatible API Changes
 Implementations Risks
 ---------------------
 
+    - This POEM will cause a modest increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
+    - There will be an additional data-transfer involved with the new automatically created IVC output, which will cause some additional overhead. 
+
+    The magnitude of these effects will depend on how many unconnected inputs you have, but we anticipate the overall impact to be relatively small. 
+    It is possible that some internal refactoring on the data-vectors may be able to mitigate the increased memory needs, but the additional data transfer will still be there. 
+    Before acceptance, some performance benchmarking will need to be performed to ensure performance remains high. 
 
 
