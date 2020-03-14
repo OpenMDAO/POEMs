@@ -30,13 +30,101 @@ should be created in your group
 and you want to pass variables into that group instead you then need to 
 modify the group itself so you can issue the connections 
 
-From a user perspective, the need is to allow any particular variables (that is otherwise unconnected to anything) to either behave as its own source or design variable (i.e. its own IndepVarComp output) or to be connected into by some other source.
-However, due to internal details of OpenMDAO and the MAUD equations it uses you can't actually implement things that way.
-In OpenMDAO V3.0 once an input is connected to an IndepVarComp output (i.e. you wanted to use it as a design variable), you can no longer connect anything else into that input variable. 
+**Example:**
+Consider a group `G0`, with a promoted input `X` that maps to the inputs on two subsystems `C0` and `C1`. 
+If you wanted to use `G0` at the top level of your mdoel and optimize the value of `X`, then you would get a model that looked like this: 
+![example model to illustrate an IVC for a DV](/POEM_015/poem_015_problem_ivc.jpg)]
 
-Until the integration of POEM_003 --- allowing the addition of I/O during configure --- there was no way around this problem. 
-Post 003, there is now a solution. 
-As the very last step in the setup-stack (after all user setup and configure operations have been called), the framework can find all of the unconnected inputs, create an associated IndepVarComp output and connect it to that hanging input.
+However, if you wanted to connect some other calculation into `G0.X`, from the outside of `G0` then you would get a model like this: 
+![example model to illustrate an external connection for the same input](/POEM_015/poem_015_problem_connection.jpg)]
+
+So now you need code that goes something like this: 
+
+```
+import openmdao.api as om
+
+class AGroup(om.Group): 
+
+    def intialize(self): 
+        self.options.declare('owns_dvs', default=True)
+    
+    def setup(self): 
+        if self.options['owns_dvs']: 
+            dvs = self.add_subsystem('dvs', IndepVarComp(), promotes=['*'])
+            dvs.add_output('X', value=10, units='furlongs/fortnight')
+
+        **do other stuff**
+        . 
+        . 
+        . 
+
+if __name__ == "__main__": 
+
+    # To use G0 stand alond
+    p = om.Problem()
+    p.model.add_subsystem('G0', AGroup(owns_dvs=True))
+    p.model.add_design_var('G0.X', lower=-1, upper=1)
+
+    # To use G0 with some other component
+    p = om.Problem()
+    
+    dvs = p.model.add_subsystem('dvs', IndepVarComp(), promotes=['*'])
+    dvs.add_output('speed', -4, units='furlongs/fortnight')
+    p.model.connect('speed', 'some_comp.speed')
+    p.model.add_subsystem('some_comp', 
+                          om.ExecComp('X=speed+3', units='furlongs/fortnight'))
+    p.model.add_subsystem('G0', AGroup(owns_dvs=False))
+    p.model.connect('some_comp.X', 'G0.X')
+
+    p.model.add_design_var('speed', lower=-4, upper=-2)
+```
+
+The addition of the option variable adds a few lines of code, but that is just for one variable. 
+If you had 4 different variables that you wanted to control the ownership of in a granular fashion, 
+then you would need four different options. 
+Also, a user might not realize that they needed to set `owns_dvs=False` when using this group in a larger model, and hence would get a connection error when they tried to use it. 
+
+Until the integration of POEM_003 --- allowing the addition of I/O during configure --- there was no way around this problem. Post 003, there is now a potential solution. 
+As the very last step in the setup-stack (after all user setup and configure operations have been called), 
+OpenMDAO can find all of the unconnected inputs, create an associated IndepVarComp output and connect it to that hanging input.
+
+Then the code could look like this instead: 
+
+```
+import openmdao.api as om
+
+class AGroup(om.Group): 
+    
+    def setup(self): 
+
+        self.add_input('X', units='furlongs/fortnight')
+       
+        **do stuff**
+        . 
+        . 
+        . 
+
+if __name__ == "__main__": 
+
+    # To use G0 stand alond
+    p = om.Problem()
+    p.model.add_subsystem('G0', AGroup())
+    p.model.add_design_var('G0.X', lower=-1, upper=1)
+
+    # To use G0 with some other component
+    p = om.Problem()
+    p.model.add_subsystem('some_comp', 
+                          om.ExecComp('X=speed+3', units='furlongs/fortnight'))
+    p.model.add_subsystem('G0', AGroup())
+    p.model.connect('some_comp.X', 'G0.X')
+
+    p.model.add_design_var('some_comp.speed', lower=-4, upper=-2)
+```
+
+Notice that there is no need to manually add an IndepVarComp anywhere in this model. 
+The group level input is used as the design var directly in one case,
+and connected into in another case. 
+Underneath the covers, an IndepVarComp is added automatically and connected to the appropriate input. 
 
 
 Description
