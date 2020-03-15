@@ -47,7 +47,8 @@ Proposed API Changes
 The suggested signature of the Group `promotes` method is
 
 ```
-def promotes(subsys_name, any=None, inputs=None, outputs=None)
+def promotes(subsys_name, any=None, inputs=None, outputs=None, 
+             src_indices=None, flat_src_indices=False)
 
 Parameters
 ----------
@@ -64,6 +65,17 @@ inputs : Sequence of str or tuple
 outputs : Sequence of str or tuple
     A Sequence of output names (or tuples) to be promoted. Tuples are
     used for the "promote as" capability.
+src_indices : int or list of ints or tuple of ints or int ndarray or Iterable or None
+            This argument applies only to promoted inputs. 
+            The global indices of the source variable to transfer data from.
+            A value of None implies this input depends on all entries of source.
+            Default is None. The shapes of the target and src_indices must match,
+            and form of the entries within is determined by the value of 'flat_src_indices'.
+flat_src_indices : bool
+            This argument applies only to promoted inputs. 
+            If True, each entry of src_indices is assumed to be an index into the
+            flattened source.  Otherwise each entry must be a tuple or list of size equal
+            to the number of dimensions of the source.
 ```
 
 Promotes can only be used to promote directly from the children of the current
