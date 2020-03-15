@@ -241,7 +241,7 @@ Notes:
 * the unit information given in `add_input` will define the units used when setting/getting values using that `natural_name`
 * there is no `add_output` at the group level!
 * potential conflicts in the `src_indices` arguments between group level and component level need to be addressed
-    * IF the user specifies `src_indices` and/or `flat_src_indices` only at the group level, 
+    * If the user specifies `src_indices` and/or `flat_src_indices` only at the group level, 
     then the the group level superceeds the component level and all inputs will use the group specification. 
     * If the user specifies `src_indices` and/or `flat_src_indices` at both the group level and also at the component level, 
     then the two specifications must match (in both shape and values) otherwise it is an error. 
