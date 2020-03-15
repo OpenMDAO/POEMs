@@ -240,6 +240,13 @@ Notes:
 * `add_input` at the group level will take the same arguments as `add_input` at the component level 
 * the unit information given in `add_input` will define the units used when setting/getting values using that `natural_name`
 * there is no `add_output` at the group level!
+* potential conflicts in the `src_indices` arguments between group level and component level need to be addressed
+    * IF the user specifies `src_indices` and/or `flat_src_indices` only at the group level, 
+    then the the group level superceeds the component level and all inputs will use the group specification. 
+    * If the user specifies `src_indices` and/or `flat_src_indices` at both the group level and also at the component level, 
+    then the two specifications must match (in both shape and values) otherwise it is an error. 
+    * If the user specifies `src_indices` and/or `flat_src_indices` at only the component level, but not at the group level then each input can have its own `src_indices` which will be respected. 
+    This behavior matches what already happens in V3.0 when `src_indices` are specified at the component level and then the input is promoted. 
 
 Backwards Incompatible API Changes
 ----------------------------------
