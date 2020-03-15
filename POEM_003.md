@@ -82,6 +82,14 @@ Promotes can only be used to promote directly from the children of the current
 group (one step, no more).  Promoting things up a chain can be accomplished
 by multiple calls.
 
+The `src_indices` and `flat_src_indices` arguments should apply only to the variables 
+specified in the `inputs` argument.  
+If a user wants to give different `src_indices` for different variables, 
+they can do so via separate calls to promotes. 
+
+Users can potentially define `src_indices` in both the `add_input` call on the component and in the `promotes` call in the group. 
+In the event that there is a conflict between these specifications an error should be raised, since the user intent is no longer clear. 
+
 2.  Disable the use of `add_subsystem` during the configure portion of the setup stack.
 
 Currently adding subsystems during the configure portion of the stack does not raise, but  
