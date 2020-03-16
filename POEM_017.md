@@ -1,5 +1,6 @@
-| POEM ID                     | 017                                                                      |
+| Item                        | Description                                                              |
 | --------------------------- | ------------------------------------------------------------------------ |
+| POEM ID                     | 017                                                                      |
 | Title                       | User can specify units when adding design variables, constraints, and    |
 |                             | objectives.                                                              |
 | authors                     | @Kenneth-T-Moore                                                         |
