@@ -38,8 +38,5 @@ other arguments are considered to be specified in the units defined in "units". 
 conversion will be added to existing driver scaling, with unit conversion factor applied first, then the
 scaler/adder or ref/ref0.
 
-Additionally, this poem will add `list_design_vars`, `list_constraints`, and `list_objectives` to the
-Problem API. This methods will print useful info about each of these when called on a problem after
-setup.
 
 
