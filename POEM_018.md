@@ -37,7 +37,14 @@ Unfortunately, we can't pass `[:, 2]` as src_indices because it isn't legal Pyth
 But Python does have a `slice` object that allows us to do this.
 
 ```
-g.connect('x', 'y', src_indices = (slice(None), 2))
+g.connect('x', 'y', src_indices=(slice(None), 2))
+```
+
+or alternatively, using `numpy.s_`:
+
+```
+import numpy as np
+g.connect('x', 'y', src_indices=np.s_[:, 2])
 ```
 
 This is also useful in OpenMDAO's `set_val` method on Problem.
@@ -53,6 +60,13 @@ Under the new notation, one could do
 
 ```
 p.set_val('pos', 5.0, indices=(slice(None), 2))
+```
+
+or using numpy:
+
+```
+import numpy as np
+p.set_val('pos', 5.0, indices=np.s_[:, 2)
 ```
 
 Description
