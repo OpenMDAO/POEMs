@@ -1,9 +1,9 @@
-POEM ID: 019
-Title:  Random Vectors in Directional Derivatives
-authors: [kejacobson] (Kevin Jacobson)
-Competing POEMs: [N/A]
-Related POEMs: [N/A]
-Associated implementation PR:
+POEM ID: 019   
+Title:  Random Vectors in Directional Derivatives   
+authors: [kejacobson] (Kevin Jacobson)   
+Competing POEMs: [N/A]   
+Related POEMs: [N/A]   
+Associated implementation PR:   
 
 Status:
 
