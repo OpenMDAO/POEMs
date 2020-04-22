@@ -230,7 +230,7 @@ Dealing with sets to natural names with `src_indices` associated with them
 The proposed paradigm would normally resolve any natural name pointing to an input to the source name, 
 then set the value into the memory for the source.
 This is doable when there is a 1-to-1 correspondence between input and source, 
-but when `src_indices` are given (during input deceleration, or specified during connection/promotion) then we loose the correspondence. 
+but when `src_indices` are given (during input declaration, or specified during connection/promotion) then we loose the correspondence. 
 Hence, any attempt to set a value using a natural name pointing to an input, if that input has `src_indices` associated with it, will raise an error. 
 The error message will include the information about the source name that should be used to set with instead. 
 
