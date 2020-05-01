@@ -9,8 +9,9 @@ Status:
 
  - [ ] Active
  - [ ] Requesting decision
- - [x] Accepted
+ - [ ] Accepted
  - [ ] Rejected
+ - [x] Integrated
 
 
 Problem statement
