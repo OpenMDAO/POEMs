@@ -131,7 +131,7 @@ Description
 ===========
 If you like your manually created IndepVarComps, you can keep them. 
 However, the goal of this POEM is to make them largley obsolete.
-This POEM proposes that all models would have an `auto_ivc` component that will automatically 
+This POEM proposes that all models would have an `_auto_ivc` component that will automatically 
 create output variables for any inputs that were left unconnected after the setup process was completed. 
 
 These automatically created variables will have automatically generated names, 
@@ -139,12 +139,12 @@ but users will not need to address those names ever.
 Instead changes will be made to variable name resolution (e.g. `prob['<some_var>']`) so that
 no matter what name you specify (assuming it is a valid name) it will always be resolved to the associated output name. 
 That will be true whether the associated output is one specified by your model via connection/promotion, 
-or one automatically created in the `auto_ivc` component. 
+or one automatically created in the `_auto_ivc` component. 
 
 
-`auto_ivc` output naming
+`_auto_ivc` output naming
 -------------------------
-To keep thing simple, and because in any normal usage the user will never have to directly address any auto_ivc outputs by their own name, the outputs of the `auto_ivc` component will be named as: ['v0', 'v1', 'v2', ... 'v<n>'] where `n` is 1 less than the number of unconnected input variables in the model before `setup()` was called.
+To keep thing simple, and because in any normal usage the user will never have to directly address any auto_ivc outputs by their own name, the outputs of the `_auto_ivc` component will be named as: ['v0', 'v1', 'v2', ... 'v<n>'] where `n` is 1 less than the number of unconnected input variables in the model before `setup()` was called.
 
 Variable Naming Paradigm
 ------------------------
@@ -189,17 +189,17 @@ The following are all valid `natural_names` and matched up `source_names` for th
 | G0.Y          | G0.C1.Y       |
 
 
-Where the `auto_ivc` component will live
+Where the `_auto_ivc` component will live
 ----------------------------------------
-All automatically created IVC outputs will live in the `auto_ivc` component which will automatically get added to the top level of any model. 
+All automatically created IVC outputs will live in the `_auto_ivc` component which will automatically get added to the top level of any model. 
 This component will always be present in all models (even if there are no automatically created outputs), and will be visible in the n2 diagram. 
-OpenMDAO will create explicit connections between any `auto_ivc` output and its assocaited inputs. 
+OpenMDAO will create explicit connections between any `_auto_ivc` output and its assocaited inputs. 
 
 
 `problem.model` must always be a group
 --------------------------------------
 As of V3.0, it was allowable for the top level of a model to be either an instance of `Component` or of `Group` (i.e. any instance of `System`). 
-Now the framework will be automatically adding an `auto_ivc` component to the top level of model, that top level must always be a group. 
+Now the framework will be automatically adding an `_auto_ivc` component to the top level of model, that top level must always be a group. 
 
 Resolving which unit should be applied
 --------------------------------------
