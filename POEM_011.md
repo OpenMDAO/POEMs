@@ -128,12 +128,7 @@ To break this large POEM into manageable PRs, it is proposed to do these PRs:
 * PR #6
     * Add recording of inputs, outputs, and residuals to Problem. Add recording of outputs and residuals to Driver
 * PR #7
-    * Change the recording_options['includes'] default to be ['*'] to be consistent with the same option for Problem, 
-      Solver, and Driver
-* PR #8
     * Add recording of record_abs_error, record_rel_error, and record_solver_residuals to Problem
-* PR #9
-    * Update the docs to be more clear about what recording option to set for a given need and then how to get that data
  
  
  Update the format_version value in the case recording file as needed.
