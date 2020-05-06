@@ -154,7 +154,7 @@ class Interpolate(om.ExplicitComponent):
              shape: tuple
                  the shape of the variable
             """
-            shape = var_meta['u_coarse'].shape*2
+            shape = var_meta['u_coarse'].size*2
 
             return (shape)
 
@@ -210,7 +210,7 @@ class OuterProduct(om.ExplicitComponent):
 
 
         def get_mat_shape(var_meta):
-            return (var_meta['vec_1'], var_meta['vec_2'])
+            return (var_meta['vec_1'].size, var_meta['vec_2'].size)
 
         # the shape of this output is related by the function to the shape of the variables defined
         # in shape_depends on 
