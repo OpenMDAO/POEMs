@@ -9,8 +9,8 @@ Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
-- [ ] Rejected
+- [ ] Accepted
+- [x] Rejected
 - [ ] Integrated
 
 
@@ -26,4 +26,7 @@ Description
 
 The `_post_configure` method is being moved to the public API (renamed `post_configure`).
 
-This API change is being accepted upon creation, and included as a POEM to inform the community of the change.
+Rejection Rationale
+-------------------
+
+This POEM is being rejected. After futher consideration the development team has decided to go a different way.  _post_configure futher complicates an already complex setup stack.
