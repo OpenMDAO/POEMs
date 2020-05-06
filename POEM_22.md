@@ -37,7 +37,7 @@ Builders
 --------
 One method to get around this issue is to use a "builder" (see the MPHYS project).
 The builder object can read in the mesh and pass shape data to each of the components as they are created. 
-Builders can be passed as an arguments to other builders to share shape information between subsytems (in MPHYS this is used by the transfer components)
+Builders can be passed as an arguments to other builders to share shape information between subsytems (in MPHYS this is used by the transfer components).
 
 However, this method greatly increases the complexity of the code and reduces modularity. 
 For each new model in which the components are used, a new builder must be made or an existing builder must be generalized (increasing complexity). 
@@ -57,16 +57,6 @@ Because the inputs and outputs must be restated for every group or model the com
 An Additional source of frustration is that the description of the input/output included in their definition now exists outside of the component definition. 
 
 
-<!-- The final method I'm a aware of is to 
-Move code to read mesh file into initialize 
-
-Finally, 
-need mpi communicators 
-- can't create input/outputs in init
-- breaks trend of using the initialize method to declare options
-- shape information stored using attr or method which exist outside the API 
-- mesh readers must use the same attr/method names to be swapable 
-<!-- - all information is saved becuase it not known yet what information is needed  -->
 
 # Description
 
