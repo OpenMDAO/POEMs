@@ -1,6 +1,6 @@
 POEM ID: 011
 Title: Expand problem recording options
-Authors: @robfalck
+Authors: @robfalck @hschilling
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]
 Associated implementation PR: N/A
@@ -133,6 +133,36 @@ To break this large POEM into manageable PRs, it is proposed to do these PRs:
  
  Update the format_version value in the case recording file as needed.
 
+=======
+Currently OpenMDAO supports `Problem.record_iteration()` to record the current state of the Problem.
+This is useful for saving data at a single case without using a ton of memory to store data at every iteration of the driver or solver.
+However, Problem recording currently only supports a limited subset of recording options:  the user cannot
+record inputs if they only want a single iteration recorded.
+
+The table below summarizes the record options for each of the four
+things which can be recorded.
+
+| Record Options          | Driver | System | Solver | Problem |
+|-------------------------|--------|--------|--------|---------|
+| includes                |   x    |    x   |    x   |    x    |
+| excludes                |   x    |    x   |    x   |    x    |
+| record_constraints      |   x    |        |        |    x    |
+| record_desvars          |   x    |        |        |    x    |
+| record_objectives       |   x    |        |        |    x    |
+| record_derivatives      |   x    |        |        |    o    |
+| record_responses        |   x    |        |        |    x    |
+| record_inputs           |   x    |    x   |    x   |    o    |
+| record_outputs          |   o    |    x   |    x   |    o    |
+| record_residuals        |   o    |    x   |    o   |    o    |
+| record_metadata         |   o    |    x   |    x   |    o    |
+| record_model_metadata   |   x    |    x   |    o   |    o    |
+| record_abs_error        |        |        |    x   |    o    |
+| record_rel_error        |        |        |    x   |    o    |
+| record_solver_residuals |        |        |    x   |    o    |
+| options_excludes        |        |    x   |        |    o    |
+
+x - Existing option
+o - Proposed new option
 
 References
 ----------
