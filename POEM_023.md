@@ -31,4 +31,5 @@ that time.
 Description
 -----------
 
-All code related to dynamic reconfiguration will be removed from the code base.
+All code related to dynamic reconfiguration will be removed from the code base.  Along with other
+internal methods, the user facing API method `reconfigure` will be removed.
