@@ -103,7 +103,7 @@ class Sellar(om.Group):
         indeps.add_output('x', 1.0)
         indeps.add_output('z1', 5.0)
         indeps.add_output('z2', 2.0)
-        cycle = self.add_subsystem('cycle', om.ParallelGroup(), promotes=['*'])
+        cycle = self.add_subsystem('cycle', om.Group(), promotes=['*'])
         cycle.add_subsystem('d1', SymbExecComp("y1 = z1**2 + z2 + x - 0.2*y2"),
                             promotes_inputs=['x', 'z1', 'z2', 'y2'], promotes_outputs=['y1'])
         cycle.add_subsystem('d2', SymbExecComp("y2 = y1**0.5 + z1 + z2"),
