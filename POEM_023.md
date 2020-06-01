@@ -1,4 +1,4 @@
-POEM ID: 022
+POEM ID: 023
 Title:  Remove reconfigure code from the current code base
 authors: [naylor-b] (Bret Naylor)  
 Competing POEMs: N/A
