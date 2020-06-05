@@ -275,9 +275,7 @@ Any unconnected-promoted inputs in the model would throw a deprecation warning, 
 Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality.
 * The diagram and description of the variable naming paradigm in POEM_015 will be added to the docs. 
 
-The implementation branch can be found `here`_.
-
-.. _here: https://github.com/naylor-b/OpenMDAO/tree/auto_ivc2
+The implementation branch can be found [here](https://github.com/naylor-b/OpenMDAO/tree/auto_ivc2).
 
 
 
