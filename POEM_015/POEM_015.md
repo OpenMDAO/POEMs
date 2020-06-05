@@ -3,7 +3,7 @@ Title: Automatic creation of IndepVarComp outputs for all unconnected inputs
 authors: [justingray]  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: 
+Associated implementation:  https://github.com/naylor-b/OpenMDAO/tree/auto_ivc2
 
 Status:
   
@@ -274,10 +274,3 @@ So, as part of this implementation OpenMDAO would first release a version with `
 Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.set_input_defaults` was added for that group (or an IVC was manually connected to the promoted name). 
 Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality.
 * The diagram and description of the variable naming paradigm in POEM_015 will be added to the docs. 
-
-The implementation branch can be found [here](https://github.com/naylor-b/OpenMDAO/tree/auto_ivc2).
-
-
-
-
-
