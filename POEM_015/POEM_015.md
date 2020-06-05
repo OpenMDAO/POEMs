@@ -244,9 +244,16 @@ Otherwise, the units/value of whatever the connected output are will be used.
 
 Notes:
 
-* `set_input_defaults` at the group level will take the arguments `units` and or `val`.
+* `set_input_defaults` at the group level will accept the arguments `units`, `val`, and `src_indices`.
 * the unit information given in `set_input_defaults` will define the units used when setting/getting values using the promoted name.
 
+* potential conflicts in the `src_indices` arguments between group level and component level need to be addressed
+    * If the user specifies `src_indices` and/or `flat_src_indices` only at the group level, 
+    then the the group level superceeds the component level and all inputs will use the group specification. 
+    * If the user specifies `src_indices` and/or `flat_src_indices` at both the group level and also at the component level, 
+    then the two specifications must match (in both shape and values) otherwise it is an error. 
+    * If the user specifies `src_indices` and/or `flat_src_indices` at only the component level, but not at the group level then each input can have its own `src_indices` which will be respected. 
+    This behavior matches what already happens in V3.0 when `src_indices` are specified at the component level and then the input is promoted. 
 
 Backwards Incompatible API Changes
 ----------------------------------
