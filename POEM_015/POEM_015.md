@@ -180,10 +180,10 @@ The following are all valid `natural_names` and matched up `source_names` for th
 
 | `natural_name`| `source_name` |
 |---------------|---------------|
-| auto_ivc.V0   | auto_ivc.V0   |
-| G0.X          | auto_ivc.V0   |
-| G0.C0.X       | auto_ivc.V0   |
-| G0.C1.X       | auto_ivc.V0   |
+| auto_ivc.v0   | auto_ivc.v0   |
+| G0.X          | auto_ivc.v0   |
+| G0.C0.X       | auto_ivc.v0   |
+| G0.C1.X       | auto_ivc.v0   |
 | G0.C0.Y       | G0.C0.Y       |
 | G0.C1.Y       | G0.C1.Y       |
 | G0.Y          | G0.C1.Y       |
@@ -244,7 +244,7 @@ Otherwise, the units/value of whatever the connected output are will be used.
 
 Notes:
 
-* `set_input_defaults` at the group level will take the same arguments `units` and or `val`
+* `set_input_defaults` at the group level will take the arguments `units` and or `val`.
 * the unit information given in `set_input_defaults` will define the units used when setting/getting values using the promoted name.
 
 
@@ -253,7 +253,7 @@ Backwards Incompatible API Changes
 
 * Problem.model can no longer be a single component
 
-* If you have an uny promoted, but unconnected inputs with different values/units then you must call `set_input_defaults` at the group level. 
+* If you have an any promoted but unconnected inputs with different values/units then you must call `set_input_defaults` at the group level. 
 Otherwise an error will be thrown during setup, because the it is not possible to infer the units/value for the auto_ivc output. 
 
 * Previously, if you had a model with an unconnected promoted input at the group level, you could manually set the  values of each of the component inputs to a different value by addressing each one by its absolute name (i.e. its full path name). 
@@ -266,7 +266,7 @@ Implementations Details
 
 * This POEM will cause an increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
 * There will be additional data-transfers involved with the new automatically created IVC outputs, which will cause some additional overhead. 
-The magnitude of these effects will depend on how many unconnected inputs you have and their sizes. 
+The magnitude of these effects will depend on how many unconnected inputs you have. 
 It is possible that some internal refactoring on the data-vectors may be able to mitigate the increased memory needs, but the additional data transfer will still be there. 
 Before acceptance, some performance benchmarking will need to be performed to ensure performance remains high. 
 * Because of the backwards incompatible change associated with `group.set_input_defaults`, we need to provide a smooth upgrade path for users.
