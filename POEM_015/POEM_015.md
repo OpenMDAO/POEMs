@@ -162,7 +162,7 @@ Then you can set/get using the promoted name.
 
 POEM_015 will change this paradigm. 
 Since there will be no unconnected inputs any more, every single variable will have an associated output and hence will have an associated source.
-There will no longer be unique names for outputs or inputs, but rather every variable at every level of the hierarhcy has a `natural_name`, which can always be resolved to its source. 
+Every variable at every level of the hierarhcy has a `natural_name`, which can always be resolved to its source. 
 Users will set/get variables with any valid `natural_name`, 
 and OpenMDAO will resolve that to the source name before performing the set/get operation on true source. 
 
@@ -196,11 +196,6 @@ This component will always be present in all models (even if there are no automa
 OpenMDAO will create explicit connections between any `_auto_ivc` output and its assocaited inputs. 
 
 
-`problem.model` must always be a group
---------------------------------------
-As of V3.0, it was allowable for the top level of a model to be either an instance of `Component` or of `Group` (i.e. any instance of `System`). 
-Now the framework will be automatically adding an `_auto_ivc` component to the top level of model, that top level must always be a group. 
-
 Resolving which unit should be applied
 --------------------------------------
 
@@ -218,7 +213,7 @@ Note: In OpenMDAO V3.0, users almost always set values using the `promoted_name`
 POEM_015 will not change this behavior. 
 If you set/get using the equivalent `natural_name` to what would have been the `promoted_name` of any output variable In V3.0, then the infered units will still be the ones associated with the output. 
 
-So with regard to infered unit when setting values regard POEM_015 is 100% backwards compatible. 
+So with regard to inferred unit when setting values regard POEM_015 is 100% backwards compatible. 
 It does however increase user options for how to set the value, 
 since it will now be valid to set via any associated input name as well.
 It is with this expanded ability to set values that users should take care, 
@@ -241,31 +236,24 @@ Setting defaults for unconnected promoted inputs in groups
 ----------------------------------------------------------
 
 In cases where the auto-ivc output connects to a single input, the value and unit of that output can be determined directly from the input. 
-When there are two or more inputs promoted to a group level but nothing is connected to that promoted name, the defaults can become ambiguous if any of the values/units differ amongst the promoted set. In the case of any amiguity, users must call `group.add_input(...)` and provide the necessary default information. 
+When there are two or more inputs promoted to a group level but nothing is connected to that promoted name, the defaults can become ambiguous if any of the values/units differ amongst the promoted set. In the case of any amiguity, users must call `group.set_input_defaults(...)` and provide the necessary default information. 
 
-An auto-ivc output will be created and connected to any group level variable declared by `add_input` *if and only if* there is no source connected to that input when `probem.setup()` is called. 
-Thus the units/value given in the `group.add_input` call will only be used if an auto_ivc output is connected to that `natural_name`. 
+An auto-ivc output will be created and connected to any group level variable declared by `set_input_defaults` *if and only if* there is no source connected to that input when `probem.setup()` is called. 
+Thus the units/value given in the `group.set_input_defaults` call will only be used if an auto_ivc output is connected to that `natural_name`. 
 Otherwise, the units/value of whatever the connected output are will be used. 
 
 Notes:
 
-* `add_input` at the group level will take the same arguments as `add_input` at the component level 
-* the unit information given in `add_input` will define the units used when setting/getting values using that `natural_name`
-* there is no `add_output` at the group level!
-* potential conflicts in the `src_indices` arguments between group level and component level need to be addressed
-    * If the user specifies `src_indices` and/or `flat_src_indices` only at the group level, 
-    then the the group level superceeds the component level and all inputs will use the group specification. 
-    * If the user specifies `src_indices` and/or `flat_src_indices` at both the group level and also at the component level, 
-    then the two specifications must match (in both shape and values) otherwise it is an error. 
-    * If the user specifies `src_indices` and/or `flat_src_indices` at only the component level, but not at the group level then each input can have its own `src_indices` which will be respected. 
-    This behavior matches what already happens in V3.0 when `src_indices` are specified at the component level and then the input is promoted. 
+* `set_input_defaults` at the group level will take the same arguments `units` and or `val`
+* the unit information given in `set_input_defaults` will define the units used when setting/getting values using the promoted name.
+
 
 Backwards Incompatible API Changes
 ----------------------------------
 
 * Problem.model can no longer be a single component
 
-* If you have an uny promoted, but unconnected inputs with different values/units then you must call `add_input` at the group level. 
+* If you have an uny promoted, but unconnected inputs with different values/units then you must call `set_input_defaults` at the group level. 
 Otherwise an error will be thrown during setup, because the it is not possible to infer the units/value for the auto_ivc output. 
 
 * Previously, if you had a model with an unconnected promoted input at the group level, you could manually set the  values of each of the component inputs to a different value by addressing each one by its absolute name (i.e. its full path name). 
@@ -276,16 +264,20 @@ Now, when you set the value of any input by its full-path-name, you will also be
 Implementations Details
 ---------------------
 
-* This POEM will cause a modest increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
-* There will be an additional data-transfer involved with the new automatically created IVC output, which will cause some additional overhead. 
-The magnitude of these effects will depend on how many unconnected inputs you have, but we anticipate the overall impact to be relatively small. 
+* This POEM will cause an increase in the amount of memory allocated, because there will be new space added to the output vector for the automatically created IVC outputs. 
+* There will be additional data-transfers involved with the new automatically created IVC outputs, which will cause some additional overhead. 
+The magnitude of these effects will depend on how many unconnected inputs you have and their sizes. 
 It is possible that some internal refactoring on the data-vectors may be able to mitigate the increased memory needs, but the additional data transfer will still be there. 
 Before acceptance, some performance benchmarking will need to be performed to ensure performance remains high. 
-* Because of the backwards incompatible change associated with `group.add_input`, we need to provide a smooth upgrade path for users.
-So, as part of this implementation OpenMDAO would first release a version with `group.add_input` defined, but non-functional. 
-Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.add_input` was added for that group (or an IVC was manually connected to the promoted name). 
+* Because of the backwards incompatible change associated with `group.set_input_defaults`, we need to provide a smooth upgrade path for users.
+So, as part of this implementation OpenMDAO would first release a version with `group.set_input_defaults` defined, but non-functional. 
+Any unconnected-promoted inputs in the model would throw a deprecation warning, untill `group.set_input_defaults` was added for that group (or an IVC was manually connected to the promoted name). 
 Users could upgrade to that version first, clear all the deprecation warnings, then be sure that the model would function properly under the next release which would include the auto-ivc functionality.
 * The diagram and description of the variable naming paradigm in POEM_015 will be added to the docs. 
+
+The implementation branch can be found `here`_.
+
+.. _here: https://github.com/naylor-b/OpenMDAO/tree/auto_ivc2
 
 
 
