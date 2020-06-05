@@ -9,8 +9,9 @@ Status:
 
  - [ ] Active
  - [ ] Requesting decision
- - [x] Accepted
+ - [ ] Accepted
  - [ ] Rejected
+ - [x] Integrated
 
 
 Problem statement
@@ -47,7 +48,8 @@ Proposed API Changes
 The suggested signature of the Group `promotes` method is
 
 ```
-def promotes(subsys_name, any=None, inputs=None, outputs=None)
+def promotes(subsys_name, any=None, inputs=None, outputs=None, 
+             src_indices=None, flat_src_indices=False)
 
 Parameters
 ----------
@@ -64,11 +66,36 @@ inputs : Sequence of str or tuple
 outputs : Sequence of str or tuple
     A Sequence of output names (or tuples) to be promoted. Tuples are
     used for the "promote as" capability.
+src_indices : int or list of ints or tuple of ints or int ndarray or Iterable or None
+            This argument applies only to promoted inputs. 
+            The global indices of the source variable to transfer data from.
+            A value of None implies this input depends on all entries of source.
+            Default is None. The shapes of the target and src_indices must match,
+            and form of the entries within is determined by the value of 'flat_src_indices'.
+flat_src_indices : bool
+            This argument applies only to promoted inputs. 
+            If True, each entry of src_indices is assumed to be an index into the
+            flattened source.  Otherwise each entry must be a tuple or list of size equal
+            to the number of dimensions of the source.
 ```
 
 Promotes can only be used to promote directly from the children of the current
 group (one step, no more).  Promoting things up a chain can be accomplished
 by multiple calls.
+
+The `src_indices` and `flat_src_indices` arguments should apply only to the variables 
+specified in the `inputs` argument.  
+If a user wants to give different `src_indices` for different variables, 
+they can do so via separate calls to promotes. 
+
+Users can potentially define `src_indices` in both the `add_input` call on the component and in the `promotes` call in the group. 
+In the event that there is a conflict between these specifications the following precedence should be followed: 
+* If the user specifies `src_indices` and/or `flat_src_indices` only at the group level, 
+then the the group level superceeds the component level and all inputs will use the group specification. 
+* If the user specifies `src_indices` and/or `flat_src_indices` at both the group level and also at the component level, 
+then the two specifications must match (in both shape and values) otherwise it is an error. 
+* If the user specifies `src_indices` and/or `flat_src_indices` at only the component level, but not at the group level then each input can have its own `src_indices` which will be respected. 
+This behavior matches what already happens in V3.0 when `src_indices` are specified at the component level and then the input is promoted. 
 
 2.  Disable the use of `add_subsystem` during the configure portion of the setup stack.
 
