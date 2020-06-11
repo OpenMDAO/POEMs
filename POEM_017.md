@@ -1,26 +1,20 @@
-+-----------------------------+--------------------------------------------------------------------------+
+| Item                        | Description                                                              |
+| --------------------------- | ------------------------------------------------------------------------ |
 | POEM ID                     | 017                                                                      |
-+-----------------------------+--------------------------------------------------------------------------+
 | Title                       | User can specify units when adding design variables, constraints, and    |
 |                             | objectives.                                                              |
-+-----------------------------+--------------------------------------------------------------------------+
 | authors                     | @Kenneth-T-Moore                                                         |
-+-----------------------------+--------------------------------------------------------------------------+
 | Competing POEMs             | [N/A]                                                                    |
-+-----------------------------+--------------------------------------------------------------------------+
 | Related POEMs               | [N/A]                                                                    |
-+-----------------------------+--------------------------------------------------------------------------+
-| Associated implementation PR|                                                                          |
-+-----------------------------+--------------------------------------------------------------------------+
+| Associated implementation PR| https://github.com/OpenMDAO/OpenMDAO/pull/1265                           |
+
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
-
-<Note: two space are required after every line of the header to create proper linebreaks in the markdown>
+- [x] Integrated
 
 
 Motivation
@@ -42,8 +36,5 @@ other arguments are considered to be specified in the units defined in "units". 
 conversion will be added to existing driver scaling, with unit conversion factor applied first, then the
 scaler/adder or ref/ref0.
 
-Additionally, this poem will add `list_design_vars`, `list_constraints`, and `list_objectives` to the
-Problem API. This methods will print useful info about each of these when called on a problem after
-setup.
 
 
