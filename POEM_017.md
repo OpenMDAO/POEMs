@@ -6,15 +6,15 @@
 | authors                     | @Kenneth-T-Moore                                                         |
 | Competing POEMs             | [N/A]                                                                    |
 | Related POEMs               | [N/A]                                                                    |
-| Associated implementation PR|                                                                          |
+| Associated implementation PR| https://github.com/OpenMDAO/OpenMDAO/pull/1265                           |
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation
