@@ -9,9 +9,9 @@ Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 This POEM adds a minor non-breaking change to the user-facing API.
 
