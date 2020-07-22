@@ -13,8 +13,6 @@ Status:
 - [ ] Rejected
 - [ ] Integrated
 
-<Note: two space are required after every line of the header to create proper linebreaks in the markdown>
-
 
 Motivation
 ----------
@@ -106,10 +104,10 @@ Poem: The Squiggly Map
 -----------
 
 
-Zero and One
-what have you done?
-I follow your map
-though it's surely a trap.
-Each step that I take
-leads away from the lake.
-And for water I'm desperately seeking.
+Zero and One  
+what have you done?  
+I follow your map  
+though it's surely a trap.  
+Each step that I take  
+leads away from the lake.  
+And for water I'm desperately seeking.  
