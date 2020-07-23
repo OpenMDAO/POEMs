@@ -27,12 +27,6 @@ It should also be noted that the default value for inputs is 1.
 This creates opportunities for bad derivatives to sneak into a large optimization.
 
 
-Description
------------
-
-
-`check_partials()` and `assert_check_partials()` passes even though partial derivatives are incorrect in some cases.
-
 Example Code:
 ```
 import openmdao.api as om
@@ -91,6 +85,25 @@ Component: Line 'Line'
 'Y'        wrt 'b'          | 1.0000e+00 | 1.0000e+00 | 0.0000e+00 | 0.0000e+00
 'Y'        wrt 'm'          | 1.0000e+00 | 1.0000e+00 | 0.0000e+00 | 0.0000e+00
 ```
+
+In the example above, the partials for `Y'(X)` and `Y'(m)` are both incorrect but they don't show an error in the results. This is because the default value for `m=0` and `X=1`. 
+
+Other ways that partial checks can fail:
+1) using the same input value for multiple inputs causing subtractive cancellation
+2) an array with all values the same (think mesh coordinates), creating a totally degenerate case
+
+
+Description (Proposed Solution)
+-----------
+
+
+`check_partials()` returns a warning when any of the input values are `0` or `1`. Potentially, the issue of subtractive cancellation could also be included:
+
+`WARNING: Inputs to check_partials are degenerate. For accurate partials checks, input values should not be 0, 1, or equal to eachother.`  
+
+`check_partials(warn_on_degen=False)` could also have an optional flag that disables this warning in the case that the user specifically needs to check partials at these values. 
+
+`assert_check_partials()` calls `check_partials()` so I don't know if there is a need to add anything to `assert_check_partials()`.
 
 
 References
