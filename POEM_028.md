@@ -97,13 +97,17 @@ Description (Proposed Solution)
 -----------
 
 
-`check_partials()` returns a warning when any of the input values are `0` or `1`. Potentially, the issue of subtractive cancellation could also be included:
+`check_partials()` returns a warning when any of the input values are `0` or `1` or equal to eachother. This would apply to single imput values as well as input vectors and arrays. Optinal flag `Warn=False` turns off this warning. Example warning message:
 
 `WARNING: Inputs to check_partials are degenerate. For accurate partials checks, input values should not be 0, 1, or equal to eachother.`  
 
-`check_partials(warn_on_degen=False)` could also have an optional flag that disables this warning in the case that the user specifically needs to check partials at these values. 
 
-`assert_check_partials()` calls `check_partials()` so I don't know if there is a need to add anything to `assert_check_partials()`.
+
+`check_partials()` purturbs all input values before checking partials by default. Input values >= 0 are perturbed in a positive direction by a random value between 1e-1 and 1e-3. These values were chosen to be larger than the step size of the default FD partials check (1e-6). Input values < 0 are perturbed in a negative direction by a similar amount. Optional flage `Nudge=False` prevents this perturbation. 
+
+
+`problem.check_partials()` outputs the actual input values used during the `check_partials()` call (original input values + perturbed value).
+
 
 
 References
