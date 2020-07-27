@@ -66,5 +66,5 @@ if `get_io_metadata` were called on system `a.b.c`, the metadata entry for the v
 `a.b.c.x.y.z.foo` would have the name `x.y.z.foo`.  Also included in every returned metadata
 dict will be the entries `prom_name`, giving the promoted name in the scope of the `System`
 indicated by `self`, and `discrete`, a boolean indicating whether the given variable is 
-discrete or not.
+discrete.
 
