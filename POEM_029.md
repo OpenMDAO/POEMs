@@ -24,6 +24,19 @@ to some of that metadata currently are `list_inputs` and `list_outputs`, which r
 `list_inputs` and `list_outputs` are less flexible and have different default behaviors than would
 be preferable for a metadata retrieval function called primarily from configure().  
 
+The current versions of `list_inputs` and `list_outputs` only retrieve the variable 
+values by default, and values will often not be needed in `configure`, where it's more likely
+for entries like 'shape' to be needed.  Also, certain metadata items are not retrievable 
+at all using `list_inputs` and `list_outputs`.  Finally, `list_inputs` and `list_outputs` always gather
+or allgather the full value of distributed variables depending on the value of `all_procs`, but only if
+`out_stream` is the default value or is not None.  The values of variables returned from 
+`list_inputs` and `list_outputs` are always, however, just the local values.  This
+behavior, where full distributed values are written to the output stream but only local values
+are returned, could lead to confusion.  Also, using the default args would generate unwanted
+output if called from `configure`, and could result in unnecessary gather/allgather of distributed 
+values, which could be quite large.
+
+
 Description
 -----------
 
