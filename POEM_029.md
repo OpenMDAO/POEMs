@@ -33,7 +33,7 @@ or allgather the full value of distributed variables depending on the value of `
 `list_inputs` and `list_outputs` are always, however, just the local values.  This
 behavior, where full distributed values are written to the output stream but only local values
 are returned, could lead to confusion.  Also, using the default args would generate unwanted
-output if called from `configure`, and could result in unnecessary gather/allgather of distributed 
+output to stdout if called from `configure`, and could result in unnecessary gather/allgather of distributed 
 values, which could be quite large.
 
 
