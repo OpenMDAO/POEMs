@@ -3,7 +3,7 @@ Title:   Retrieval of IO Variable Metadata
 authors: Bret Naylor   
 Competing POEMs: N/A  
 Related POEMs: N/A
-Associated implementation PR: 
+Associated implementation PR: #1577
 
 Status:
 
