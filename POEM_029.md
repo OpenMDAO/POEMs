@@ -47,17 +47,19 @@ from `configure` and would also be called internally from `list_inputs`/`list_ou
 The new function is a method of `System` and is defined as follows:
 
 ```
-def get_io_metadata(self, iotypes=('input', 'output'), metadata_keys=None, 
-                                   includes=None, excludes=(), 
-                                   get_remote=False, rank=None)
+def get_io_metadata(self, iotypes=('input', 'output'), metadata_keys=None,
+                    includes=None, excludes=(), tags=(), get_remote=False, rank=None,
+                    return_rel_names=True):
 ```
 
 The `iotypes` arg allows the caller to specify whether input variables, output variables, or
 both (the default) are requested.
 
 The `metadata_keys` are an iterator of key names into the variable metadata dicts to
-be retrieved.  A value of None, the default, indicates that all entries in the metadata dicts
-are retrieved.
+be retrieved.  A value of None, the default, indicates that all entries in the 'allprocs'
+metadata dicts are retrieved.  These metadata dicts contain 'units', 'shape', 'size', 'desc',
+'ref', 'ref0', 'res_ref', 'distributed', 'lower', 'upper', and 'tags' for output variables
+for example.  If 'values' or 'src_indices' are required, they must be explicitly requested.
 
 The `includes` arg is either None, indicating that all variables are retrieved, or
 an iterator of wildcard strings that, if matched by a variable name, indicates that that 
@@ -74,7 +76,8 @@ The `rank` arg has no effect unless `get_remote` is True.  If so, a rank of None
 metadata to be allgathered to all MPI processes.  Otherwise it will only be gathered 
 to the specified rank.
 
-The variable names returned in the metadata list are relative names.  For example,
+The `return_rel_names` arg, if True, will return relative variable names instead of 
+absolute names.  The default is to return relative names. For example,
 if `get_io_metadata` were called on system `a.b.c`, the metadata entry for the variable 
 `a.b.c.x.y.z.foo` would have the name `x.y.z.foo`.  Also included in every returned metadata
 dict are the entries `prom_name`, giving the promoted name in the scope of the `System`
