@@ -1,14 +1,14 @@
-POEM ID:  29
-Title:   Retrieval of IO Variable Metadata
+POEM ID:  29  
+Title:   Retrieval of IO Variable Metadata  
 authors: Bret Naylor   
 Competing POEMs: N/A  
-Related POEMs: N/A
-Associated implementation PR: #1577
+Related POEMs: N/A  
+Associated implementation PR: #1577  
 
 Status:
 
-- [x] Active
-- [ ] Requesting decision
+- [ ] Active
+- [x] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
 - [ ] Integrated
@@ -19,8 +19,8 @@ Motivation
 
 As a result of changes to the OpenMDAO setup stack, it's now possible to access variable metadata
 from sub-groups and sub-components during `configure`.  The only functions that provide access
-to some of that metadata currently are `list_inputs` and `list_outputs`, which return a list of 
-(name, metadata) tuples as well as printing that information to an output stream.  However,
+to some of that metadata currently are `list_inputs` and `list_outputs`, which return a dict of 
+metadata keyed by variable name and prints that information to an output stream.  However,
 `list_inputs` and `list_outputs` are less flexible and have different default behaviors than would
 be preferable for a metadata retrieval function called primarily from configure().  
 
@@ -48,7 +48,7 @@ The new function is a method of `System` and is defined as follows:
 
 ```
 def get_io_metadata(self, iotypes=('input', 'output'), metadata_keys=None,
-                    includes=None, excludes=(), tags=(), get_remote=False, rank=None,
+                    includes=None, excludes=None, tags=(), get_remote=False, rank=None,
                     return_rel_names=True):
 ```
 
@@ -59,7 +59,9 @@ The `metadata_keys` are an iterator of key names into the variable metadata dict
 be retrieved.  A value of None, the default, indicates that all entries in the 'allprocs'
 metadata dicts are retrieved.  These metadata dicts contain 'units', 'shape', 'size', 'desc',
 'ref', 'ref0', 'res_ref', 'distributed', 'lower', 'upper', and 'tags' for output variables
-for example.  If 'values' or 'src_indices' are required, they must be explicitly requested.
+for example, and they can all be retrieved locally without additional gathers.
+If 'values' or 'src_indices' are required, they must be explicitly requested, because for 
+cases where values are distributed or remote, they must be gathered from other processes.
 
 The `includes` arg is either None, indicating that all variables are retrieved, or
 an iterator of wildcard strings that, if matched by a variable name, indicates that that 
@@ -70,7 +72,9 @@ The `excludes` arg is an iterator of wildcard strings that excludes any matching
 variable names from the metadata list.
 
 The `get_remote` arg, if True, causes metadata from all variables across all MPI processes
-to be retrieved.  If False, only local values are returned.
+to be retrieved.  If False, only local values are returned.  Note that if neither `value` nor
+`src_indices` are requested, then there is no need to retrieve any data from other
+processes so no gathers/allgathers will need to be performed even if `get_remote` is True.
 
 The `rank` arg has no effect unless `get_remote` is True.  If so, a rank of None causes the 
 metadata to be allgathered to all MPI processes.  Otherwise it will only be gathered 
