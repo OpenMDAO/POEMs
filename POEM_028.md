@@ -103,7 +103,7 @@ Description (Proposed Solution)
 
 
 
-`check_partials()` purturbs all input values before checking partials by default. Input values >= 0 are perturbed in a positive direction by a random value between 1e-1 and 1e-3. These values were chosen to be larger than the step size of the default FD partials check (1e-6). Input values < 0 are perturbed in a negative direction by a similar amount. Optional flage `Nudge=False` prevents this perturbation. 
+`check_partials()` purturbs all input values before checking partials by default. Input values >= 0 are perturbed in a positive direction by a random value between 1e-6 and 1e-3. These values were chosen to be larger than the step size of the default FD partials check (1e-6). Input values < 0 are perturbed in a negative direction by a similar amount. This is managed through the `rel_initial_perturb` option which is set to `(1e-6,1e-3)` by default. Setting `rel_initial_peturb=None` or `rel_initial_peturb=(0, 0)` prevents this perturbation. 
 
 
 `problem.check_partials()` outputs the actual input values used during the `check_partials()` call (original input values + perturbed value).
