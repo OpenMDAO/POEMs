@@ -1,5 +1,5 @@
 POEM ID: 030  
-Title: Complex-step model execution  
+Title: User Accessible Complex Step  
 authors: [justinsgray] (Justin Gray)   
 Competing POEMs: N/A  
 Related POEMs:    
