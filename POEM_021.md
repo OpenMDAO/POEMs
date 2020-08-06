@@ -1,9 +1,9 @@
 POEM ID: 021  
-Title:  _post_configure moved to public API
+Title:  _post_configure moved to public API  
 authors: [robfalck] (Rob Falck)  
-Competing POEMs: N/A
-Related POEMs: N/A
-Associated implementation PR: N/A
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR: N/A  
 
 Status:
 

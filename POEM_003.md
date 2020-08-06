@@ -3,7 +3,7 @@ Title: Allowing addition if I/O during Configure
 Author: anilyil (Anil Yildirim); justinsgray (Justin Gray); robfalck (Rob Falck)
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: [https://github.com/OpenMDAO/OpenMDAO/pull/1140, ]
+Associated implementation PR: [https://github.com/OpenMDAO/OpenMDAO/pull/1140, ]  
 
 Status: 
 

@@ -3,7 +3,7 @@ Title: setup/configure API Changes
 Authors: @robfalck
 Competing POEMs: [N/A]  
 Related POEMs: [003 - https://github.com/OpenMDAO/POEMs/pull/7]  
-Associated implementation PR: N/A
+Associated implementation PR: N/A  
 
 Status:
 

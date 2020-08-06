@@ -1,11 +1,9 @@
-| Item                        | Description                                                              |
-| --------------------------- | ------------------------------------------------------------------------ |
-| POEM ID                     | 018                                                                      |
-| Title                       | indices and src_indices can contain slices                               |
-| Authors                     | @robfalck                                                                |
-| Competing POEMs             | [N/A]                                                                    |
-| Related POEMs               | [N/A]                                                                    |
-| Associated implementation PR|                                                                          |
+POEM ID: 018         
+Title: indices and src_indices can contain slices  
+authors: @Kenneth-T-Moore         
+Competing POEMs: [N/A]   
+Related POEMs: [N/A]  
+Associated implementation PR:                                                                    
 
 Status:
 
