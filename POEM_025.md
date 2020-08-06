@@ -1,9 +1,9 @@
-POEM ID: 025
-Title:
-authors: [Kenneth-T-Moore]
-Competing POEMs: N/A
-Related POEMs: N/A
-Associated implementation PR:
+POEM ID: 025  
+Title: allow GA to seek pareto frontier  
+authors: [Kenneth-T-Moore]  
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR:  
 
 Status:
 

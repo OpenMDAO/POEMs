@@ -1,9 +1,9 @@
 POEM ID: 012 
 Title: Give the user the option to select the LAPACK driver for use in the SVD used in KrigingSurrogate  
 authors: [hschilling] ([Herb Schilling])   
-Competing POEMs: None
-Related POEMs: None
-Associated implementation PR: 1185
+Competing POEMs: None  
+Related POEMs: None  
+Associated implementation PR: 1185  
 
 Status:
 

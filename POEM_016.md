@@ -1,9 +1,9 @@
-POEM ID: 016
-Title: Linear algebra components can perform multiple calculations.
-authors: @robfalck
-Competing POEMs: None
-Related POEMs: None
-Associated implementation PR: None
+POEM ID: 016  
+Title: Linear algebra components can perform multiple calculations.  
+authors: @robfalck   
+Competing POEMs: None  
+Related POEMs: None  
+Associated implementation PR: None  
 
 Status:
 

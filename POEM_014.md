@@ -2,8 +2,8 @@ POEM ID: 014
 Title: Removal of XDSM viewer to be replaced by third-party plugin
 Authors: @robfalck
 Competing POEMs: N/A  
-Related POEMs: N/A
-Associated implementation PR: #1240
+Related POEMs: N/A  
+Associated implementation PR: #1240  
 
 Status:
 
