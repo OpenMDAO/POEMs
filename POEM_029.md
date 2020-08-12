@@ -8,8 +8,8 @@ Associated implementation PR: #1577
 Status:
 
 - [ ] Active
-- [x] Requesting decision
-- [ ] Accepted
+- [ ] Requesting decision
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
