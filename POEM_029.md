@@ -88,3 +88,9 @@ dict are the entries `prom_name`, giving the promoted name in the scope of the `
 indicated by `self`, and `discrete`, a boolean indicating whether the given variable is 
 discrete.
 
+Backwards Incompatibility
+-------------------------
+
+Note this POEM changes `list_inputs` and `list_outputs` from returning a list, to now returning a dictionary where the key is the input/output name.
+While this will break some current implementations which rely upon it, a simple solution is to just convert the returned output to a list using `model.list_outputs().items()`.
+In our experience the items within the returned lists were typically converted to dictionaries as a first order of business.
