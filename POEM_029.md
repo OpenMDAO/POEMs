@@ -20,7 +20,7 @@ Motivation
 As a result of changes to the OpenMDAO setup stack, it's now possible to access variable metadata
 from sub-groups and sub-components during `configure`.  The only functions that provide access
 to some of that metadata currently are `list_inputs` and `list_outputs`, which return a list of
-tuples of variable names and associated metadata and prints that information to an output stream.  However,
+tuples of variable names and associated metadata and print that information to an output stream.  However,
 `list_inputs` and `list_outputs` are less flexible and have different default behaviors than would
 be preferable for a metadata retrieval function called primarily from configure().  
 
