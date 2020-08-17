@@ -87,3 +87,10 @@ if `get_io_metadata` were called on system `a.b.c`, the metadata entry for the v
 dict are the entries `prom_name`, giving the promoted name in the scope of the `System`
 indicated by `self`, and `discrete`, a boolean indicating whether the given variable is 
 discrete.
+
+Backwards Incompatibility
+-------------------------
+
+The behavior of list_inputs/list_outputs is changed such that the results are now returned where the path is relative to the model being interrogated.
+list_inputs returns an absolute path relative to the model whose inputs are being requested.
+list_outputs returns a promoted path relative to the model whose inputs are bing requested.
