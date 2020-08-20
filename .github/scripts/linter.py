@@ -52,8 +52,8 @@ def check_headers(filename):
 
 
 if __name__ == '__main__':
-    filename = sys.argv[1]
-
-    if re_poem.match(filename):
-        check_headers(filename)
-        check_id(filename)
+    for filename in sys.argv[1:]:
+        print(filename)
+        if re_poem.match(filename):
+            check_headers(filename)
+            check_id(filename)
