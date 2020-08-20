@@ -1,4 +1,4 @@
-POEM ID:  029  
+POEM ID:  029
 Title:   Retrieval of IO Variable Metadata  
 authors: [naylor-b] (Bret Naylor)  
 Competing POEMs: N/A  
