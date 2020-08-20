@@ -5,7 +5,13 @@ Competing POEMs: N/A
 Related POEMs: N/A  
 Associated implementation PR: N/A  
 
-Status: Active 
+Status:
+
+- [ ] Active
+- [ ] Requesting decision
+- [ ] Accepted
+- [ ] Rejected
+- [x] Integrated
 
 What is a POEM? 
 ===============

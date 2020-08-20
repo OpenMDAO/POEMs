@@ -1,17 +1,17 @@
 POEM ID: 006  
 Title: Re-work the user experience in the N2 diagram  
-Authors: [hschilling(Herb Schilling)]
+Authors: hschilling (Herb Schilling)  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated implementation PR:
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation
@@ -53,7 +53,7 @@ Options include:
 with toolbars such as Microsoft Office apps and Photoshop. Redesign many of the icons in the toolbar. Possibly 
 include both an icon and text in the button.
 
-![toolbar with graphic and text buttons](/POEM_006/toolbar_with_graphic_and_text_buttons.png)
+![toolbar with graphic and text buttons](POEM_006/toolbar_with_graphic_and_text_buttons.png)
 
 * Use [card sorting][2] with team members and key users to determine how to group buttons in the toolbar.
 * Implement tabs in the UI. This would enable having two tabs for the N2 diagram and the connections
@@ -65,11 +65,11 @@ exploring and navigating large numbers of annotated patterns or features in mult
 
 Prototypes and Mockups
 ----------------------
-A [prototype](./n2_prototype_from_workshop.html) was created for the OpenMDAO Workshop that showed having buttons
+A [prototype](POEM_006/n2_prototype_from_workshop.html) was created for the OpenMDAO Workshop that showed having buttons
 to change modes and also having a right-click contextual menu. The prototype shows 3 different Modes: 
 collapse mode, zoom mode, tooltip mode. 
 
-![workshop button mode mockup](/POEM_006/workshop_mockup_mode_buttons.png)
+![workshop button mode mockup](POEM_006/workshop_mockup_mode_buttons.png)
 
 Right-click offered the user the option to Collapse, and Edit File, as examples.
 
