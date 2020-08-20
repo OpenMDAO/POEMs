@@ -62,7 +62,9 @@ if __name__ == '__main__':
         if re_poem.match(filename):
             check_headers(filename, errors[filename])
             check_id(filename, errors[filename])
+            if errors[filename]:
+                print(filename)
             for err in errors[filename]:
-                print(err)
+                print('    ', err)
             err_count += len(errors[filename])
     exit(err_count)
