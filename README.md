@@ -36,6 +36,7 @@ That way, github's built in notification system to get emails when things are ch
 | [003](POEM_003.md) | Allowing addition of I/O during Configure | [Anil Yildirim](https://github.com/anilyil); [Justin Gray](https://github.com/justinsgray); [Rob Falck](https://github.com/robfalck) | integrated |
 | [004](POEM_004.md) | Creating Interpolant Class For 1D Splines | [DKilkenny](https://github.com/DKilkenny) | integrated |
 | [005](POEM_005.md) | An OpenMDAO Plugin System | [naylor-b](https://github.com/naylor-b) | integrated |
+| [006](POEM_006.md) | Re-work the user experience in the N2 diagram | [Herb Schilling](https://github.com/hschilling) | integrated |
 | [007](POEM_007.md) | String Compatibility for ExternalCodeComp and ExternalCodeImplicitComp Command Options | [Danny Kilkenny](https://github.com/DKilkenny) | integrated |
 | [008](POEM_008.md) | Nonlinear Solver Refactor | [Danny Kilkenny](https://github.com/DKilkenny) | integrated |
 | [009](POEM_009.md) | setup/configure API Changes | [Rob Falck](https://github.com/robfalck) | rejected |
@@ -44,6 +45,7 @@ That way, github's built in notification system to get emails when things are ch
 | [012](POEM_012.md) | Give the user the option to select the LAPACK driver for use in the SVD used in KrigingSurrogate | [Herb Schilling](https://github.com/hschilling) | integrated |
 | [013](POEM_013.md) | Unit conversion enhancements | [Rob Falck](https://github.com/robfalck) | integrated |
 | [014](POEM_014.md) | Removal of XDSM viewer to be replaced by third-party plugin | [Rob Falck](https://github.com/robfalck) | integrated |
+| [015](POEM_015.md) | Automatic creation of IndepVarComp outputs for all unconnected inputs | [justingray](https://github.com/justingray) | integrated |
 | [016](POEM_016.md) | Linear algebra components can perform multiple calculations. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [017](POEM_017.md) | User can specify units when adding design variables, constraints, and objectives. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | integrated |
 | [018](POEM_018.md) | indices and src_indices can contain slices | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | integrated |
