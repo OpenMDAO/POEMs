@@ -1,9 +1,9 @@
-POEM ID: 015 
-Title: Automatic creation of IndepVarComp outputs for all unconnected inputs
+POEM ID: 015  
+Title: Automatic creation of IndepVarComp outputs for all unconnected inputs  
 authors: [justingray]  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: 
+Associated implementation PR:
 
 Status:
   
@@ -35,11 +35,11 @@ modify the group itself so you can issue the connections
 Consider a group `G0`, with a promoted input `X` that maps to the inputs on two subsystems `C0` and `C1`. 
 If you wanted to use `G0` at the top level of your mdoel and optimize the value of `X`, then you 
 would get a model that looked like this: 
-![example model to illustrate an IVC for a DV](/POEM_015/poem_015_problem_ivc.jpg)]
+![example model to illustrate an IVC for a DV](POEM_015/poem_015_problem_ivc.jpg)]
 
 However, if you wanted to connect some other calculation into `G0.X`, from the outside of `G0` then 
 you would get a model like this: 
-![example model to illustrate an external connection for the same input](/POEM_015/poem_015_problem_connection.jpg)]
+![example model to illustrate an external connection for the same input](POEM_015/poem_015_problem_connection.jpg)]
 
 So now you need code that goes something like this: 
 
