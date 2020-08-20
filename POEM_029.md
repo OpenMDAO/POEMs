@@ -1,6 +1,6 @@
 POEM ID:  29  
 Title:   Retrieval of IO Variable Metadata  
-authors: Bret Naylor  
+authors: [naylor-b] (Bret Naylor)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: [#1577](https://github.com/OpenMDAO/OpenMDAO/pull/1577)
@@ -9,9 +9,9 @@ Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation

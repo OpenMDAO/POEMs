@@ -91,7 +91,7 @@ def parse_poem(file):
         lines = poem.readlines()
 
     for line in lines:
-        lu = line.upper()
+        lu = line.upper().strip()
         if lu.startswith('POEM ID:'):
             entries['id'] = line.split(':', 1)[-1].strip()
         elif lu.startswith('TITLE:'):
@@ -136,8 +136,9 @@ def build_poem_table():
 
     for id in sorted(table_dict.keys()):
         entries = table_dict[id]
+        id_str = f'[{id:03}](POEM_{id:03}.md)'
         author_str = format_authors(entries['authors'])
-        print(f"| {id:03} | {entries['title']} | {author_str} | {entries['status']} |",
+        print(f"| {id_str} | {entries['title']} | {author_str} | {entries['status']} |",
               file=table)
 
     return table.getvalue()

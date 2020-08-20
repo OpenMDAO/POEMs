@@ -1,6 +1,5 @@
 
-OpenMDAO POEM Process
-=====================
+# OpenMDAO POEM Process
 
 The POEM process is the official mechanism for proposing, discussing, revising, and ultimately approving or rejecting all changes to the [OpenMDAO](https://openmdao.org) project which effect its user interaction. 
 The process involves writing, reading, and discussing documents called POEMs (**p**roposal for **O**penMDAO **e**nhance**m**ent). 
@@ -10,24 +9,50 @@ It is also recursive because it governs any changes to itself.
 
 The process serves two primary and equally important purposes: 
 
-1) Announce all changes to the user interface of OpenMDAO to users  
-of the framework **before** they are added to the main repository
+1) Announce all changes to the user interface of OpenMDAO to users of the framework **before** they are added to the main repository
 
-2) Provide a mechanism for external users to propose  
-changes to the user interface for OpenMDAO
+2) Provide a mechanism for external users to propose changes to the user interface for OpenMDAO
 
-How does it work?
------------------
+##  How does it work?
 
 The rules are described in the [POEM_000.md](https://github.com/OpenMDAO/POEMs/blob/master/POEM_000.md) document in this repository. 
-The OpenMDAO POEMs repository (i.e. this repo) contains a full record of all POEMs submitted, starting November 1st, 2019. 
-Both the core development team and external users participate, and input on any POEM is welcome from any user at any time. 
+The OpenMDAO POEMs repository (i.e. this repo) contains a full record of all POEMs submitted, starting November 1st, 2019.
+Both the core development team and external users participate, and input on any POEM is welcome from any user at any time.
 
-
-How can I keep up to date on POEMs?
------------------------------------
+##  How can I keep up to date on POEMs?
 
 All POEM activity is managed within this repository, via PRs and comments to those PRs. 
 The best way to track that activity is to star and watch this repository. 
 That way, github's built in notification system to get emails when things are changing. 
 [Github has lots of great docs on this!](https://help.github.com/en/github/receiving-notifications-about-activity-on-github/watching-and-unwatching-repositories)
+
+## List of POEMs
+
+| POEM ID | Title | Author | Status |
+| ------- | ----- | ------ | ------ |
+| [000](POEM_000.md) | POEM Purpose and Guidelines | [Justin S. Gray](https://github.com/justinsgray) | integrated |
+| [001](POEM_001.md) | Units update for better astrodynamics support | [Rob Falck](https://github.com/robfalck) | integrated |
+| [002](POEM_002.md) | New capability for user to send a termination signal to an OpenMDAO process so that SNOPT in pyoptsparse can terminate cleanly. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | integrated |
+| [003](POEM_003.md) | Allowing addition of I/O during Configure | [Anil Yildirim](https://github.com/anilyil); [Justin Gray](https://github.com/justinsgray); [Rob Falck](https://github.com/robfalck) | integrated |
+| [004](POEM_004.md) | Creating Interpolant Class For 1D Splines | [DKilkenny](https://github.com/DKilkenny) | integrated |
+| [005](POEM_005.md) | An OpenMDAO Plugin System | [naylor-b](https://github.com/naylor-b) | integrated |
+| [007](POEM_007.md) | String Compatibility for ExternalCodeComp and ExternalCodeImplicitComp Command Options | [Danny Kilkenny](https://github.com/DKilkenny) | integrated |
+| [008](POEM_008.md) | Nonlinear Solver Refactor | [Danny Kilkenny](https://github.com/DKilkenny) | integrated |
+| [009](POEM_009.md) | setup/configure API Changes | [Rob Falck](https://github.com/robfalck) | rejected |
+| [010](POEM_010.md) | add argument `recordable` to options.declare | [Rob Falck](https://github.com/robfalck) | integrated |
+| [011](POEM_011.md) | Expand problem recording options | [Rob Falck](https://github.com/robfalck); [Herb Schilling](https://github.com/hschilling) | integrated |
+| [012](POEM_012.md) | Give the user the option to select the LAPACK driver for use in the SVD used in KrigingSurrogate | [Herb Schilling](https://github.com/hschilling) | integrated |
+| [013](POEM_013.md) | Unit conversion enhancements | [Rob Falck](https://github.com/robfalck) | integrated |
+| [014](POEM_014.md) | Removal of XDSM viewer to be replaced by third-party plugin | [Rob Falck](https://github.com/robfalck) | integrated |
+| [016](POEM_016.md) | Linear algebra components can perform multiple calculations. | [Rob Falck](https://github.com/robfalck) | integrated |
+| [017](POEM_017.md) | User can specify units when adding design variables, constraints, and objectives. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | integrated |
+| [018](POEM_018.md) | indices and src_indices can contain slices | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | integrated |
+| [019](POEM_019.md) | Random Vectors in Directional Derivatives | [Kevin Jacobson](https://github.com/kejacobson) | integrated |
+| [020](POEM_020.md) | KSComp option to automatically add corresponding constraint | [Rob Falck](https://github.com/robfalck) | integrated |
+| [021](POEM_021.md) | _post_configure moved to public API | [Rob Falck](https://github.com/robfalck) | rejected |
+| [023](POEM_023.md) | Remove reconfigure code from the current code base | [Bret Naylor](https://github.com/naylor-b) | integrated |
+| [025](POEM_025.md) | allow GA to seek pareto frontier | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
+| [026](POEM_026.md) | Remove support for factorial function in ExecComp | [swryan](https://github.com/swryan) | accepted |
+| [027](POEM_027.md) | Approximation flag and state tracking | [johnjasa](https://github.com/johnjasa) | accepted |
+| [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
+

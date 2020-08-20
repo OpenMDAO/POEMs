@@ -1,5 +1,5 @@
 POEM ID: 003  
-Title: Allowing addition if I/O during Configure  
+Title: Allowing addition of I/O during Configure  
 Author: anilyil (Anil Yildirim); justinsgray (Justin Gray); robfalck (Rob Falck)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
