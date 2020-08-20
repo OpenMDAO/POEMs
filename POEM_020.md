@@ -1,6 +1,6 @@
 POEM ID: 020  
 Title: KSComp option to automatically add corresponding constraint  
-Authors: @robfalck
+Authors: robfalck (Rob Falck)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1323  

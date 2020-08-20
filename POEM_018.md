@@ -1,7 +1,7 @@
-POEM ID: 018         
+POEM ID: 018  
 Title: indices and src_indices can contain slices  
-authors: @Kenneth-T-Moore         
-Competing POEMs: [N/A]   
+authors: [Kenneth-T-Moore]  
+Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated implementation PR:                                                                    
 

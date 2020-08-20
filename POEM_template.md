@@ -1,6 +1,6 @@
 POEM ID:  
-Title:   
-authors: [github user_name] ([real name] -- optional)   
+Title:  
+authors: github_user_name (optional real name)  
 Competing POEMs: [list any other POEMs which are incompatible with this one]  
 Related POEMs: [list any other POEMs which are related (but still compatible) with this one]  
 Associated implementation PR:    

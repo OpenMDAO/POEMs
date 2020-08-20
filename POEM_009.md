@@ -1,6 +1,6 @@
 POEM ID: 009  
-Title: setup/configure API Changes
-Authors: @robfalck
+Title: setup/configure API Changes  
+Authors: robfalck (Rob Falck)  
 Competing POEMs: [N/A]  
 Related POEMs: [003 - https://github.com/OpenMDAO/POEMs/pull/7]  
 Associated implementation PR: N/A  
