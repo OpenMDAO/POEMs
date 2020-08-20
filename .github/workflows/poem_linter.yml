@@ -19,17 +19,14 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+    - uses: jitterbit/get-changed-files@v1
+      with:
+        format: 'csv'
+    - uses: actions/setup-python@v2
       with:
         python-version: 3.8
-
     - name: Run script
-      - uses: jitterbit/get-changed-files@v1
-        with:
-          format: 'csv'
-      - run: |
+      run: |
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
           status = 0
           for added_modified_file in "${added_modified_files[@]}"; do
