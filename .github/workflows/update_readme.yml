@@ -24,9 +24,6 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Check git branch
-      run: git branch
-
     - name: Run script
       run: python ./.github/scripts/update_readme.py
 
