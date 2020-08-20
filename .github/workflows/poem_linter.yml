@@ -26,5 +26,5 @@ jobs:
     - name: Run script
       run: |
           mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
-          echo ${{ steps.files.outputs.added_modified }}
+          echo "${added_modified_files}"
           python ./.github/scripts/linter.py "${added_modified_files[@]}"
