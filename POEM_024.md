@@ -1,16 +1,16 @@
-POEM ID:  
-Title: Calculating ExecComp Jacobian with symbolic derivatives
-authors: [onodip] (Péter Onódi)   
-Competing POEMs: N/A
-Related POEMs: N/A
-Associated implementation PR: N/A
+POEM ID: 024   
+Title: Calculating ExecComp Jacobian with symbolic derivatives  
+authors: [onodip] (Péter Onódi)    
+Competing POEMs: N/A 
+Related POEMs: N/A 
+Associated implementation PR: N/A 
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
 
 <Note: two space are required after every line of the header to create proper linebreaks in the markdown>
@@ -142,4 +142,8 @@ if __name__ == '__main__':
 ```
 
 
+Rejection Justification
+-----------------------
 
+Performance benchmarking done by @onodip found that in nearly every use case (certainly all common use cases) the performance of CS equal to or better than that of SymPy. 
+Given the limited potential gains, the additional dependency and code complexity for this POEM was deemed too much to justify adoption by the dev team. 
