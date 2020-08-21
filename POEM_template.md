@@ -1,9 +1,9 @@
 POEM ID:  
-Title:   
-authors: [github user_name] ([real name] -- optional)   
+Title:  
+authors: github_user_name (optional real name)  
 Competing POEMs: [list any other POEMs which are incompatible with this one]  
 Related POEMs: [list any other POEMs which are related (but still compatible) with this one]  
-Associated implementation PR:    
+Associated implementation PR:
 
 Status:
 
@@ -16,12 +16,10 @@ Status:
 <Note: two space are required after every line of the header to create proper linebreaks in the markdown>
 
 
-Motivation
-----------
+## Motivation
 
 
-Description
------------
+## Description
 
 
 
