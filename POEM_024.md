@@ -1,9 +1,9 @@
 POEM ID: 024   
 Title: Calculating ExecComp Jacobian with symbolic derivatives  
-authors: [onodip] (Péter Onódi)    
-Competing POEMs: N/A 
-Related POEMs: N/A 
-Associated implementation PR: N/A 
+authors: [onodip] (Péter Onódi)  
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR: N/A  
 
 Status:
 
