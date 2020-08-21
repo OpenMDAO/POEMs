@@ -1,5 +1,5 @@
 POEM ID:   022  
-Title:  Shape inputs/outputs by connection or function.   
+Title:  POEM 22:Shape inputs/outputs by connection or copy from another component variable   
 Authors: joanibal (Josh Anibal)   
 Competing POEMs: N/A  
 Related POEMs: N/A
@@ -7,8 +7,8 @@ Associated implementation PR: None (yet)
 
 Status:
 
-- [x] Active
-- [ ] Requesting decision
+- [] Active
+- [x] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
 - [ ] Integrated
@@ -61,7 +61,7 @@ An Additional source of frustration is that the description of the input/output 
 # Description
 
 The solution I propose to create modular components of variable shape is to allow inputs and outputs to get their shape information from their connections or 
-by a function. 
+by copying the infomation of another variable in the componet. 
 
 shape by connection
 ---------
@@ -118,54 +118,13 @@ class SurfaceIntegration(om.ExplicitComponent):
 
 
 
-shape by function 
+Copy Shape 
 ---------
-The shape of one variable often depends on the shape of other. 
-To leverage this idea in OpenMDAO, we can use the relationship between variable shapes as a method of declaring shape in the definition of inputs and outputs. 
-However, to figure out what order the relationships should be resolved OpenMDAO must know what variable shapes this variable's shape depends on. 
-This can be done by passing another keyword argument to the input and output definition that explicitly defines the dependence. 
-Using this method we can easily create components with act on vectors of arbitrary shape and have a relationship between variables based on that arbitrary shape. 
-Such components could include mesh refinement, rotations, solution interpolation, matrix decompositions. 
+The shape of one variable is often the same as another. 
+When used in conjuction with the shape_by_connection idea, this method can be used to pass shape information through the component. 
 
 
 
-```python
-class Interpolate(om.ExplicitComponent):
-    """
-    interpolates the coarse solution 'u_coarse' to the fine solution 'u_fine',
-    which is twice as dense along each dimension.
-    """
-
-    def setup(self):
-
-        self.add_input('u_coarse', shape_by_connection=True)
-
-        def my_shape_func(var_meta):
-            """
-             function run to determine the shape of the variable
-
-             parameters
-             ----------
-             var_meta: dictionary of meta data objects for each of the variables
-                       on this component
-            
-             Returns
-             ----------
-             shape: tuple
-                 the shape of the variable
-            """
-            shape = var_meta['u_coarse'].size*2
-
-            return (shape)
-
-        # the shape of this output is related by the function to the shape of the variables defined
-        # in shape_depends on 
-        self.add_output('u_fine', shape_function=my_shape_func, shape_depends_on=['u_coarse'])
-
-    .
-    .
-    .
-```
 
 
 
@@ -177,44 +136,13 @@ class RotateMesh(om.ExplicitComponent):
 
     def setup(self):
 
-        self.add_input('X', shape_by_connection=True, desc='mesh nodes')
+        self.add_input('X', shape_by_conn=True, desc='mesh nodes')
         self.add_input('axis', shape=3, desc='axis of rotation')
         self.add_input('ang', shape=1, desc='angle of rotation', units='rad')
 
 
-
-        def my_shape_func(var_meta):
-            return (var_meta['X'].shape)
-
-        # the shape of this output is related by the function to the shape of the variables defined
-        # in shape_depends on 
-        self.add_output('Xrot', shape_function=my_shape_func, shape_depends_on=['X'])
-
-    .
-    .
-    .
-```
-
-
-```python
-class OuterProduct(om.ExplicitComponent):
-    """
-    computes the outer product of the two input vectors 
-    """
-
-    def setup(self):
-
-        self.add_input('vec_1', shape_by_connection=True)
-        self.add_input('vec_1', shape_by_connection=True)
-
-
-
-        def get_mat_shape(var_meta):
-            return (var_meta['vec_1'].size, var_meta['vec_2'].size)
-
-        # the shape of this output is related by the function to the shape of the variables defined
-        # in shape_depends on 
-        self.add_output('mat', shape_function=get_mat_shape, shape_depends_on=['vec_1', 'vec_2'])
+        # the shape of this output is the same as X
+        self.add_output('Xrot', copy_shape='X, shape_depends_on=['X'])
 
     .
     .
@@ -223,23 +151,7 @@ class OuterProduct(om.ExplicitComponent):
 
 
 # Implementation
-
-There is no PR associated with this POEM for two reason. 
-One, want to see if the dev team though it was a good idea before investing more time into it.
-Two, I expect that implementing this feature would require detailed knowledge of OpenMDAO to do right. 
-However, I have looked at the code used to setup a model and come up with an idea of how it could work.
-
-After configure is called on all components, preform the following steps 
-- Create a global decency graph for the model using the given shape dependencies
-    - Variables using shaped_by_connection have a dependency on the shaped variable they are connected to.
-- Check that the dependency graph forms a tree, if it doesn't there is a circular dependency
-- move up the dependency tree levels to find the shapes for all the inputs/outputs  
-
-Then continue with normal connection shape checking and final setup 
-
-An error should be raised if
-- a shape_by_connection component is not connected 
-- there is a circular decency in a group dependency graph 
+See the [PR associated](https://github.com/OpenMDAO/OpenMDAO/pull/1646) with this POEM for my idea about how this idea could be implemented. 
 
 
 
