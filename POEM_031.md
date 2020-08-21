@@ -29,13 +29,7 @@ Description
 
 Implement the aitken relaxation/acceleration algorithm in the the linear block GaussSeidel algorithm, and add a consistent set of control options in both solvers. 
 
-Add the new option `aitken_initial_factor` with a default value of 0.4. 
-Since 0.4 is a backwards incompatible change with the default of 1.0 in OpenMDAO V3.2.1, 
-We can first add the new option to the nonlinear solver but leave the default at 1.0. 
-When Aitken is active, we can throw a deprecation warning stating that the default will change from 1.0 to 0.4 in the next version. 
-Then then in the next version, we can change the default and add the Aitken algorithm to the linear solver as well. 
-
-I am proposing the intermediate release only include the new option on the nonlinear solver specifically to limit the amount of backwards incompatible changes we create (even if they are only for a single transition release). 
+Keep the default initial factor as 1.0 
 
 
 
