@@ -1,6 +1,6 @@
-POEM ID: 013
-Title: Unit conversion enhancements
-Authors: @robfalck
+POEM ID: 013  
+Title: Unit conversion enhancements  
+Authors:  robfalck (Rob Falck)  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated implementation PR: N/A  

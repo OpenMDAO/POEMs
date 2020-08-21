@@ -1,6 +1,6 @@
 POEM ID: 001  
 Title: Units update for better astrodynamics support  
-authors: [robfalck]  
+authors: robfalck (Rob Falck)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1101  

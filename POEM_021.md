@@ -1,6 +1,6 @@
 POEM ID: 021  
 Title:  _post_configure moved to public API  
-authors: [robfalck] (Rob Falck)  
+authors: robfalck (Rob Falck)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: N/A  
@@ -29,4 +29,4 @@ The `_post_configure` method is being moved to the public API (renamed `post_con
 Rejection Rationale
 -------------------
 
-This POEM is being rejected. After futher consideration the development team has decided to go a different way.  _post_configure futher complicates an already complex setup stack.
+This POEM is being rejected. After further consideration the development team has decided to go a different way.  _post_configure further complicates an already complex setup stack.

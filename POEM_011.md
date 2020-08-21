@@ -1,9 +1,9 @@
-POEM ID: 011
-Title: Expand problem recording options
-Authors: @robfalck @hschilling
+POEM ID: 011  
+Title: Expand problem recording options  
+Authors:  robfalck (Rob Falck); hschilling (Herb Schilling)  
 Competing POEMs: [N/A]  
-Related POEMs: [N/A]
-Associated implementation PR: N/A  
+Related POEMs: [N/A]  
+Associated implementation PR: N/A
 
 Status:
 

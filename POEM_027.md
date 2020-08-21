@@ -1,9 +1,9 @@
-POEM ID:  27  
+POEM ID:  027  
 Title:   Approximation flag and state tracking  
 authors: johnjasa   
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR:   https://github.com/OpenMDAO/OpenMDAO/pull/1492  
+Associated implementation PR: [#1492](https://github.com/OpenMDAO/OpenMDAO/pull/1492)
 
 Status:
 
