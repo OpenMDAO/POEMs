@@ -57,4 +57,5 @@ That way, github's built in notification system to get emails when things are ch
 | [026](POEM_026.md) | Remove support for factorial function in ExecComp | [swryan](https://github.com/swryan) | accepted |
 | [027](POEM_027.md) | Approximation flag and state tracking | [johnjasa](https://github.com/johnjasa) | accepted |
 | [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
+| [030](POEM_030.md) | User Accessible Complex Step | [Justin Gray](https://github.com/justinsgray) | active |
 
