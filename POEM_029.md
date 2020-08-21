@@ -19,8 +19,8 @@ Motivation
 
 As a result of changes to the OpenMDAO setup stack, it's now possible to access variable metadata
 from sub-groups and sub-components during `configure`.  The only functions that provide access
-to some of that metadata currently are `list_inputs` and `list_outputs`, which return a dict of 
-metadata keyed by variable name and prints that information to an output stream.  However,
+to some of that metadata currently are `list_inputs` and `list_outputs`, which return a list of
+tuples of variable names and associated metadata and print that information to an output stream.  However,
 `list_inputs` and `list_outputs` are less flexible and have different default behaviors than would
 be preferable for a metadata retrieval function called primarily from configure().  
 
@@ -91,6 +91,6 @@ discrete.
 Backwards Incompatibility
 -------------------------
 
-Note this POEM changes `list_inputs` and `list_outputs` from returning a list, to now returning a dictionary where the key is the input/output name.
-While this will break some current implementations which rely upon it, a simple solution is to just convert the returned output to a list using `model.list_outputs().items()`.
-In our experience the items within the returned lists were typically converted to dictionaries as a first order of business.
+The behavior of list_inputs/list_outputs is changed such that the results are now returned where the path is relative to the model being interrogated.
+list_inputs returns an absolute path relative to the model whose inputs are being requested.
+list_outputs returns a promoted path relative to the model whose inputs are bing requested.
