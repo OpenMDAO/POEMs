@@ -1,8 +1,8 @@
-POEM ID: 031
-Title: Improved Aitken Relaxation
-authors: [justinsgray]
-Competing POEMs: N/A
-Related POEMs: N/A
+POEM ID: 031   
+Title: Improved Aitken Relaxation  
+authors: [justinsgray]    
+Competing POEMs: N/A   
+Related POEMs: N/A  
 Associated implementation PR: #1590
 
 Status:
@@ -29,7 +29,7 @@ Description
 
 Implement the aitken relaxation/acceleration algorithm in the the linear block GaussSeidel algorithm, and add a consistent set of control options in both solvers. 
 
-Keep the default initial factor as 1.0 
+Keep the default initial factor as 1.0
 
 
 
