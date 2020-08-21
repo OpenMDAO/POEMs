@@ -1,8 +1,8 @@
-POEM ID: 031   
-Title: Improved Aitken Relaxation  
-authors: [justinsgray]    
-Competing POEMs: N/A   
-Related POEMs: N/A  
+POEM ID: 031
+Title: Improved Aitken Relaxation
+authors: [justinsgray]
+Competing POEMs: N/A
+Related POEMs: N/A
 Associated implementation PR: #1590
 
 Status:
