@@ -1,5 +1,5 @@
-POEM ID:   022  
-Title:  POEM 22:Shape inputs/outputs by connection or copy from another component variable   
+POEM ID: 022  
+Title:  POEM 022: Shape inputs/outputs by connection or copy from another component variable   
 Authors: joanibal (Josh Anibal), naylor-b (Bret Naylor)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
