@@ -52,6 +52,7 @@ That way, github's built in notification system to get emails when things are ch
 | [019](POEM_019.md) | Random Vectors in Directional Derivatives | [Kevin Jacobson](https://github.com/kejacobson) | integrated |
 | [020](POEM_020.md) | KSComp option to automatically add corresponding constraint | [Rob Falck](https://github.com/robfalck) | integrated |
 | [021](POEM_021.md) | _post_configure moved to public API | [Rob Falck](https://github.com/robfalck) | rejected |
+| [022](POEM_022.md) | POEM 022: Shape inputs/outputs by connection or copy from another component variable | [Josh Anibal](https://github.com/joanibal) | requesting decision |
 | [023](POEM_023.md) | Remove reconfigure code from the current code base | [Bret Naylor](https://github.com/naylor-b) | integrated |
 | [024](POEM_024.md) | Calculating ExecComp Jacobian with symbolic derivatives | [Péter Onódi](https://github.com/onodip) | rejected |
 | [025](POEM_025.md) | allow GA to seek pareto frontier | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
