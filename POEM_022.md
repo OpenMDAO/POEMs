@@ -7,8 +7,8 @@ Associated implementation PR: None (yet)
 
 Status:
 
-- [x] Active
-- [ ] Requesting decision
+- [ ] Active
+- [x] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
 - [ ] Integrated
