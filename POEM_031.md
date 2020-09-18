@@ -3,15 +3,15 @@ Title: Improved Aitken Relaxation
 authors: [justinsgray]    
 Competing POEMs: N/A   
 Related POEMs: N/A  
-Associated implementation PR: #1590  
+Associated implementation PR: #1590, #1663 
 
 Status:
 
 - [ ] Active  
 - [ ] Requesting decision  
-- [x] Accepted  
+- [ ] Accepted  
 - [ ] Rejected  
-- [ ] Integrated  
+- [x] Integrated  
 
 
 
