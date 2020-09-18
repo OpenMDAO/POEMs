@@ -34,7 +34,7 @@ or via the OpenMDAO command line.
 Because the scaling report will include information about the objective, constraints, 
 and potentially derivatives it will need to be run before generating the report. 
 So the driver method will have to call run_driver once. 
-This call to run_driver should not trigger any case recording. 
+This call to run_driver should not trigger any case recording (this might be challenging...)
 
 
 Consider a problem with 15 design variables, 10 constraints, and one objective. 
