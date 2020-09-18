@@ -28,6 +28,10 @@ The framework should be able to produce a report showing the model values and th
 Description
 -----------
 
+This new feature should be accessible both from a method the user can call on driver, 
+or via the OpenMDAO command line. 
+
+
 Consider a problem with 15 design variables, 10 constraints, and one objective. 
 Users have provided values for ref, ref0, upper and lower (for dvs) for some or all of these.
 We need to give the user a detailed summary of the problem scaling. 
