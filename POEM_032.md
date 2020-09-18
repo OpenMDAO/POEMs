@@ -31,6 +31,11 @@ Description
 This new feature should be accessible both from a method the user can call on driver, 
 or via the OpenMDAO command line. 
 
+Because the scaling report will include information about the objective, constraints, 
+and potentially derivatives it will need to be run before generating the report. 
+So the driver method will have to call run_driver once. 
+This call to run_driver should not trigger any case recording. 
+
 
 Consider a problem with 15 design variables, 10 constraints, and one objective. 
 Users have provided values for ref, ref0, upper and lower (for dvs) for some or all of these.
