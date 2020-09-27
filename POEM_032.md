@@ -60,6 +60,7 @@ y (10)         |31.6|   (|31.6|)  1     N/A     -100  (-100)   100    (100)
 
 Notes: 
 
+- Variables should be sorted in order of lowest to highest driver value (sorting by driver value makes the most sense since this is for scaling, and the driver value is what matters in that context.)
 - Array values should be shown as the 2-norm of the array
 - Its likely that  the value will be an array, but the ref/ref0 or upper/lower will be scalar. 
   only the array values should be shown as a norm. 
@@ -118,11 +119,11 @@ The derivative section will be formatted like this:
 Jacobian
 -----------------
 
-                             model  | driver  
- (output, input) | (shape) | value  | (value) | ref | ref0 |
+                             model    driver  
+ (output, input) | (shape) | value  | (value) |
 ----------------------------------------------------------------------------
-f,x                  1       10       (1)        10    N/A     
-f,y               (10,10)    |31.6|   (|31.6|)   1     N/A       
+f,x                  1       10       (1)            
+f,y               (10,10)    |31.6|   (|31.6|)        
      min                        -37   (-37)   
      max                        1e20  (1e20)  
 
