@@ -27,7 +27,7 @@ The simplest solution would be to simply add these constraints to the total deri
 However, some problems may have a lot of linear constraints and it could be expensive to check them all. 
 
 The proposed solution is to add a `linear_constraints` argument to the `check_totals` methods. 
-It should default to `True`, even though this will be a mile backwards incompatibility. 
+It should default to `True`, even though this will be a mild backwards incompatibility. 
 For any users who need to retain the old behavior, adding the argument to their call should be simple enough. 
 
 The linear constraints should be clearly marked as such in the `check_totals` output like this: 
