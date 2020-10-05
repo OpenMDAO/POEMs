@@ -17,25 +17,67 @@ Status:
 
 Motivation
 ----------
-Getting scaling right on a large optimziation is challenging, 
-even when you have a good sense of the problem. 
-Most users --- especially ones who are debugging other peoples opts ---
-don't have a complete picture of all the DVs, objectives, and constraints. 
+Getting scaling right on a large optimization is challenging, 
+even when you have a good sense of the relative magnitudes and sensitivities of the DVs, 
+objectives, and constraints. 
+If you're helping to scale someone else's model or building a new optimization problem from scratch, 
+then you may not have a good sense of the problem and proper scaling becomes extremely difficult. 
 
-The framework should be able to produce a report showing the model values and the scaled values (i.e. as the drive sees them) for all DVs, objectives, constraints. 
+OpenMDAO should produce a report showing the model values, the scaled values (i.e. as the drive sees them) for all DVs, objectives, constraints. 
+It should also include information on the magnitude of the total derivative Jacobian in both 
+model and driver-scaled forms. 
+
+Presenting this information in a compact, ordered fashion will assist the user in developing a good scaling scheme for their model. 
 
 
 Description
 -----------
 
-This new feature should be accessible both from a method the user can call on driver, 
+Timing Requirements
+===================
+
+The scaling report will include information about the objective, constraints, 
+and derivatives, hence `run_model` must be called before generating the report (to make sure those quantities are valid). 
+Also, it's critically important that the scaling report be generated after all of the initial values have been set by the user. 
+
+Ideally this feature will be accessible both from a method the user can call on driver, 
 or via the OpenMDAO command line. 
 
-Because the scaling report will include information about the objective, constraints, 
-and potentially derivatives it will need to be run before generating the report. 
-So the driver method will have to call run_driver once. 
-This call to run_driver should not trigger any case recording (this might be challenging...)
+When called by a user inside their run-script, the responsibility of correct timing is on them. 
+When called by the command line tool, the only way to ensure proper timing would be 
+to intercept the call to `run_driver`. 
+By the time the user calls `run_driver`, they must have initialized the model to their satisfaction. 
 
+Script API
+===========
+
+```
+driver.scaling_report(filename=None, jac=True, coloring=True)
+```
+
+If no file name is given, output should be reported to standard output
+
+`jac` argument controls if derivatives are included in the scaling report or not. 
+
+
+`coloring` argument controls if total derivative coloring should be used to filter out known zero parts of the Jacobian from the report. 
+
+Command Line API
+================
+
+```
+openmdao scaling_report --filename <some name> --no-jac --no-coloring <script>.py 
+```
+
+If no filename argument is given, report should go to standard output
+
+The `--no-jac` and `--no-coloring` each turn off their respective features. 
+The defaults for these arguments are True in the script interface and most users should want 
+both features applied, so it makes sense to make the added arguments to turn them off. 
+
+
+Report Formatting
+=================
 
 Consider a problem with 15 design variables, 10 constraints, and one objective. 
 Users have provided values for ref, ref0, upper and lower (for dvs) for some or all of these.
@@ -50,11 +92,11 @@ The scaling report should be formatted like this:
 Design Variables
 -----------------
 
-                model  driver                 model driver    model  driver 
- name (shape) | value  (value) | ref | ref0 | lower (lower) | upper (upper) | 
+                driver (model)                driver (model)   driver (model) 
+ name (shape)   value  (value)   ref   ref0    lower (lower)   upper  (upper) 
 ----------------------------------------------------------------------------
-x (1)           10      (1)      10     N/A     -20   (-0.2)   100    (10)    
-y (10)         |31.6|   (|31.6|)  1     N/A     -100  (-100)   100    (100)    
+x (1)           1       (10)      10    0      -0.2   (-0.2)   10     (100)    
+y (10)         |31.6|  (|31.6|)   1     0      -100   (-100)   100    (100)    
 
 ```
 
@@ -130,9 +172,9 @@ f,y               (10,10)    |31.6|   (|31.6|)
 ```
 
 Notes: 
+    - All names should be given using promoted names
     - Since jacobians are very often matricies, the default should be the min-max view. 
-    - The user can request a full printing, in which case the jacobian is flattened and expanded into extra rows. 
-      The index of value in the sub-jac will be given in the shape column.
+    - The user can request a full printing, in which case the jacobian is flattened and expanded into extra rows. The index of value in the sub-jac will be given in the shape column.
 
 
 
