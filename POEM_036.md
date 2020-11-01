@@ -1,9 +1,9 @@
-POEM ID: 036
-Title: Serialization of Kriging training weights
+POEM ID: 036  
+Title: Serialization of Kriging training weights  
 authors: dakror  
-Competing POEMs: 
-Related POEMs: 
-Associated implementation PR: 
+Competing POEMs:  
+Related POEMs:  
+Associated implementation PR:  
 
 Status:
 
