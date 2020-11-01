@@ -3,7 +3,7 @@ Title: Serialization of Kriging training weights
 authors: dakror  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR:  
+Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1753  
 
 Status:
 
@@ -47,13 +47,13 @@ The encoding of the JSON file would follow the aforementioned PR, by creating on
 
 ### Saving training data
 
-In order to save the training weights after the model actually has been initially trained, a new option in the Kriging surrogate model is needed to specify a filename for output of the training weights. While specifying a simple file path could prove to be easy to use and understand, however accepting a file-esque object (as well?) could provide the benefit of also being able to capture the data in-program, for instance using `StringIO` or directly into deflate using `ZipFile`. Being this flexible would come only at the cost of the option type-hint being unavailable.
+In order to save the training weights after the model actually has been initially trained, a new option in the Kriging surrogate model is needed to specify a filename for output of the training weights.
 
 A suggestion would be:
 
 ```py
-self.options.declare('training_cache_output', default=None,
-                     desc='Cache the trained model to avoid repeating training')
+self.options.declare('training_cache_output', types=str, default=None,
+                     desc="Cache the trained model to avoid repeating training and write it to the given file.")
 ```
 
 
@@ -62,8 +62,8 @@ self.options.declare('training_cache_output', default=None,
 Similarly, in order to load the training weights, an option for an input filename / file-esque object is needed:
 
 ```py
-self.options.declare('training_cache_input', default=None,
-                     desc='Fetch the cached training weights to avoid repeating training')
+self.options.declare('training_cache_input', types=str, default=None,
+                     desc="Fetch the cached training weights to avoid repeating training from given file.")
 ```
 
 Another benefit over Pickle is the possibility of verifying the data dimensions at the point of loading directly, or raising an exception to the caller.
@@ -72,4 +72,12 @@ As with the PR, the actual loading of the given input file would occur in the `t
 
 ### Further extension
 
-When using multiple Kriging surrogates, it might be even better to save all models to a single file using a unique identifier each, instead of creating multiple files, one per surrogate. The class would need to statically keep track of used IDs in order to detect and deny duplicates. The options would need to be augmented with an ID specification.
+When using multiple Kriging surrogates, it might be even better to save all models to a single file using a unique identifier each, instead of creating multiple files, one per surrogate. The class would need to statically keep track of used IDs in order to detect and deny duplicates. The options would need to be augmented with an ID specification:
+
+```py
+self.options.declare('training_cache_id', types=str, default=None,
+                     desc="Unique identifier for this surrogate within the cache file. "
+                          "Useful to avoid multiple file creation when caching several surrogate")
+```
+
+These ids need to be validated for uniqueness for both input and output use cases separately. 
