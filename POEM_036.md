@@ -22,9 +22,9 @@ When using (multiple) Kriging surrogate models, the time to train them using the
 
 Inspired by the PR https://github.com/OpenMDAO/OpenMDAO/pull/1541 some way of serializing and loading the trained weights of a Kriging Surrogate model is needed to facilitate this functionality. 
 
-Instead of using Pickle however, which is very sensitive to host and Python environment changes, and also saves data in an insecure, arbitrary, binary, slow and memory-intensive manner, we suggest using JSON as its more flexible than just using plain CSV table files and also  comes with native support by the Python runtime. There are more optimal formats available, like PyTables or even HDF5, but these require external libraries. JSON files can be easily exchanged, compressed and even manually inspected.
+Instead of using Pickle however, which is very sensitive to host and Python environment changes, and also saves data in an insecure, arbitrary, binary, slow and memory-intensive manner, we suggest using the Numpy Binary Format as its more flexible than just using plain CSV table files and offers compression.
 
-The encoding of the JSON file would follow the aforementioned PR, by creating one root object with the following structure:
+NumPy offers a form of dictionary file format, essentially just a zip-file wrapper around their file format NPY. Using `numpy.savez` or `numpy.savez_compressed` a dictionary-like structure can be stored. The following tuples need to be saved:
 
 ```json
 {
@@ -66,18 +66,4 @@ self.options.declare('training_cache_input', types=str, default=None,
                      desc="Fetch the cached training weights to avoid repeating training from given file.")
 ```
 
-Another benefit over Pickle is the possibility of verifying the data dimensions at the point of loading directly, or raising an exception to the caller.
-
 As with the PR, the actual loading of the given input file would occur in the `train()` method. This change is opaque to the other methods of the Surrogate.
-
-### Further extension
-
-When using multiple Kriging surrogates, it might be even better to save all models to a single file using a unique identifier each, instead of creating multiple files, one per surrogate. The class would need to statically keep track of used IDs in order to detect and deny duplicates. The options would need to be augmented with an ID specification:
-
-```py
-self.options.declare('training_cache_id', types=str, default=None,
-                     desc="Unique identifier for this surrogate within the cache file. "
-                          "Useful to avoid multiple file creation when caching several surrogate")
-```
-
-These ids need to be validated for uniqueness for both input and output use cases separately. 
