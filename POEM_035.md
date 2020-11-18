@@ -7,11 +7,11 @@ Associated implementation PR:
 
 ##  Status
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
@@ -33,12 +33,10 @@ During setup, OpenMDAO can then traverse the chain of connections and resolve wh
 
 ### Proposals
 
-1. `src_shape` is added as an argument to `promotes` and `add_subsystem` (when inputs are promoted), which specifies the apparent shape of the promoted input (if connecting to it) or the related AutoIVC output (if left unconnected).
+1. `src_shape` is added as an argument to `promotes` and `set_input_defaults` (when inputs are promoted), which specifies the apparent shape of the promoted input (if connecting to it) or the related AutoIVC output (if left unconnected).
 
-2. If `src_indices` are specified, then `src_shape` must be specified to remove any ambiguity, and `src_indices` are relative to that `src_shape`.
+2. If multiple inputs are promoted to the same name then their `src_shape` must match, but their `src_indices` may be different.
 
 3. If multiple variables are promoted to the same input but with different `src_indices`, this is legal as long as they specify the same `src_shape`.
 
-4. `src_shape` becomes an argument to `set_input_defaults` to force a common shape in the input or auto_ivc output
-
-5. `src_indices` becomes a deprecated argument in `add_input`.  Since they only come into play in promotion, `src_indices` are specified in `promotes` or `add_subsystem` (when inputs are promoted).
+4. `src_indices` becomes a deprecated argument in `add_input`.  Since they only come into play in promotion, `src_indices` are specified in `promotes`.  `src_indices` are NOT a valid argument to `set_input_defaults`.
