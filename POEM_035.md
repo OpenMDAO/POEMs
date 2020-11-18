@@ -37,6 +37,4 @@ During setup, OpenMDAO can then traverse the chain of connections and resolve wh
 
 2. If multiple inputs are promoted to the same name then their `src_shape` must match, but their `src_indices` may be different.
 
-3. If multiple variables are promoted to the same input but with different `src_indices`, this is legal as long as they specify the same `src_shape`.
-
-4. `src_indices` becomes a deprecated argument in `add_input`.  Since they only come into play in promotion, `src_indices` are specified in `promotes`.  `src_indices` are NOT a valid argument to `set_input_defaults`.
+3. `src_indices` becomes a deprecated argument in `add_input`.  Since they only come into play in promotion, `src_indices` are specified in `promotes`.  `src_indices` are NOT a valid argument to `set_input_defaults`.
