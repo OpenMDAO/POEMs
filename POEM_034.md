@@ -7,13 +7,13 @@ Associated implementation PR:
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
 
-<Note: two space are required after every line of the header to create proper linebreaks in the markdown>
+Rejecting this POEM.  This feature will be added to the OpenMDAO issues, but not as a part of the public API.
 
 
 ## Motivation
