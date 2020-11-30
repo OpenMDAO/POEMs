@@ -59,5 +59,8 @@ That way, github's built in notification system to get emails when things are ch
 | [026](POEM_026.md) | Remove support for factorial function in ExecComp | [swryan](https://github.com/swryan) | accepted |
 | [027](POEM_027.md) | Approximation flag and state tracking | [johnjasa](https://github.com/johnjasa) | accepted |
 | [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
-| [031](POEM_031.md) | Improved Aitken Relaxation | [justinsgray](https://github.com/justinsgray) | accepted |
+| [031](POEM_031.md) | Improved Aitken Relaxation | [justinsgray](https://github.com/justinsgray) | integrated |
+| [033](POEM_033.md) | Linear Constraints in Check Totals | [justinsgray](https://github.com/justinsgray) | accepted |
+| [034](POEM_034.md) | Units library function to simplify units. | [optional real name](https://github.com/Kenneth-T-Moore) | rejected |
+| [035](POEM_035.md) | More generalized behavior in promoted inputs. | [robfalck](https://github.com/robfalck) | integrated |
 
