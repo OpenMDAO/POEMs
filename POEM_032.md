@@ -218,7 +218,7 @@ y (10)           10<driver units>  0       (10 <model units>)        1     0    
 There is a lot of data in the Jacobian, and a text based format is to difficult to use for this.
 Instead, we'll use a matrix-diagram based view that uses color to indicate order of magnitude. 
 
-![Proposed Jacobian View](Jacobian_0.png)
+![Proposed Jacobian View](POEM_032/Jacobian_0.png)
 
 
 Notes: 
