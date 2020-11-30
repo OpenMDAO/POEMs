@@ -221,8 +221,69 @@ Instead, we'll use a matrix-diagram based view that uses color to indicate order
 ![Proposed Jacobian View](POEM_032/Jacobian_0.png)
 
 
+Here there is one box for each sub-jac in the total derivative Jacobian (i.e. each of/w.r.t pair). 
+Each block is given a single color, regardless of whether it is scalar or matrix sub-jac. 
+The color is computed based on the order of magnitude of the sub-jac. 
+From a scaling perspective the sign of the subjac is not critical, only the order of magnitude. 
+So we can use the norm of the entire sub-jac like this: `np.log10(np.linalg.norm(<value>))`. 
+
+The principal challenge with taking a log10 is that any sub-jacs that are exactly zero will get turned into infinity. 
+To handle that we'll use a simple clipping process that replaces the infinities with the smallest order of magnitude otherwise seen. 
+
+
+
+```python 
+import numpy as np
+from matplotlib import cm
+from matplotlib.colors import Normalize
+from matplotlib import pylab as plt
+Jac = np.array([[1e-6, 0, 1e6], [1, -1e10, -1e-4]])
+
+Jac_norm = np.abs(Jac)
+log_Jac = np.log10(Jac_norm)
+
+finite_log_Jac = log_Jac[np.isfinite(log_Jac)] 
+min_log_jac = np.min(finite_log_Jac)
+max_log_jac = np.max(finite_log_Jac)
+
+# check if the order of magnitude is larger on the positive or negative side
+CAP = np.abs(min_log_jac)
+if max_log_jac > -min_log_jac:
+    CAP = max_log_jac
+
+# set any zero values --- which result in inf when you take the log --- to the -CAP
+finite_log_Jac = log_Jac.copy()
+finite_log_Jac[np.isinf(finite_log_Jac)] = -CAP
+
+normer = Normalize(-CAP, CAP)
+cmapper = cm.ScalarMappable(norm=normer, cmap='RdBu_r')
+color_jac = cmapper.to_rgba(finite_log_Jac)
+
+plt.imshow(color_jac, )    
+plt.show()
+```
+
+If sparsity information is used then all known zero values will be grayed out. 
+So its only any non-zero values, that happen to be incidentally zero that will get a color assigned. 
+If no sparsity information is used, all sub-jacs will get a color assigned based on the order of magnitude. 
+
+
 Notes: 
-    - All names should be given using promoted names
+    - All labels should be made using promoted namess
+    - Grayed out boxes represent empty data in the sparse matrix (i.e. known 0 values). 
+      These will only be present when coloring/sparsity data is available. 
+      If the total Jacobian is dense, all entries will be colored based on their values. 
+    - User should be able to select if they want to see the jacobian in driver centric or model centric values. 
+
+
+#### Interactive feature 
+If the user clicks on any the sub-jac boxes, the actual norm of the value of the sub-jac should be shown in a dialog box below the matrix diagram. 
+In addition, a sub-jac diagram should be shown with the log10(abs) of every entry in the sub-jac. 
+
+The color scale for the sub-jac should be based on the min/max values of the full Jacobian (i.e. don't rescale the color map based on the local min/max of that sub-jac)
+
+Similar to the total jac, if sparsity information is available, any known-zero values should be grayed out. 
+
 
 
 
