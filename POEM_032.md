@@ -81,7 +81,7 @@ then the coloring/sparsity will automatically be applied to gray out any known-z
 openmdao scaling_report --filename <some name> --no-jac <script>.py 
 ```
 
-If no filename argument is given, report should go to standard output
+If no filename argument is given, report should dump to default name of `driver_scaling_report.html`
 
 The `--no-jac` turns off Jacobian printing. 
 The defaults is True in the script interface and most users should want 
