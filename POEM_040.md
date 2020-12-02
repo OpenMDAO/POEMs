@@ -1,6 +1,6 @@
 POEM ID: 040  
 Title: User Function Registration in ExecComp   
-authors: [@justinsgray]  
+authors: [@justinsgray, @robfalck]  
 Competing POEMs: 039  
 Related POEMs: N/A  
 Associated implementation PR:
@@ -39,128 +39,127 @@ However, if this POEM is accepted, then that feature would be moved to officiall
 
 NOTE: Though we are calling this a function registration, it should technically support any callable object. 
 
+you can register new functions via the class method `register`: 
 
-#### Sizing Variables and other MetaData
-Situations that we need to consider: 
-1) functions with a fixed i/o size
-2) vectorized functions where all I/O is the same size (but the size could vary from one usage to another)
-3) all I/O is sized by connection 
-4) Situation where some variables are fixed size and some are shaped by connection
-
-
-For case #1, the exact same APIs that already exist for sizing variables in ExecComp. 
-Each kwarg given to the registration function must match a kwarg in the function itself (this should be verified by AST during registration). 
-For each kwarg given to the registration user can pass a value (from which size is inferred) or a dictionary of metadata. 
-
-Note this will be done during the registration, and hence can be done one time and the meta-data is held as the defaults for that method. 
-Users could choose to override the variable meta-data in a specific exec-comp later on if they wish, but the registration metadata will be the default. 
 ```python
-exec_func = om.reg_exec_comp_func('<func_name>', some_callable_object, <kwarg_1>=<meta_data>, <kwarg_2>=<meta_data>, )
-```
-```python
-exec_func = om.reg_exec_comp_func('<func_name>', some_callable_object, units='km', shape=3 )
+ExecComp.register('<func_name>', some_callable_object, known_complex_safe=<False|True>)
 ```
 
-For case #2, the user will pass the we can rely on `shape_by_conn` and `copy_shape` arguments to `add_input` so that all outputs will copy the shape of one of the inputs. 
-It should not matter which input shape is copied, since they must all be the same size. 
-User will pass the `vectorized` argument to the `reg_exec_comp_func` method to indicate this situation. 
-Other metadata (i.e. units) can still be passed. In addition user could provide size and value metadata to serve as defaults that are used when no connections are made. 
-```python 
-exec_func = om.reg_exec_comp_func('<func_name>', some_callable_object, vectorized=True, <kwarg_1>=<meta_data>, <kwarg_2>=<meta_data>)
-```
-
-For case #3, the we rely only on the `shape_by_conn` argument to `add_input`. 
-In this case the inputs are sized by their connections and the outputs by theirs.
-```python 
-exec_func = om.reg_exec_comp_func('<func_name>', some_callable_object, shape_by_conn=True, <kwarg_1>=<meta_data>, <kwarg_2>=<meta_data>)
-```
-
-For case#4, we allow the user to add the specific sizing method to the metadata for the appropriate arguments. 
-This would look identical to case 1, but with the appropriate sizing arguments added to the metadata
-
+The default for `known_complex_safe` is `False`, but users can set it to True. 
+This argument controls whether a particular method will trigger the inclusion of any ExecComp instances that use it in the check_partials output. 
 
 ### Determining input and output names
 
 I/O names are determined directly from the string expression passed to the ExecComp. 
 This works identical to how ExecComps work now. 
 
+### Determining input and output size 
+
+Users can use the existing ExecComp API via kwargs to the constructor, to specify the sizes of all variables. 
+However, two common cases are expected and will be supported by specific init args to ExecComp
+
+1) If a user wants to have everything (both inputs and outputs) shaped by what they are connected to, then they can set the argument `shape_by_conn=True` and that metadata will be applied to every variables. 
+
+2) If a user wants to have all inputs be the same size, because they are performing a vectorized operation, 
+then they can set `vectorized=True` and all components will be the same size.
+If they also set `shape_by_conn=True` then the sizes of all the inputs should be determined by their connections.
+Their sizes should be compared to eachother. An error should be thrown if the inputs are not all the same size. 
+Once it is known that all inputs are the same size, then the outputs can be sized to match the inputs. 
+
+Note: Option #2 is important, so you can create chains of ExecComps that are all sized by a single upstream connection. 
+
 ### Differentiation
 
-**This represents a change to the current ExecComp API**, but it can be made backwards compatible. 
+**This represents a change to the current ExecComp API**, but it is backwards compatible. 
 
-Differentiation should be supported via the standard OpenMDAO `declare_partials` API, which can be called on the instance 
-after instantiation. 
-Users can specify `<instance>.declare_partials('*', '*', method='cs')` or `<instance>.declare_partials('*', '*', method='fd')`. Alternatively, they can specify different settings for different variables if they wish. 
+Differentiation should be supported via the standard OpenMDAO `declare_partials` and `declare_coloring` APIs, which can be called on the ExecComp instance after instantiation. 
+For example, users can specify `<instance>.declare_partials('*', '*', method='cs')` or `<instance>.declare_partials('*', '*', method='fd')`. Alternatively, they can specify different settings for different variables if they wish. 
 Using the standard OpenMDAO api gives the most flexibility. 
 
-
-
-As a convenience, we can include an extra init argument for the class called `partials_method` which will default to `CS` (to preserve backwards compatibility). If `None` then users are expected to declare their own partials using the standard API. However, if `cs` or `fd` then 
+We will also add a new init argument for the class,`partials_method`, which will default to ``partials_method='cs'` (to preserve backwards compatibility). If `partials_method='manual'` then users are expected to declare their own partials using the standard API. However, if ``partials_method='cs'` or ``partials_method='fd'` then 
 the class will call `<instance>.declare_partials('*', '*', method=<partials_method>)` for them. 
 
-It should be an error if both `partials_method` and manual usage of the `declare_partials` api are used on the same instance. 
+It should be an error if both `partials_method` is not `'manual'` and the `declare_partials` or `declare_coloring` APIs are used on the same instance. 
 
+### Partial Derivative Checking 
+
+Hopefully in the vast majority of cases, users will use `partials_method='cs'`, since it is both accurate and fairly easy. 
+It does require some extra care to make sure all methods are complex-safe though, so check_partials data is going to be needed on 
+any ExecComp that includes the use of user registered method which are not known to be complex-safe. 
+
+Currently, OpenMDAO internally skips all ExecComps whenever check_partials is called. 
+This skip is reasonable, since the OM team takes ownership of the complex-safe-ness of all the internally registered methods. 
+
+A user might develop a library of additional methods that they know are complex-safe. 
+The registration API provides them the opportunity to mark any known-safe methods as such. 
+This prevents excessive output in check partials that would be unneeded noise (which was why ExecComps were excluded in the first place)
+
+If a user is just prototyping, or has not otherwise verified the CS-safeness of their method, then it should be included in the check. 
+For any components that use `partials_method='cs'` and are included in the check_partials, 
+the ExecComp should ensure that the verification method is finite difference. 
+This will be done via the `set_check_partial_options` APIs. 
 
 
 ## Examples
 
 ### The user-defined function of a single variable
 
-```
+```python 
 def area(x):
     return x**2
 
-fc = FuncComp(area,
-         x={'units': 'm', shape=(10,)},
-         output={'units': 'm**2', shape=(10,)}) 
-fc.declare_coloring(wrt='*', method='cs', tol=1.0E-8, show_sparsity=True})
+om.ExecComp.register('area', area)
+
+om.ExecComp('area_square = area(x)', shape_by_conn=True)
 ```
+The output is named `area_square` and the input is named `x`. 
+Both are sized by the things they are connected to. 
 
-In this case, introspection can't determine the name of the output, so the single output is simply 'output'.
-This case is contrived, and there's a significant amount of boilerplate here to make this simple function work, ExecComp would be a better choice in this instance.declare_coloring
 
-### A slightly more complex function
+### Functions with multiple outputs
 
-```
+```python
 def aero_forces(rho, v, CD, CL, S)
     q = 0.5 * rho * v**2
     lift = q * CL * S
     drag = q * CD * S
     return lift, drag
 
-FuncComp(aero_forces, partials_method='cs', 
-         rho={'units': 'kg/m**3'},
-         v={'units': 'm/s'},
-         S={'units': 'm**2'}
-         lift={'units': 'N'},
-         drag={'units': 'N'})
+om.ExecComp.register('aero_force', aero_forces)
+
+om.ExecComp('L,D = aero_forces(rho, v, CD, CL, S)', 
+             rho={'units': 'kg/m**3'},
+             v={'units': 'm/s'},
+             S={'units': 'm**2'},
+             lift={'units': 'N'},
+             drag={'units': 'N'}, 
+             vectorized=True, shape_by_conn=True, has_diag_partials=True
+            )
 ```
 
-In this case, the output names may be inferred from the return statement.
+In this case, the output are named `L` and `D` and the inputs are named `rho`, `v`, `CD`, `CL`, `S`. 
 No coloring is needed and the partials are computed using complex-step.
+The sizes of the inputs are shaped by their connections, and the outputs are sized to match the inputs. 
 
-### Using lambda to wrap functions with non-numeric arguments
 
-In this case we're wrapping scipy's `det` function, which computes the determinant of a matrix.
-In this case, the function takes two boolean arguments that we want to omit from the wrapped component's IO.
+### Nested function calls 
+We can combine the `area` and `aero_forces` methods together into a single exec-comp, 
+assuming they were both already registered. 
 
-The signature of the function is:
+```python
 
+om.ExecComp('L,D = aero_forces(rho, v, CD, CL, area(x))', 
+             rho={'units': 'kg/m**3'},
+             v={'units': 'm/s'},
+             x={'units': 'm'},
+             lift={'units': 'N'},
+             drag={'units': 'N'}, 
+             vectorized=True, shape_by_conn=True, has_diag_partials=True
+            )
 ```
-scipy.linalg.det(a, overwrite_a=False, check_finite=True)
-```
 
-It can be wrapped using a lambda like this:
+In this example, there is not component output for the `area` method. 
+Instead of the `S` input there is now an `x` input. 
 
-```
-FuncComp(lambda a: scipy.linalg.det(a, overwrite_aFalse, check_finite=True),
-         a={'units': None, 'shape': (3, 3)})
-```
 
-## Open Issues
-
-It may be difficult to determine ahead of time what outputs were discovered for a given function.
-Were variable names automatically determined?
-
-It might be useful to find a different way to specify outputs.  Perhaps they should always be named `output_1`, `output_2`, etc.
 
