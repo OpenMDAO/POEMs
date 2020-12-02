@@ -1,7 +1,7 @@
 POEM ID: 039  
 Title: FuncComp  
 authors: [@robfalck]  
-Competing POEMs: N/A  
+Competing POEMs: 040  
 Related POEMs: N/A  
 Associated implementation PR:
 
@@ -21,7 +21,7 @@ To make the transition to OpenMDAO easier for users, it should be possible to al
 
 This POEM proposes a new function-wrapping component: FuncComp
 
-The purpose of FuncComp is to allow users to wrap an existing Python function without first porting it to the compute-method of an ExplicitComponent.1
+The purpose of FuncComp is to allow users to wrap an existing Python function without first porting it to the compute-method of an ExplicitComponent.
 
 ### Determining input and output names
 
@@ -31,7 +31,7 @@ Outputs are more difficult.
 First, there's no guarantee that return returns a variable, it may directly return the result of a calculation.
 Secondly, functions may have multiple return statements.
 FuncComp should use the final return in the outermost-scope to determine the number of return values from the function.
-The output name should be as follows:
+The output name should be via the following rules of precedence:
 
 * the variable names returned, if it's possible to determine them
 * `output` for a single unnamed return value
@@ -40,22 +40,36 @@ The output name should be as follows:
 ### Variable metadata
 
 Theres no way to associate units or shapes with normal Python inputs and outputs.
-Since docstrings can come in a variety of formats, relying on docstrings to provide this information would likely be prohibitively restrictive.
+Docstrings can come in a variety of formats so relying on them to provide this information would likely be prohibitively restrictive.
 After all, why make the user rewrite their docstring if the entire point of the component is to avoid having to rewrite their code.
-Variable metadata will be provided via a keyword argument (the variable name) and a dictionary of the associated metadata.
-This is the same approach used by ExecComp.
+Instead, we can use the same system that ExecComp uses where metadata is given via dictionaries passed as keyword arguments. 
 
 ### Differentiation
 
-Initially, FuncComp should support differentiation of the wrapped function via complex-step, with a fallback to finite-differencing if the wrapped function is not complex-compatible.1
+Differentiation should be supported via the standard OpenMDAO `declare_partials` API, which can be called on the instance 
+after instantiation. 
+Users can specify `<instance>.declare_partials('*', '*', method='cs')` or `<instance>.declare_partials('*', '*', method='fd')`. Alternatively, they can specify different settings for different variables if they wish. 
+Using the standard OpenMDAO api gives the most flexibility. 
 
-In time, the use of automatic differentiation (AD) via jax or some other tool should be considered.  However, the wrapped function may itself call a multitude of other functions, which could make AD difficult.
+As a convenience, we can include an extra init argument for the class called `partials_method` which will default to `None`. If `None` then users are expected to declare their own partials using the standard API. However, if `cs` or `fd` then 
+the class will call `<instance>.declare_partials('*', '*', method=<partials_method>)` for them. 
+
+It should be an error if both `partials_method` and manual usage of the `declare_partials` api are used on the same instance. 
 
 ### Why ExecComp is insufficient for this purpose
 
-ExecComp is fundamentally about writing a small set of equations as a component without the need to define it as a full-blown ExplicitComponent.
-Typically, user-defined functions contain many lines of interrelated code, rather than the simple expressions used in ExecComp.
-FuncComp will let users wrap functions of arbitrary complexity and approximate the partials across them with complex-step, finite-differencing, and eventually (possibly) AD.
+Currently, there is no way for users to add their own functions into the executable scope of ExecComps. 
+As an alternative to this approach we could allow users to register their own functions into the scope of ExecComps somehow. 
+This would let users integrate their own functions into ExecComp. 
+
+However, ExecComp was originally intended to be used for small and very cheap calculations and hence made a few simplifying assumptions about how derivatives would be computed. 
+It uses **only** complex step (i.e. has no user configurable options for FD or fine grained control over step size and type). 
+It also does not allow for any user declared coloring, instead offering a simplified coloring argument of **has_diag_partials** which indicates that all inputs and outputs are the same size (i.e. all sub-jacs are square) and have only diagonal entries. 
+The simplified diagonal coloring is a very common occurence in exec-comps, which often do simple vectorized numpy calculations and allowing the user to directly specify the coloring this way saves OpenMDAO the difficulty/cost of coloring the component. 
+
+It would be possible to modify the API to ExecComp to overcome these limitations, and hence provide this same functionality through ExecComp. 
+This would yield a slightly different API than the one proposed here, but the functionality should be equivalent. 
+An ExecComp based API for this feature is proposed in POEM_040. 
 
 ## Proposed API
 
@@ -66,8 +80,7 @@ FuncComp will let users wrap functions of arbitrary complexity and approximate t
 * The first argument should be a callable function.
 * If this function has non-numeric input, it can be wrapped with a lambda to convert it to a function with only numeric inputs.
 * Metadata for inputs and outputs will be provided with those variables as named arguments, the same way as it's done in ExecComp.
-* Argument **approx_partials**, will accept 'cs' or 'fd', to specify the method for approximating partials and default to 'cs'
-* Argument **declare_coloring** should provide a dictionary containing the arguments to the declare_coloring method for the component, and default to None.
+* both the `declare_partials` and `declare_coloring` methods will be user callable after instantiation
 
 ## Examples
 
@@ -77,10 +90,10 @@ FuncComp will let users wrap functions of arbitrary complexity and approximate t
 def area(x):
     return x**2
 
-FuncComp(area,
+fc = FuncComp(area,
          x={'units': 'm', shape=(10,)},
-         output={'units': 'm**2', shape=(10,)},
-         declare_coloring={'wrt': '*', 'method': 'cs', 'tol': 1.0E-8, 'show_sparsity': True})
+         output={'units': 'm**2', shape=(10,)}) 
+fc.declare_coloring(wrt='*', method='cs', tol=1.0E-8, show_sparsity=True})
 ```
 
 In this case, introspection can't determine the name of the output, so the single output is simply 'output'.
@@ -95,7 +108,7 @@ def aero_forces(rho, v, CD, CL, S)
     drag = q * CD * S
     return lift, drag
 
-FuncComp(aero_forces,
+FuncComp(aero_forces, partials_method='cs', 
          rho={'units': 'kg/m**3'},
          v={'units': 'm/s'},
          S={'units': 'm**2'}
@@ -104,7 +117,7 @@ FuncComp(aero_forces,
 ```
 
 In this case, the output names may be inferred from the return statement.
-No coloring is needed and the partials are computed using complex-step, the default.
+No coloring is needed and the partials are computed using complex-step.
 
 ### Using lambda to wrap functions with non-numeric arguments
 
@@ -130,3 +143,4 @@ It may be difficult to determine ahead of time what outputs were discovered for 
 Were variable names automatically determined?
 
 It might be useful to find a different way to specify outputs.  Perhaps they should always be named `output_1`, `output_2`, etc.
+
