@@ -75,56 +75,32 @@ In this case the inputs are sized by their connections and the outputs by theirs
 exec_func = om.reg_exec_comp_func('<func_name>', some_callable_object, shape_by_conn=True, <kwarg_1>=<meta_data>, <kwarg_2>=<meta_data>)
 ```
 
+For case#4, we allow the user to add the specific sizing method to the metadata for the appropriate arguments. 
+This would look identical to case 1, but with the appropriate sizing arguments added to the metadata
+
 
 ### Determining input and output names
 
 I/O names are determined directly from the string expression passed to the ExecComp. 
-This is
-
-#### Variable metadata
-
-Theres no way to associate units or shapes with normal Python inputs and outputs.
-Docstrings can come in a variety of formats so relying on them to provide this information would likely be prohibitively restrictive.
-After all, why make the user rewrite their docstring if the entire point of the component is to avoid having to rewrite their code.
-Instead, we can use the same system that ExecComp uses where metadata is given via dictionaries passed as keyword arguments. 
+This works identical to how ExecComps work now. 
 
 ### Differentiation
+
+**This represents a change to the current ExecComp API**, but it can be made backwards compatible. 
 
 Differentiation should be supported via the standard OpenMDAO `declare_partials` API, which can be called on the instance 
 after instantiation. 
 Users can specify `<instance>.declare_partials('*', '*', method='cs')` or `<instance>.declare_partials('*', '*', method='fd')`. Alternatively, they can specify different settings for different variables if they wish. 
 Using the standard OpenMDAO api gives the most flexibility. 
 
-As a convenience, we can include an extra init argument for the class called `partials_method` which will default to `None`. If `None` then users are expected to declare their own partials using the standard API. However, if `cs` or `fd` then 
+
+
+As a convenience, we can include an extra init argument for the class called `partials_method` which will default to `CS` (to preserve backwards compatibility). If `None` then users are expected to declare their own partials using the standard API. However, if `cs` or `fd` then 
 the class will call `<instance>.declare_partials('*', '*', method=<partials_method>)` for them. 
 
 It should be an error if both `partials_method` and manual usage of the `declare_partials` api are used on the same instance. 
 
-### Why ExecComp is insufficient for this purpose
 
-Currently, there is no way for users to add their own functions into the executable scope of ExecComps. 
-As an alternative to this approach we could allow users to register their own functions into the scope of ExecComps somehow. 
-This would let users integrate their own functions into ExecComp. 
-
-However, ExecComp was originally intended to be used for small and very cheap calculations and hence made a few simplifying assumptions about how derivatives would be computed. 
-It uses **only** complex step (i.e. has no user configurable options for FD or fine grained control over step size and type). 
-It also does not allow for any user declared coloring, instead offering a simplified coloring argument of **has_diag_partials** which indicates that all inputs and outputs are the same size (i.e. all sub-jacs are square) and have only diagonal entries. 
-The simplified diagonal coloring is a very common occurence in exec-comps, which often do simple vectorized numpy calculations and allowing the user to directly specify the coloring this way saves OpenMDAO the difficulty/cost of coloring the component. 
-
-It would be possible to modify the API to ExecComp to overcome these limitations, and hence provide this same functionality through ExecComp. 
-This would yield a slightly different API than the one proposed here, but the functionality should be equivalent. 
-An ExecComp based API for this feature is proposed in POEM_040. 
-
-## Proposed API
-
-`class FuncComp(om.ExplicitComponent)`
-
-### Initialization
-
-* The first argument should be a callable function.
-* If this function has non-numeric input, it can be wrapped with a lambda to convert it to a function with only numeric inputs.
-* Metadata for inputs and outputs will be provided with those variables as named arguments, the same way as it's done in ExecComp.
-* both the `declare_partials` and `declare_coloring` methods will be user callable after instantiation
 
 ## Examples
 
