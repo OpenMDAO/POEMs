@@ -3,15 +3,15 @@ Title: User Accessible Complex Step
 authors: [justinsgray] (Justin Gray)   
 Competing POEMs: N/A  
 Related POEMs:    
-Associated implementation PR:    
+Associated implementation PR: #1777   
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation
