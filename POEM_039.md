@@ -1,6 +1,6 @@
-POEM ID: 039
-Title: FuncComp
-authors: [@robfalck]
+POEM ID: 039  
+Title: FuncComp  
+authors: [@robfalck]  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR:
@@ -124,4 +124,9 @@ FuncComp(lambda a: scipy.linalg.det(a, overwrite_aFalse, check_finite=True),
          a={'units': None, 'shape': (3, 3)})
 ```
 
+## Open Issues
 
+It may be difficult to determine ahead of time what outputs were discovered for a given function.
+Were variable names automatically determined?
+
+It might be useful to find a different way to specify outputs.  Perhaps they should always be named `output_1`, `output_2`, etc.
