@@ -7,11 +7,14 @@ Associated implementation PR:
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
+
+After discussion, the OpenMDAO developer team decided that this behavior is best left to the developer when devising tests for their components.
+The possibility of perturbing inputs in an invalid direction, and the possibilty of confusing users who expect a certain partials at a given set of inputs makes for a lot of corner cases.
 
 
 Motivation
