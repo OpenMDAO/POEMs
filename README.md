@@ -60,6 +60,7 @@ That way, github's built in notification system to get emails when things are ch
 | [027](POEM_027.md) | Approximation flag and state tracking | [johnjasa](https://github.com/johnjasa) | accepted |
 | [028](POEM_028.md) | check_partials input warnings | Eliot Aretskin-Hariton | rejected |
 | [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
+| [030](POEM_030.md) | User Accessible Complex Step | [Justin Gray](https://github.com/justinsgray) | integrated |
 | [031](POEM_031.md) | Improved Aitken Relaxation | [justinsgray](https://github.com/justinsgray) | integrated |
 | [033](POEM_033.md) | Linear Constraints in Check Totals | [justinsgray](https://github.com/justinsgray) | accepted |
 | [034](POEM_034.md) | Units library function to simplify units. | [optional real name](https://github.com/Kenneth-T-Moore) | rejected |
