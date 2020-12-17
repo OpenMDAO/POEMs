@@ -65,4 +65,6 @@ That way, github's built in notification system to get emails when things are ch
 | [033](POEM_033.md) | Linear Constraints in Check Totals | [justinsgray](https://github.com/justinsgray) | accepted |
 | [034](POEM_034.md) | Units library function to simplify units. | [optional real name](https://github.com/Kenneth-T-Moore) | rejected |
 | [035](POEM_035.md) | More generalized behavior in promoted inputs. | [robfalck](https://github.com/robfalck) | integrated |
+| [038](POEM_038.md) | Raise an error if a user declares a sub-jacobian to have a value of zero. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
+| [039](POEM_039.md) | User Function Registration in ExecComp | @justinsgray, @robfalck | accepted |
 
