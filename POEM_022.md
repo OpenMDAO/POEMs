@@ -8,10 +8,10 @@ Associated implementation PR: None (yet)
 Status:
 
 - [ ] Active
-- [x] Requesting decision
+- [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 # Motivation
