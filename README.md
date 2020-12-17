@@ -56,7 +56,7 @@ That way, github's built in notification system to get emails when things are ch
 | [023](POEM_023.md) | Remove reconfigure code from the current code base | [Bret Naylor](https://github.com/naylor-b) | integrated |
 | [024](POEM_024.md) | Calculating ExecComp Jacobian with symbolic derivatives | [Péter Onódi](https://github.com/onodip) | rejected |
 | [025](POEM_025.md) | allow GA to seek pareto frontier | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
-| [026](POEM_026.md) | Remove support for factorial function in ExecComp | [swryan](https://github.com/swryan) | accepted |
+| [026](POEM_026.md) | Remove support for factorial function in ExecComp | [swryan](https://github.com/swryan) | integrated |
 | [027](POEM_027.md) | Approximation flag and state tracking | [johnjasa](https://github.com/johnjasa) | accepted |
 | [028](POEM_028.md) | check_partials input warnings | Eliot Aretskin-Hariton | rejected |
 | [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
