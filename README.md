@@ -62,7 +62,7 @@ That way, github's built in notification system to get emails when things are ch
 | [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
 | [030](POEM_030.md) | User Accessible Complex Step | [Justin Gray](https://github.com/justinsgray) | integrated |
 | [031](POEM_031.md) | Improved Aitken Relaxation | [justinsgray](https://github.com/justinsgray) | integrated |
-| [033](POEM_033.md) | Linear Constraints in Check Totals | [justinsgray](https://github.com/justinsgray) | accepted |
+| [033](POEM_033.md) | Linear Constraints in Check Totals | [justinsgray](https://github.com/justinsgray) | integrated |
 | [034](POEM_034.md) | Units library function to simplify units. | [optional real name](https://github.com/Kenneth-T-Moore) | rejected |
 | [035](POEM_035.md) | More generalized behavior in promoted inputs. | [robfalck](https://github.com/robfalck) | integrated |
 | [038](POEM_038.md) | Raise an error if a user declares a sub-jacobian to have a value of zero. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
