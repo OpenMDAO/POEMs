@@ -56,30 +56,48 @@ This works identical to how ExecComps work now.
 ### Determining input and output size 
 
 Users can use the existing ExecComp API via kwargs to the constructor, to specify the sizes of all variables. 
-However, two common cases are expected and will be supported by specific init args to ExecComp
+However, four common cases are expected and will be supported by specific init args to ExecComp
 
 1) If a user wants to have everything (both inputs and outputs) shaped by what they are connected to, then they can set the argument `shape_by_conn=True` and that metadata will be applied to every variables. 
 
 2) If a user wants to have all inputs be the same size, because they are performing a vectorized operation, 
-then they can set `vectorized=True` and all components will be the same size.
-If they also set `shape_by_conn=True` then the sizes of all the inputs should be determined by their connections.
-Their sizes should be compared to eachother. An error should be thrown if the inputs are not all the same size. 
-Once it is known that all inputs are the same size, then the outputs can be sized to match the inputs. 
+then they can set `shape=<value or varaible>` to set the shape of all the inputs and outputs to the same size. 
+If they need to make the shape some kind of user configurable value, then that can be added to the owning group as an option. 
 
-Note: Option #2 is important, so you can create chains of ExecComps that are all sized by a single upstream connection. 
+3) The inputs may be some combination of scalar and vector value which the user wants to shape_by_connection, 
+but the outputs are of known size. 
+In this case the user can set `input_shape_by_conn=True` and `output_shape=<value or variable>`
+
+4) the inputs and outputs are both of known, but different shapes. 
+In this case, the user sets `input_shape=<variable or value>` and `output_shape=<variable or value>` to separate quantities.
+
+
+Note: Ideally, it would be possible to set shape of the inputs based on what they are connected to and then have the outputs shapes computed based on that. 
+There are some ways to make this work, but they are ad-hoc and not general enough to be worth adding at this time. 
+Adding the ability for components to cascade their size as they compute should be the subject of a separate (and more general) POEM that deals with more than just ExecComp. 
 
 ### Differentiation
 
-**This represents a change to the current ExecComp API**, but it is backwards compatible. 
+The exec-comp does all differentiation through complex-step, but via a different chunk of code than the normal OpenMDAO CS approximation. 
+This is done to provide accurate derivatives via complex-step, but also to provide some customization for the `has_diag_partials` option, which provides for a common and very simple partial derivative coloring case. 
+Currently, all functions provided in the ExecComp have been checked by the dev team to be complex-safe. 
+However, this POEM will allow users to register their own functions, which may or may not be complex-safe. 
 
-Differentiation should be supported via the standard OpenMDAO `declare_partials` and `declare_coloring` APIs, which can be called on the ExecComp instance after instantiation. 
-For example, users can specify `<instance>.declare_partials('*', '*', method='cs')` or `<instance>.declare_partials('*', '*', method='fd')`. Alternatively, they can specify different settings for different variables if they wish. 
-Using the standard OpenMDAO api gives the most flexibility. 
+One option would be to let users select a finite-difference option (instead of complex-step), however this introduces several significant complexities. 
+First and foremost, FD is much more sensitive to FD step size and FD method (e.g. forward, central, backward). 
+So allowing users to select FD really should also mean they have an API to change those setting. 
+OpenMDAO components already provide just this exact API via the `decalre_partials` method (and an associated `declare_coloring` method.
+The purpose of `ExecComp` is to provide a lightweight and low line-of-code way of interacting with functions, 
+so requiring users to add multiple extra lines to declare their partials may somewhat defeat the purpose of this feature. 
 
-We will also add a new init argument for the class,`partials_method`, which will default to ``partials_method='cs'` (to preserve backwards compatibility). If `partials_method='manual'` then users are expected to declare their own partials using the standard API. However, if ``partials_method='cs'` or ``partials_method='fd'` then 
-the class will call `<instance>.declare_partials('*', '*', method=<partials_method>)` for them. 
+So, by default ExecComp will retain it internal CS behavior. 
+Users may over-ride this by calling `declare_partials` and/or `declare_coloring` on the component, 
+but doing this will turn off all internal/default CS code and will instead use the standard OpenMDAO component approximation tools. 
+So by calling `declare_partials` for anything, a user is implicitly agreeing to define the partials for that entire component. 
 
-It should be an error if both `partials_method` is not `'manual'` and the `declare_partials` or `declare_coloring` APIs are used on the same instance. 
+This approach offers two key benefits. 
+First it is backwards compatible and retains the compact usage style current to ExecComp. 
+Second it gives users who don't want to use complex-step a means of using finite-difference instead, and they can retain most of the functionality from `has_diag_partials` via the `declare_coloring` API instead. 
 
 ### Partial Derivative Checking 
 
@@ -133,7 +151,7 @@ om.ExecComp('L,D = aero_forces(rho, v, CD, CL, S)',
              S={'units': 'm**2'},
              lift={'units': 'N'},
              drag={'units': 'N'}, 
-             vectorized=True, shape_by_conn=True, has_diag_partials=True
+             has_diag_partials=True, shape=nn
             )
 ```
 
@@ -154,7 +172,7 @@ om.ExecComp('L,D = aero_forces(rho, v, CD, CL, area(x))',
              x={'units': 'm'},
              lift={'units': 'N'},
              drag={'units': 'N'}, 
-             vectorized=True, shape_by_conn=True, has_diag_partials=True
+             has_diag_partials=True
             )
 ```
 
