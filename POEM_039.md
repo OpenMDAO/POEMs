@@ -64,13 +64,6 @@ However, four common cases are expected and will be supported by specific init a
 then they can set `shape=<value or varaible>` to set the shape of all the inputs and outputs to the same size. 
 If they need to make the shape some kind of user configurable value, then that can be added to the owning group as an option. 
 
-3) The inputs may be some combination of scalar and vector value which the user wants to shape_by_connection, 
-but the outputs are of known size. 
-In this case the user can set `input_shape_by_conn=True` and `output_shape=<value or variable>`
-
-4) the inputs and outputs are both of known, but different shapes. 
-In this case, the user sets `input_shape=<variable or value>` and `output_shape=<variable or value>` to separate quantities.
-
 
 Note: Ideally, it would be possible to set shape of the inputs based on what they are connected to and then have the outputs shapes computed based on that. 
 There are some ways to make this work, but they are ad-hoc and not general enough to be worth adding at this time. 
