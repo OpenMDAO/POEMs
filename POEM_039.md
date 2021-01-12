@@ -42,11 +42,8 @@ NOTE: Though we are calling this a function registration, it should technically 
 you can register new functions via the class method `register`: 
 
 ```python
-ExecComp.register('<func_name>', some_callable_object, known_complex_safe=<False|True>)
-```
-
-The default for `known_complex_safe` is `False`, but users can set it to True. 
-This argument controls whether a particular method will trigger the inclusion of any ExecComp instances that use it in the check_partials output. 
+ExecComp.register('<func_name>', some_callable_object)
+``` 
 
 ### Determining input and output names
 
@@ -55,13 +52,13 @@ This works identical to how ExecComps work now.
 
 ### Determining input and output size 
 
-Users can use the existing ExecComp API via kwargs to the constructor, to specify the sizes of all variables. 
+Users can use the existing ExecComp API via kwargs to the constructor, to specify the shapes of all variables. 
 However, four common cases are expected and will be supported by specific init args to ExecComp
 
 1) If a user wants to have everything (both inputs and outputs) shaped by what they are connected to, then they can set the argument `shape_by_conn=True` and that metadata will be applied to every variables. 
 
 2) If a user wants to have all inputs be the same size, because they are performing a vectorized operation, 
-then they can set `shape=<value or varaible>` to set the shape of all the inputs and outputs to the same size. 
+then they can set `shape=<value or varaible>` to set the shape of all the inputs and outputs. 
 If they need to make the shape some kind of user configurable value, then that can be added to the owning group as an option. 
 
 
@@ -83,8 +80,8 @@ OpenMDAO components already provide just this exact API via the `decalre_partial
 The purpose of `ExecComp` is to provide a lightweight and low line-of-code way of interacting with functions, 
 so requiring users to add multiple extra lines to declare their partials may somewhat defeat the purpose of this feature. 
 
-So, by default ExecComp will retain it internal CS behavior. 
-Users may over-ride this by calling `declare_partials` and/or `declare_coloring` on the component, 
+So, by default ExecComp will retain its internal CS behavior. 
+Users may override this by calling `declare_partials` and/or `declare_coloring` on the component, 
 but doing this will turn off all internal/default CS code and will instead use the standard OpenMDAO component approximation tools. 
 So by calling `declare_partials` for anything, a user is implicitly agreeing to define the partials for that entire component. 
 
@@ -94,19 +91,19 @@ Second it gives users who don't want to use complex-step a means of using finite
 
 ### Partial Derivative Checking 
 
-Hopefully in the vast majority of cases, users will use `partials_method='cs'`, since it is both accurate and fairly easy. 
+Hopefully in the vast majority of cases, users will use ExecComp's built-in 'cs' implementation, since it is both accurate and fairly easy. 
 It does require some extra care to make sure all methods are complex-safe though, so check_partials data is going to be needed on 
-any ExecComp that includes the use of user registered method which are not known to be complex-safe. 
+any ExecComp that includes the use of user registered methods which are not known to be complex-safe. 
 
 Currently, OpenMDAO internally skips all ExecComps whenever check_partials is called. 
 This skip is reasonable, since the OM team takes ownership of the complex-safe-ness of all the internally registered methods. 
 
 A user might develop a library of additional methods that they know are complex-safe. 
-The registration API provides them the opportunity to mark any known-safe methods as such. 
-This prevents excessive output in check partials that would be unneeded noise (which was why ExecComps were excluded in the first place)
+The registration API provides them the opportunity to mark any known-safe methods as such by providing the `complex_safe` argument.
+Setting `complex_safe` to True prevents excessive output in check partials that would be unneeded noise (which was why ExecComps were excluded in the first place)
 
-If a user is just prototyping, or has not otherwise verified the CS-safeness of their method, then it should be included in the check. 
-For any components that use `partials_method='cs'` and are included in the check_partials, 
+If a user is just prototyping, or has not otherwise verified the CS-safeness of their method, then it will be included in the check. 
+For any ExecComps that use complex step and are included in the check_partials, 
 the ExecComp should ensure that the verification method is finite difference. 
 This will be done via the `set_check_partial_options` APIs. 
 
