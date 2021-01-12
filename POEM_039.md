@@ -42,7 +42,7 @@ NOTE: Though we are calling this a function registration, it should technically 
 you can register new functions via the class method `register`: 
 
 ```python
-ExecComp.register('<func_name>', some_callable_object)
+ExecComp.register(name, callable_object, complex_safe=False)
 ``` 
 
 ### Determining input and output names
