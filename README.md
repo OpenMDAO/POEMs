@@ -62,11 +62,11 @@ That way, github's built in notification system to get emails when things are ch
 | [029](POEM_029.md) | Retrieval of IO Variable Metadata | [Bret Naylor](https://github.com/naylor-b) | integrated |
 | [030](POEM_030.md) | User Accessible Complex Step | [Justin Gray](https://github.com/justinsgray) | integrated |
 | [031](POEM_031.md) | Improved Aitken Relaxation | [justinsgray](https://github.com/justinsgray) | integrated |
-| [032](POEM_032.md) | Detailed Driver Scaling Report | justinsgray, Eliot Aretskin-Hariton | accepted |
+| [032](POEM_032.md) | Detailed Driver Scaling Report | justinsgray, Eliot Aretskin-Hariton | integrated |
 | [033](POEM_033.md) | Linear Constraints in Check Totals | [justinsgray](https://github.com/justinsgray) | integrated |
 | [034](POEM_034.md) | Units library function to simplify units. | [optional real name](https://github.com/Kenneth-T-Moore) | rejected |
 | [035](POEM_035.md) | More generalized behavior in promoted inputs. | [robfalck](https://github.com/robfalck) | integrated |
 | [036](POEM_036.md) | Serialization of Kriging training weights | [dakror](https://github.com/dakror) | integrated |
 | [038](POEM_038.md) | Raise an error if a user declares a sub-jacobian to have a value of zero. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
-| [039](POEM_039.md) | User Function Registration in ExecComp | @justinsgray, @robfalck | accepted |
+| [039](POEM_039.md) | User Function Registration in ExecComp | @justinsgray, @robfalck | integrated |
 
