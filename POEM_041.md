@@ -1,17 +1,19 @@
 POEM ID: 041  
 Title: Add expressions to ExecComp after instantiation  
 authors: [@robfalck]  
-Competing POEMs: N/A  
+Competing POEMs: [POEM 039](https://github.com/OpenMDAO/POEMs/blob/master/POEM_039.md)  
 Related POEMs: N/A  
 Associated implementation PR:
 
 ##  Status
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
+
+Rejected in favor of [POEM 039](https://github.com/OpenMDAO/POEMs/blob/master/POEM_039.md).
 
 ## Motivation
 
@@ -49,3 +51,5 @@ exec_comp.add_expr('z = cos(x)', z={'shape': (6,)}, x={'shape': (6,)})
 ```bash
 ValueError: Input x has multiple values for metadata: 'shape'
 ```
+
+
