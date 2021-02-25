@@ -3,15 +3,15 @@ Title:  DOEDriver different number of levels for different DVs.
 authors: @onodip (Péter Onódi)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: #1885  
+Associated implementation PR: [#1885](https://github.com/OpenMDAO/OpenMDAO/pull/1885)
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
