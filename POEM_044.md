@@ -55,24 +55,24 @@ The settings in the config should not affect results, although this may eventual
 
 ```
 [checks]
-auto_ivc_warnings = yes
-comp_has_no_outputs = yes
-cycles = no
-dup_inputs = yes
-missing_recorders = yes
-out_of_order = yes
-promotions = no
-solvers = yes
-system = yes
-unconnected_inputs = no
+auto_ivc_warnings = 1
+comp_has_no_outputs = 1
+cycles = 0
+dup_inputs = 1
+missing_recorders = 1
+out_of_order = 1
+promotions = 0
+solvers = 1
+system = 1
+unconnected_inputs = 0
 
-[component_warnings]
+[Component.warnings]
 distributed_component_no_src_indices = warn
 
-[connection_warnings]
+[Connection.warnings]
 unitless_to_units = warn
 
-[optimizer_warnings]
+[Driver.warnings]
 singular_jac_behavior = warn
 
 ```
@@ -90,6 +90,6 @@ Setting options in a script
 A new nested dictionary will be added:  `openmdao.api.options`.
 
 ```
-om.options['connection_warnings']['unitless_to_units'] = 'ignore'
-om.options['optimizer_warnings']['singular_jac_behavior'] = 'raise'
+om.options['Connection.warnings']['unitless_to_units'] = 'ignore'
+om.options['Driver.warnings']['singular_jac_behavior'] = 'raise'
 ```
