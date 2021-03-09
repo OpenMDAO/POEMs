@@ -78,7 +78,7 @@ singular_jac_behavior = warn
 ```
 
 Checks will be set to enabled (1) be disabled (0)
-Warnings will use the numpy seterr apporach for parsing warnings:
+Warnings will use the numpy seterr approach for parsing warnings:
 
 Warnings will simply warn when set to `warn`.
 Disabling a warnings will be performed by setting it to `ignore`.
