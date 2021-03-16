@@ -108,7 +108,7 @@ To conform to a numpy-like interface, an action of `'raise'` will have the same 
 
 The following table is from the Python warning documentation:
 
-| Value       | Disposition |                                                                                                           |
+| Value       | Disposition                                                                                                             |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
 | "default"   | print the first occurrence of matching warnings for each location (module + line number) where the warning is issued    |
 | "error"     | turn matching warnings into exceptions  (OpenMDAO will also accept "raise")                                             |
