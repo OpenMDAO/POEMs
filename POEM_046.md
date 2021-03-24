@@ -86,8 +86,58 @@ In general, internally OpenMDAO does not make an actual distinction between seri
 It does not affect the data allocation, nor the data transfers at run time. 
 There are a few places where it can have an impact though: 
 - For serial variables OpenMDAO can check for constant size across processors
-- When approximating partial derivatives 
-- At the driver level, when handling the final reduction/gather of derivatives across processors
+- When approximating partial derivatives, especially when using parallel FD or CS, it is critical to know the true size of the inputs (i.e. which variables on each processor are independent and which are copies) 
+- When computing total derivatives the framework needs to know if values are serial or parallel to determine the correct sizes for total derivatives, and also whether to gather/reduce values from different processors.
+
+To understand the relationship between total Jacobian size and serial/distributed variable labels consider this example: 
+
+```python
+import numpy as np
+
+import openmdao.api as om 
+
+class TestComp(om.ExplicitComponent): 
+
+    def setup(self): 
+
+        self.add_input('foo')
+
+        self.options['distributed'] = True
+        if self.options['distributed']: 
+            self.out_size = self.comm.rank+1
+        else: 
+            self.out_size = 1
+        self.add_output('bar', shape=self.comm.rank+1)
+
+        self.declare_partials('bar', 'foo')
+
+    def compute(self, inputs, outputs): 
+
+        outputs['bar'] = 2*np.ones(self.out_size)*inputs['foo']
+
+    def compute_partials(self, inputs, J): 
+        J['bar', 'foo'] = 2*np.ones(self.out_size).reshape((self.out_size,1))
+
+p = om.Problem()
+
+ivc = p.model.add_subsystem('ivc', om.IndepVarComp(), promotes=['*'])
+ivc.add_output('foo', 1.)
+p.model.add_subsystem('test_comp', TestComp(), promotes=['*'])
+
+p.setup()
+
+p.run_model()
+
+J = p.compute_totals(of='bar', wrt='foo')
+
+if p.model.comm.rank == 0: 
+    print(J)
+```
+When run with via `mpiexec -n 3 python <file_name>.py`,
+with `self.options['distributed'] = True` you would see the total derivative of `foo` with respect to `bar` is a size (6,1) array: `[[2],[2],[2],[2],[2],[2]]`.
+The length of the output here is set by the sum of the sizes across the 3 processors: 1+2+3=6. 
+
+With `self.options['distributed'] = False` you would see the total derivative of `foo` with respect to `bar` with respect to `bar` is a size (1,1) array: `[[2]]`.
 
 ## Example
 
