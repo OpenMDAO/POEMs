@@ -21,7 +21,7 @@ The main purpose of this POEM is to provide clarity to this situation by means o
 Some modest changes to APIs are proposed because they help unify what are currently corner cases under one simpler overall philosophy. 
 
 
-## Description
+## Overview of Serial and Distributed Computation in OpenMDAO
 
 Before dealing with the serial/distributed connections, 
 it is important to first discuss exactly where the serial/distributed applies in an OpenMDAO context. 
@@ -80,10 +80,23 @@ The value guarantee is a little more tricky because there are two ways to achiev
 OpenMDAO supports both ways, but defaults to the duplicate calculation approach. 
 If you need/want the broadcast approach, you can manually set that up. 
 
+### Places where serial/distributed labels impact OpenMDAO functionality
 
+In general, internally OpenMDAO does not make an actual distinction between serial and distributed variables. 
+It does not affect the data allocation, nor the data transfers at run time. 
+There are a few places where it can have an impact though: 
+- For serial variables OpenMDAO can check for constant size across processors
+- When approximating partial derivatives 
+- At the driver level, when handling the final reduction/gather of derivatives across processors
 
 ## Example
 
+
+
+NOTES: 
+- Serial/distributed matters for fd/cs approximations. You have to know the true global size of inputs in this context in order to figure out how much parallelism you can afford. 
+- Important to keep serial/distributed labels for drivers sake. Drivers need to know how to gather/reduce the total jac 
+- Serial label is useful for error checking of sizes being the same everywhere
 
 
 ## Notes on other options that were considered
