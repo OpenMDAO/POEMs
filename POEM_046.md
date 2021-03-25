@@ -252,16 +252,28 @@ Example: distributed output with sized 1,2,3 on ranks 0,1,2 connected to a distr
 
 ### How to achieve non-standard connections
 
+There are some cases where a user may want to use non default `src_indices`.
+OpenMDAO allows this explicitly by allowing you to provide whatever `src_indices` you like to `connect` and `promotes`. 
+
+This capability remains the same before and after POEM_046. 
+All that is changing is the default behavior. 
+
+
 ### `shape_by_conn` functionality
-This POEM (044) related to POEM_022 because of the overlap with the APIs proposed here and their impact on the `shape_by_conn` argument to `add_input` and `add_output`. 
+POEM_046 relates to POEM_022 because of the overlap with the APIs proposed here and their impact on the `shape_by_conn` argument to `add_input` and `add_output`. 
 
-- `shape_by_conn` for non local data transfers should not be allowed??
-
-
-
+POEM_046 proposes to follow the "always assume local" strictly in the context of `shape_by_conn` and adhere to same conventions that apply when computing default `src_indices`. 
+The result of this is that `shape_by_conn` will be symmetric with regard to whether the argument is set on the input or output side of a connection. The resulting size of the unspecified variable will be the same as the local size on the other side of the connection. 
 
 
-## Backwards compatibility
+One other note is that `shape_by_conn` for non local data transfers will be disallowed because there is no way to apply "always assume local" when the data transfer is not local. 
+
+
+
+
+## Backwards (in)compatibility
+
+### Deprecation of the 'distributed' component option
 
 Prior to this POEM, the old API was to set `<component>.options['distributed'] = <True|False>`. 
 This will be deprecated, scheduled to be removed completely in OpenMDAO 4.0. 
@@ -275,9 +287,15 @@ in terms of component definitions.
 However there is one caveat, related to proposed changes in to how connections and associated `src_indices` are handled. 
 See the section on connections for more details. 
 
+### Change to the default behavior of serial->distributed connections with shape-by-conn
 
+The original implemention of `shape_by_conn` stems from POEM_022. 
+The work provides the correct foundation for this feature, 
+but POEM_022 did not specify expected behavior for serial->distributed connections. 
+Some of the original implementations did not follow an "always assume local". 
+The following behaviors have changed
 
-
+TODO: Full details of the backwards incompatible changes here
 
 
 
