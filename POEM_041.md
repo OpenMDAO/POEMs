@@ -3,15 +3,15 @@ Title: Add expressions to ExecComp after instantiation
 authors: [@robfalck]  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR:
+Associated implementation PR: [#1977](https://github.com/OpenMDAO/OpenMDAO/pull/1977)
 
 ##  Status
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 
