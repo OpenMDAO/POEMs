@@ -220,18 +220,35 @@ Recall that serial variables are duplicated on all processes, and are assumed to
 So following the "always assume local" convention, a serial->serial connection will default to `src_indices` that transfer the local output copy to the local input.
 
 Example: Serial output of size 5, connected to a serial input of size 5; duplicated on three procs. 
-On process 0, the connection would have src_indices=[0,1,2,3,4]. 
-On process 1, the connection would have src_indices=[5,6,7,8,9]. 
-On process 2, the connection would have src_indices=[10,11,12,13,14]. 
+- On process 0, the connection would have src_indices=[0,1,2,3,4]. 
+- On process 1, the connection would have src_indices=[5,6,7,8,9]. 
+- On process 2, the connection would have src_indices=[10,11,12,13,14]. 
 
 Note: If you would like to force a data transfer to all downstream calculations from the root proc instead, you can manually specify the src_indices to be [0,1,2,3,4] on all processors. 
 
 #### serial->distributed 
-Here you have a serial output, which is duplicated on all processors, connected to a distributed input. 
-In this case, if no src_indices are given, then the distributed input must take the same shape on all processors to match the output. 
+In this case, if no `src_indices` are given, then the distributed input must take the same shape on all processors to match the output. 
 Effectively then, the distributed input will actually behave as if it is serial, and we end up with the same exact default behavior as a serial->serial connection. 
 
+#### distributed->serial
+This type of connection presents a contradiction, which ultimately forces us to disallow it in the default case.  
+Serial variables must take the same size and value across all processes. 
+While we could force the distributed variable to have the same size across all processes, the same-value promise still needs to be enforced somehow. 
 
+The only way to ensure that that would be to make sure that both the size and `src_indices` matches for the connections across all processes. 
+However any assumed way of doing that would violate the "always assume local" convention of the POEM. 
+
+So this connection will raise an error during setup, if no src indices are given. 
+If `src_indices` are specified manually then the connection will not error. 
+
+#### distributed->distributed
+Since these are distributed variables, the size may vary from one process to another. 
+Following the "always assume local" convention, the size of the output must match the size of the connected input on every processor and then the `src_indices` will just match up with the local indices of the output. 
+
+Example: distributed output with sized 1,2,3 on ranks 0,1,2 connected to a distributed input. 
+- On process 0, the connection would have src_indices=[0]. 
+- On process 1, the connection would have src_indices=[1,2]. 
+- On process 2, the connection would have src_indices=[3,4]. 
 
 ### How to achieve non-standard connections
 
