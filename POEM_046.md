@@ -1,5 +1,5 @@
 POEM ID: 046  
-Title: Definition of serial and parallel variables
+Title: Definition of serial and distributed variables
 authors: [@justinsgray]  
 Competing POEMs: N/A  
 Related POEMs: 022, 044 
@@ -89,7 +89,7 @@ It does not affect the data allocation, nor the data transfers at run time.
 There are a few places where it can have an impact though: 
 - For serial variables OpenMDAO can check for constant size across processors
 - When allocating memory for partial derivatives, it is critical to know the true size of the variables. 
-- When computing total derivatives the framework needs to know if values are serial or parallel to determine the correct sizes for total derivatives, and also whether to gather/reduce values from different processors.
+- When computing total derivatives the framework needs to know if values are serial or distributed to determine the correct sizes for total derivatives, and also whether to gather/reduce values from different processors.
 
 To understand the relationship between serial/distributed labels and partial and total Jacobian size consider this example (coded using the new proposed API from this POEM): 
 
@@ -102,14 +102,14 @@ class TestComp(om.ExplicitComponent):
 
     def setup(self): 
 
-        self.add_input('foo')
+        self.add_input('foo')  # foo is scalar
 
         DISTRIB = True
         if DISTRIB: 
             self.out_size = self.comm.rank+1
         else: 
             self.out_size = 3
-            self.add_output('bar', shape=self.comm.rank+1, distributed=DISTRIB)
+        self.add_output('bar', shape=self.out_size, distributed=DISTRIB)
 
         self.declare_partials('bar', 'foo')
 
@@ -139,17 +139,17 @@ with `self.options['distributed'] = True` you would see the total derivative of 
 The length of the output here is set by the sum of the sizes across the 3 processors: 1+2+3=6. 
 Each local partial derivative Jacobian will be of size (1,1), (2,1), and (3,1) respectively. 
 
-With `self.options['distributed'] = False` you would see the total derivative of `foo` with respect to `bar` with respect to `bar` is a size (3,1) array: `[[2],[2],[2]]`.
+With `self.options['distributed'] = False` you would see the total derivative of `foo` with respect to `bar` is a size (3,1) array: `[[2],[2],[2]]`.
 The local partial derivative Jacobian will be of size (3,1) on every processor. 
 
 
 ## API for labeling serial/distributed variables
 
-a `distributed` argument will be added to the `add_input` and `add_output` methods on components. 
+A `distributed` argument will be added to the `add_input` and `add_output` methods on components. 
 The default will be `False`. 
 Users are required to set `distributed=True` for any variable they want to be treated as distributed. 
 
-one serial input (size 1 on all procs), 
+one serial input (size 1 on all procs, value same on all procs), 
 one distributed output (size rank+1 on each proc).
 ```python
 class TestComp(om.ExplicitComponent): 
@@ -172,7 +172,7 @@ class TestComp(om.ExplicitComponent):
 ```
 
 one distributed input (size 1 on all procs), 
-one serial output (size 10 on all proc).
+one serial output (size 10 on all procs, value same on all procs).
 ```python
 class TestComp(om.ExplicitComponent): 
 
@@ -185,9 +185,8 @@ class TestComp(om.ExplicitComponent):
 This API will allow components to have mixtures of serial and distributed variables. 
 For any serial variables, 
 OpenMDAO will be able to check for size-consistency across processors during setup.
-In according with POEM_044, it should be possible to control whether this check happens or not.   
 
-Although value-consistency is in theory a requirement for serial variables in practice it will be far to expensive to enforce this. 
+Although value-consistency is in theory a requirement for serial variables in practice it will be far too expensive to enforce this. 
 Hence it will be assumed, but not enforced. 
 
 ## Connections between serial and distributed variables
@@ -197,7 +196,7 @@ In general there are multiple ways to handle data connections when working with 
 Serial or distributed labels are a property of the variables, 
 which are themselves attached to components. 
 However, the transfer of data from one component to another is governed by `connect` and `promotes` methods at the group level. 
-When working with multiple processors, you have to consider not just which two variables are connected but also what processor the data is coming from too. 
+When working with multiple processors, you have to consider not just which two variables are connected but also what processor the data is coming from. 
 This is all controlled via the `src_indices` that are given to `connect` or `promote` methods on `Group`. 
 
 One of primary contributions of POEM_046 is to provide a simple and self consistent default assumption for `src_indices` in the case of connections between serial and distributed components. 
@@ -224,7 +223,7 @@ Example: Serial output of size 5, connected to a serial input of size 5; duplica
 - On process 1, the connection would have src_indices=[5,6,7,8,9]. 
 - On process 2, the connection would have src_indices=[10,11,12,13,14]. 
 
-Note: If you would like to force a data transfer to all downstream calculations from the root proc instead, you can manually specify the src_indices to be [0,1,2,3,4] on all processors. 
+Note: If you would like to force a data transfer to all downstream calculations from the rank 0 proc instead, you can manually specify the src_indices to be [0,1,2,3,4] on all processors. 
 
 #### serial->distributed 
 In this case, if no `src_indices` are given, then the distributed input must take the same shape on all processors to match the output. 
@@ -235,20 +234,20 @@ This type of connection presents a contradiction, which ultimately forces us to 
 Serial variables must take the same size and value across all processes. 
 While we could force the distributed variable to have the same size across all processes, the same-value promise still needs to be enforced somehow. 
 
-The only way to ensure that that would be to make sure that both the size and `src_indices` matches for the connections across all processes. 
+The only way to ensure that would be to make sure that both the size and `src_indices` matches for the connections across all processes. 
 However any assumed way of doing that would violate the "always assume local" convention of the POEM. 
 
-So this connection will raise an error during setup, if no src indices are given. 
+So this connection will raise an error during setup if no src indices are given. 
 If `src_indices` are specified manually then the connection will not error. 
 
 #### distributed->distributed
 Since these are distributed variables, the size may vary from one process to another. 
 Following the "always assume local" convention, the size of the output must match the size of the connected input on every processor and then the `src_indices` will just match up with the local indices of the output. 
 
-Example: distributed output with sized 1,2,3 on ranks 0,1,2 connected to a distributed input. 
+Example: distributed output with sizes 1,2,3 on ranks 0,1,2 connected to a distributed input. 
 - On process 0, the connection would have src_indices=[0]. 
 - On process 1, the connection would have src_indices=[1,2]. 
-- On process 2, the connection would have src_indices=[3,4]. 
+- On process 2, the connection would have src_indices=[3,4,5]. 
 
 ### How to achieve non-standard connections
 
