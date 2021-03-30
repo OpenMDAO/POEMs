@@ -1,9 +1,9 @@
-POEM ID: 046  
-Title: Definition of serial and distributed variables
-authors: [@justinsgray, @naylor-b, @joanibal, @anilyildirim, @kejacobson]  
-Competing POEMs: N/A  
-Related POEMs: 022, 044 
-Associated implementation PR:
+POEM ID: 046   
+Title: Definition of serial and distributed variab les   
+authors: [@justinsgray, @naylor-b, @joanibal, @anilyildirim, @kejacobson]    
+Competing POEMs: N/A    
+Related POEMs: 022, 044   
+Associated implementation PR:  
 
 #  Status
 
