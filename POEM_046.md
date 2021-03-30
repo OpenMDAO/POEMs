@@ -30,7 +30,7 @@ Serial vs distributed labels can potentially come into play in three contexts:
 
 ### Components are not classified as serial/distributed
 OpenMDAO makes no assumptions about what kind of calculations are done inside the `compute` method of your components. 
-**There is no serial/distributed classification of components**. 
+**There is no fundamental difference between a serial component and a distributed component**. 
 Components are always duplicated across all the processors alloted to their comm when running under MPI. 
 
 Consider this trivial illustrative example:
@@ -204,8 +204,8 @@ One of primary contributions of POEM_046 is to provide a simple and self consist
 
 ### Default behavior
 
-This POEM proposes that the primary guiding principal for `src_indices` defaults should be to always assume local-process data transfers if possible. 
-By "default" here, we are specifically addressing the situation where a connection is made (either via `connect` or `promote`) without any `src_indices` specified. 
+This POEM proposes that the primary guiding principal for `src_indices` defaults should be to always assume local-process data transfers. 
+By "default" we are specifically addressing the situation where a connection is made (either via `connect` or `promote`) without any `src_indices` specified. 
 In this case, OpenMDAO is asked to assume what the `src_indices` should be. 
 
 There are four cases to consider: 
