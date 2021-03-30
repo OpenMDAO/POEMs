@@ -277,8 +277,9 @@ If `src_indices` are specified manually then the connection is allowed.
 
 ## How to achieve non-standard connections
 
-There are some cases where a user may want to use non default `src_indices`.
-OpenMDAO allows this explicitly by allowing you to provide whatever `src_indices` you like to `connect` and `promotes`. 
+There are some cases where a user may want to use non default `src_indices` or to connect a mixture of serial or distributed variables.
+OpenMDAO supports this by allowing you to explicitly provide whatever `src_indices` you like to `connect` and `promotes`. 
+In this case, the default assumptions don't apply. 
 
 This capability remains the same before and after POEM_046. 
 All that is changing is the default behavior when no `src_indices` are given. 
