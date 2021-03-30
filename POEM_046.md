@@ -238,7 +238,8 @@ The only way to ensure that would be to make sure that both the size and `src_in
 However any assumed way of doing that would violate the "always assume local" convention of the POEM. 
 
 So this connection will raise an error during setup if no src indices are given. 
-If `src_indices` are specified manually then the connection will not error. 
+If `src_indices` are specified manually and are identical on all ranks where the input exists,
+then the connection will not error. 
 
 #### distributed->distributed
 Since these are distributed variables, the size may vary from one process to another. 
@@ -268,8 +269,6 @@ The result of this is that `shape_by_conn` will be symmetric with regard to whet
 One other note is that `shape_by_conn` for non local data transfers will be disallowed because there is no way to apply "always assume local" when the data transfer is not local. 
 
 
-
-
 ## Backwards (in)compatibility
 
 ### Deprecation of the 'distributed' component option
@@ -286,16 +285,35 @@ in terms of component definitions.
 However there is one caveat, related to proposed changes in to how connections and associated `src_indices` are handled. 
 See the section on connections for more details. 
 
-### Change to the default behavior of serial->distributed connections with shape-by-conn
+### Change to the default behavior of connections with shape-by-conn
 
 The original implemention of `shape_by_conn` stems from POEM_022. 
 The work provides the correct foundation for this feature, 
-but POEM_022 did not specify expected behavior for serial->distributed connections. 
-Some of the original implementations did not follow an "always assume local". 
-The following behaviors have changed
+but POEM_022 did not specify expected behavior for serial->distributed connections, 
+and some of the original implementations did not default to "always assume local". 
 
-TODO: Full details of the backwards incompatible changes here
+The following behaviors have changed:
+
+#### distributed->serial:
+
+Old behavior: A serial input connected to a distributed output without `src_indices` would result in
+a serial input that was the total size of the distributed output.
+
+New behavior: distributed->serial connections that do not specify `src_indices` are not allowed.
+Because `shape_by_conn` inputs do not define `src_indices`, distributed->serial connections with
+`shape_by_conn` inputs are never allowed.
+
+Note that if `src_indices` *are* provided, they must be identical on every rank where the input
+exists if the input is serial.  This is because serial variables must have the same value on all
+ranks.
 
 
+#### serial->distributed:
+
+Old behavior: The serial size of the output was split up as evenly as possible among the 
+distributed inputs.
+
+New behavior: Each local input must have the same size as the serial output or an exception will
+be raised.
 
 
