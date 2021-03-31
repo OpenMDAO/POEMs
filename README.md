@@ -72,4 +72,5 @@ That way, github's built in notification system to get emails when things are ch
 | [039](POEM_039.md) | User Function Registration in ExecComp | @justinsgray, @robfalck | integrated |
 | [041](POEM_041.md) | Add expressions to ExecComp after instantiation | @robfalck | integrated |
 | [042](POEM_042.md) | DOEDriver different number of levels for different DVs. | Péter Onódi | integrated |
+| [043](POEM_043.md) | No `src_indices` warning when both components are distributed | [Mark Leader](https://github.com/markleader) | active |
 
