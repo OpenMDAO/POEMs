@@ -1,7 +1,7 @@
 POEM ID:  043  
-Title:  No `src_indices` warning when both components are distributed  
+Title:  No `src_indices` warning when both components are distributed   
 authors: markleader (Mark Leader)  
-Competing POEMs: 044
+Competing POEMs: 044  
 Related POEMs: None  
 Associated implementation PR: [#1915](https://github.com/OpenMDAO/OpenMDAO/pull/1915)  
 
