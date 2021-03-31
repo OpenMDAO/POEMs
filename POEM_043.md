@@ -1,17 +1,18 @@
 POEM ID:  043  
-Title:  No `src_indices` warning when both components are distributed  
+Title:  No `src_indices` warning when both components are distributed   
 authors: markleader (Mark Leader)  
-Competing POEMs: None  
+Competing POEMs: 044  
 Related POEMs: None  
 Associated implementation PR: [#1915](https://github.com/OpenMDAO/OpenMDAO/pull/1915)  
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
+
 
 
 ## Motivation
@@ -30,3 +31,8 @@ For optimization with distributed components, when `src_indices` are not set, a 
 This POEM suggests removing the warning for variables which are connected between two distributed components. I think the behavior in that case will always be clear, so there does not need to be a warning, and removing warnings in these cases will reduce both user confusion and output to the command line.
 
 In the case of a variable which is connected between a non-distributed component and a distributed component, I think the warning is helpful to clarify that the default behavior was what the user intended.
+
+
+## Rejection Note: 
+
+This POEM was rejected in favor of 044, which is more general and handles all the various OpenMDAO warnings. 
