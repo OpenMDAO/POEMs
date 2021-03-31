@@ -71,4 +71,5 @@ That way, github's built in notification system to get emails when things are ch
 | [038](POEM_038.md) | Raise an error if a user declares a sub-jacobian to have a value of zero. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
 | [039](POEM_039.md) | User Function Registration in ExecComp | @justinsgray, @robfalck | integrated |
 | [041](POEM_041.md) | Add expressions to ExecComp after instantiation | @robfalck | integrated |
+| [042](POEM_042.md) | DOEDriver different number of levels for different DVs. | Péter Onódi | integrated |
 
