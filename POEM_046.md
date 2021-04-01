@@ -63,7 +63,7 @@ rank: 2 comm size:  3
 ```
 
 An important side note is that while a component is always copied across its entire comm, 
-OpenMDAO can split comms within a model so that it is absolutely possible that a component is only setup on a sub-set of the total processors given to a model. 
+OpenMDAO can split a comm within a model so that it is absolutely possible that a component is only setup on a sub-set of the total processors given to a model. 
 Processor allocation is a different topic though, and for the purposes of POEM 046, we will assume that we are working with a simple single comm model. 
 
 ## What it means for a variable to be serial or distributed in OpenMDAO
@@ -81,17 +81,6 @@ The value guarantee is a little more tricky because there are two ways to achiev
 
 OpenMDAO uses the duplicate calculation approach for serial components, 
 because this results in the least amount of parallel communication and has other advantages parallel computation of reverse-mode derivatives in some cases. 
-If you need/want the broadcast approach, 
-you manually create it by adding an internal broadcast to the compute method of your component: 
-
-```python 
-def compute(self, inputs, outputs):
-        bar = 0
-        if self.comm.rank == 0:
-            bar = inputs['foo'] + 1
-        bar = self.comm.bcast(bar, root=0)
-        outputs['bar'] = bar
-```
 
 ## Places where serial/distributed labels impact OpenMDAO functionality
 
@@ -155,6 +144,41 @@ The local partial derivative Jacobian will be of size (3,1) on every processor.
 In this case, the local partial derivative Jacobian is the same as the global partial derivative Jacobian.
 
 
+# Proposed API for controlling how serial components are executed on multiple processors
+
+As shown in the examples above, OpenMDAO duplicates all components across every process in their comm. 
+For serial components, this means that by default all calculations are duplicated across the various processes. 
+This design works well because it allows local data transfers (vs requiring a broadcast from the root proc) which avoids MPI communication overhead. 
+It also has advantages when computing derivatives, because the multiple copies can be used to improve parallelism in both forward and reverse mode calculations. 
+
+However, there are some cases where duplication of the serial calculations is not desirable. 
+Perhaps there is a numerically unstable matrix inverse that would get slightly different results on different processes, which could cause problems. 
+Or there may be some file I/O involved which should not be done by more than one process. 
+In these cases, the desired behavior is for a serial component to do all its calculations on the root process, and then broadcast the results out to all the copies. 
+If you need/want the broadcast approach, 
+you can manually create it by adding an internal broadcast to the compute method of your component: 
+
+```python 
+def compute(self, inputs, outputs):
+        bar = 0
+        if self.comm.rank == 0:
+            bar = inputs['foo'] + 1
+        bar = self.comm.bcast(bar, root=0)
+        outputs['bar'] = bar
+``` 
+
+This would give the desired behavior, but it requires modifying a component's compute method. 
+Requiring modifications of serial components in order to run them as part of a distributed model is undesirable. 
+To avoid this, components will be given a new option that controls their serial behavior: `run_root_only`. 
+
+If `self.options['run_root_only'] = True` then a component will internally restrict its own compute method to run only on the root process, and will broadcast all its outputs. 
+This same behavior will also be applied to any derivative methods (`linearize`, `compute_partials`, `apply_linear`, `compute_jac_vec_product`), which will only get run on the root process and their computed results broadcast out to all the other processes. 
+
+When `self.options['run_root_only'] = True`, all inputs and outputs of the component MUST be `serial`. 
+The variables can either be left unlabeled and will be assumed `serial` or they can be explicitly labeled as such. 
+If any component variables are labeled as `distributed`, an error will be raised during setup. 
+
+
 # Proposed API for labeling serial/distributed variables
 
 A `distributed` argument will be added to the `add_input` and `add_output` methods on components. 
@@ -216,9 +240,9 @@ One of primary contributions of POEM_046 is to provide a simple and self consist
 
 ## Default behavior
 
-The primary guiding principal for default `src_indices` (i.e. whenever they are not specified in teh connect statement) should be to always assume local-process data transfers. 
+The primary guiding principal for default `src_indices` is to always assume local-process data transfers. 
 By "default" we are specifically addressing the situation where a connection is made (either via `connect` or `promote`) without any `src_indices` specified. 
-In this case, OpenMDAO is asked to assume what the `src_indices` should be. 
+In this case, OpenMDAO is asked to assume what the `src_indices` should be, or in other words to use default `src_indices`. 
 
 There are four cases to consider: 
 - serial->serial 
@@ -229,6 +253,8 @@ There are four cases to consider:
 ### serial->serial 
 Serial variables are duplicated on all processes, and are assumed to have the same value on all processes as well. 
 Following the "always assume local" convention, a serial->serial connection will default to `src_indices` that transfer the local output copy to the local input.
+However, for serial variables OpenMDAO expects the user to give those src indices relative to the local size of the variable, regardless of which process you happen to be on. 
+This keeps the interface uniform and unchanging regardless of the number of processes allocated. 
 
 Example: Serial output of size 5, connected to a serial input of size 5; duplicated on three procs. 
 If no `src_indices` are given, then the default on each processor would assumed to be: 
@@ -236,8 +262,7 @@ If no `src_indices` are given, then the default on each processor would assumed 
 - On process 1, default src_indices=[0,1,2,3,4]
 - On process 2, default src_indices=[0,1,2,3,4]
 
-Since the variable is serial, OpenMDAO assumes the `src_indices` were given relative to the root processor. 
-It internally offsets them to enforce local data transfers:
+Internally OpenMDAO offsets the indices to enforce local data transfers:
 - On process 0, effective src_indices=[0,1,2,3,4]
 - On process 1, effective src_indices=[5,6,7,8,9]
 - On process 2, effective src_indices=[10,11,12,13,14]
@@ -325,7 +350,7 @@ but POEM_022 did not specify expected behavior for serial->distributed or distri
 and some of the original implementations did not default to "always assume local". 
 
 
-### Behavior after POEM 46 
+### Behavior before POEM 46 
 
 #### serial -> distributed 
 - the local size of the distributed input is the found by evenly distributing the local size of the serial output  
