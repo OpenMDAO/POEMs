@@ -173,10 +173,15 @@ To avoid this, components will be given a new option that controls their serial 
 
 If `self.options['run_root_only'] = True` then a component will internally restrict its own compute method to run only on the root process, and will broadcast all its outputs. 
 This same behavior will also be applied to any derivative methods (`linearize`, `compute_partials`, `apply_linear`, `compute_jac_vec_product`), which will only get run on the root process and their computed results broadcast out to all the other processes. 
+In the case of any reverse mode derivatives, OpenMDAO will internally do a reduce to the root processor to capture any derivative information that was being propagated backwards on other processors. 
 
 When `self.options['run_root_only'] = True`, all inputs and outputs of the component MUST be `serial`. 
 The variables can either be left unlabeled and will be assumed `serial` or they can be explicitly labeled as such. 
 If any component variables are labeled as `distributed`, an error will be raised during setup. 
+
+One other detail that is worth noting is that the `run_root_only` option will not interact cleanly with some of the parallel derivative functionality in OpenMDAO. 
+[Parallel-FD](http://openmdao.org/twodocs/versions/3.8.0/features/core_features/working_with_derivatives/parallel_fd.html), and [parallel-coloring for multi point problems](http://openmdao.org/twodocs/versions/3.8.0/features/core_features/working_with_derivatives/parallel_derivs.html) will both not work in combination with this option. 
+During setup, if either of these features is mixed with a component that has this option turned on an error will be raised. 
 
 
 # Proposed API for labeling serial/distributed variables
