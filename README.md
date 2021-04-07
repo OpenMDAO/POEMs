@@ -70,6 +70,7 @@ That way, github's built in notification system to get emails when things are ch
 | [037](POEM_037.md) | Give list_problem_vars the option to output unscaled variables. | [optional real name](https://github.com/Kenneth-T-Moore) | integrated |
 | [038](POEM_038.md) | Raise an error if a user declares a sub-jacobian to have a value of zero. | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
 | [039](POEM_039.md) | User Function Registration in ExecComp | @justinsgray, @robfalck | integrated |
+| [040](POEM_040.md) | Integration with IPython notebooks | [robfalck](https://github.com/robfalck) | integrated |
 | [041](POEM_041.md) | Add expressions to ExecComp after instantiation | @robfalck | integrated |
 | [042](POEM_042.md) | DOEDriver different number of levels for different DVs. | Péter Onódi | integrated |
 | [043](POEM_043.md) | No `src_indices` warning when both components are distributed | [Mark Leader](https://github.com/markleader) | rejected |
