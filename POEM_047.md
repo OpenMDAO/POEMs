@@ -297,6 +297,8 @@ problem from the line
 `conns = self._problem_meta['model_ref']()._conn_global_abs_in2out`
 is never called.
 
+EDIT: Implementation 1 now has the OpenMDAO pull request #2005
+
 Implementation 2 involves the creation of new System method called 
 `run_post_run()` (or something that sounds better than that) which is
 essentially a deep duplicate of `System.run_solve_nonlinear()` and the methods
