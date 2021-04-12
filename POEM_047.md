@@ -1,5 +1,5 @@
-POEM ID:  045
-Title:  Component I/O independance from Problem Object 
+POEM ID:  047  
+Title:  Component I/O independance from Problem Object  
 authors: @andrewellis55(Andrew Ellis)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
