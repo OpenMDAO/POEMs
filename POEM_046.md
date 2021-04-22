@@ -7,9 +7,9 @@ Associated implementation PR:
 
 #  Status
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
@@ -80,7 +80,7 @@ The value guarantee is a little more tricky because there are two ways to achiev
 - Duplicate the calculations on all processors and use the locally computed values (which are the same by definition because they did the same computations)
 
 OpenMDAO uses the duplicate calculation approach for serial components, 
-because this results in the least amount of parallel communication and has other advantages parallel computation of reverse-mode derivatives in some cases. 
+because this results in the least amount of parallel communication and has other advantages in parallel computation of reverse-mode derivatives in some cases. 
 
 ## Places where serial/distributed labels impact OpenMDAO functionality
 
