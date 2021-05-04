@@ -9,7 +9,7 @@ Associated implementation PR: #2013
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
 - [x] Integrated
 
