@@ -3,15 +3,15 @@ Title: Definition of serial and distributed variab les
 authors: [justinsgray, naylor-b, joanibal, anilyildirim, kejacobson]    
 Competing POEMs: N/A    
 Related POEMs: 022, 044   
-Associated implementation PR:  
+Associated implementation PR: #2013
 
 #  Status
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 # Motivation
 
