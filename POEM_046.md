@@ -1,5 +1,5 @@
 POEM ID: 046   
-Title: Definition of serial and distributed variab les   
+Title: Definition of serial and distributed variables   
 authors: [justinsgray, naylor-b, joanibal, anilyildirim, kejacobson]    
 Competing POEMs: N/A    
 Related POEMs: 022, 044   
