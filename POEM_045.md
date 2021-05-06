@@ -7,11 +7,13 @@ Associated implementation PR:
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
+
+A less drastic change to the API has been accepted in place of this POEM.
 
 
 Motivation
