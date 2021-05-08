@@ -1,376 +1,276 @@
 POEM ID: 048 
-Title:  
+Title: Semistructured Training Data for MetaModel
 authors: justinsgray
 Competing POEMs: N/A    
-Related POEMs: 022, 044   
-Associated implementation PR: #2013
+Related POEMs: 
+Associated implementation PR:
 
 #  Status
 
-- [ ] Active
+- [x] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [x] Integrated
+- [ ] Integrated
 
 # Motivation
 
-As of OpenMDAO 3.8.0 there is significant confusion surrounding connections between serial and distributed variables, what happens when you do or do not specify `src_indices`, and what happens if you use `shape_by_conn` in these mixed serial/distributed situations. 
+Semi-structued training data occurs frequently in engineering applications like performance maps for turbine engine performance, propeller performance, aerodyanmic drag, etc. 
+A simple example of semistructured training would a mostly structured grid, but where a few data points are missing on one area of the grid. 
 
-The main purpose of this POEM is to provide clarity to this situation by means of a clear, concise, and self-consistent explanation. 
-Some modest changes to APIs are proposed because they help unify what are currently corner cases under one simpler overall philosophy. 
+Due to the prevalence of this kind of data, it would be valuable to support interpolation of it natively by the existing interpolation component. 
+
+# Description 
+
+The underlying interpolation routines used in MetaModelStructuredComp component already have the ability to process semistructured data, 
+but the training data API does not allow for it because it expects fully structured data. 
+POEM_048 proposes expansion of this capability to support Semi-structured data as well. 
 
 
-# Overview of Serial and Distributed Computation in OpenMDAO
+# Definition of semi-structured data
 
-Serial vs distributed labels can potentially come into play in three contexts: 
-1) Components 
-2) Variables
-3) Connections
+Semi-structured data consists of nested sets monotonically increasing arrays of input values paired to arbitrary output values (i.e. outputs need not be monotonic)
 
-## Components are not classified as serial/distributed
-OpenMDAO makes no assumptions about what kind of calculations are done inside the `compute` method of your components. 
-**There is no fundamental difference between a serial component and a distributed component**. 
-Components are always duplicated across all the processors alloted to their comm when running under MPI. 
+This is an example of semistructured data with 2 inputs (x,y)  and one output (z): 
+```
+x = 1
+    y = 1, 2, 3, 4
+    z = 10, 20, 30, 40
+x = 2 
+    y = 3, 4, 6
+    Z = 60, 80, 120
+x = 3
+    y = 10, 11
+    z = 300, 330
+```
+Semi-structured is different from structured data, because you do not have a complete grid of training data. 
 
-Consider this trivial illustrative example:
 
+A structured data set for the same example as above would be: 
+```
+x = 1
+    y = 1, 2, 3, 4, 5, 10, 11
+    z = 10, 20, 30, 40, 50, 100, 110
+x = 2 
+    y = 1, 2, 3, 4, 5, 10, 11
+    Z = 60, 80, 100, 200, 220
+x = 3
+    y = 1, 2, 3, 4, 5, 10, 11
+    z = 300, 330, 120, 150, 300, 330
+```
+
+## Potential data formats for semi-structured data
+
+Formatting semi-structured data is a bit more difficult than structured data. 
+For structured data you need a 1D array for each input variable, and an ND array of training data with each dimension matching the length of one of the input arrays.
 ```python
-import openmdao.api as om 
+# Structured Data inputs
+x = [1,2,3]
+y = [1,2,3,4,5,10,11]
 
-class TestComp(om.ExplicitComponent): 
-
-    def setup(self): 
-        self.add_input('foo')
-        self.add_output('bar')
-
-        print('rank:', self.comm.rank, "comm size: ", self.comm.size)
-
-p = om.Problem()
-
-p.model.add_subsystem('test_comp', TestComp())
-
-p.setup()
-
-p.run_model()
-``` 
-
-When run with `mpiexec -n 3 python example.py` we get 3 copies of `TestComp`, one on each processor.
+# can use meshgrid to create a 3D array of test data
+X,Y = np.meshgrid(x, y, indexing='ij')
+Z = 10*X*Y
 ```
-rank: 0 comm size:  3
-rank: 1 comm size:  3
-rank: 2 comm size:  3
-```
+This format fits easily into NDarrays, matching with how inputs on OpenMDAO components work. 
+This is important, because MetaModelStructuredComp offers the ability to have the training data as input to the component, so it could be computed by some upstream part of the model. 
+The goal is to retain this feature for semi-structured data as well. 
 
-An important side note is that while a component is always copied across its entire comm, 
-OpenMDAO can split a comm within a model so that it is absolutely possible that a component is only setup on a sub-set of the total processors given to a model. 
-Processor allocation is a different topic though, and for the purposes of POEM 046, we will assume that we are working with a simple single comm model. 
-
-## What it means for a variable to be serial or distributed in OpenMDAO
-
-A `serial` variable has the same size and the same value across all the processors it is allocated on. 
-A `distributed` variable has a potentially varying size on each processor --- including possibly 0 on some processors --- and a no assertions about the various values are made. 
-The sizes are "potentially varying" because its possible to have a distributed variable with the same size on every processor, but this would just be incidental. 
-
-Note that even for a serial variable, there are still multiple copies of it on different processors. 
-It is just that we know they are always the same size and value on all processors. 
-The size guarantee is easily enforced during model setup. 
-The value guarantee is a little more tricky because there are two ways to achieve it: 
-- Perform all calculations on a single processor and then broadcast the result out to all others 
-- Duplicate the calculations on all processors and use the locally computed values (which are the same by definition because they did the same computations)
-
-OpenMDAO uses the duplicate calculation approach for serial components, 
-because this results in the least amount of parallel communication and has other advantages in parallel computation of reverse-mode derivatives in some cases. 
-
-## Places where serial/distributed labels impact OpenMDAO functionality
-
-There are a few places where serial/distributed matters: 
-- For serial variables `src_indices` are specified based on their local size, and internally OpenMDAO will offset the indices to ensure that you get the data from your local processes. 
-- For serial variables OpenMDAO can check for constant size across processors
-- When allocating memory for partial derivatives, OpenMDAO needs to know the if variable data on different processors are duplicates (serial variables) or independent values (distributed) so it gets the right size for the Jacobian. 
-- When computing total derivatives the framework needs to know if values are serial or distributed to determine the correct sizes for total derivatives, and also whether to gather/reduce values from different processors.
-
-To understand the relationship between serial/distributed labels and partial and total Jacobian size consider this example (coded using the new proposed API from this POEM): 
-
+A simple semi-structured data format is a list-of-lists: 
 ```python
-import numpy as np
-
-import openmdao.api as om 
-
-class TestComp(om.ExplicitComponent): 
-
-    def setup(self): 
-
-        self.add_input('foo')  # foo is scalar
-
-        DISTRIB = True
-        if DISTRIB: 
-            self.out_size = self.comm.rank+1
-        else: 
-            self.out_size = 3
-        self.add_output('bar', shape=self.out_size, distributed=DISTRIB)
-
-        self.declare_partials('bar', 'foo')
-
-    def compute(self, inputs, outputs): 
-
-        outputs['bar'] = 2*np.ones(self.out_size)*inputs['foo']
-
-    def compute_partials(self, inputs, J): 
-        J['bar', 'foo'] = 2*np.ones(self.out_size).reshape((self.out_size,1))
-
-p = om.Problem()
-
-# NOTE: no ivc needed because the input is serial
-p.model.add_subsystem('test_comp', TestComp(), promotes=['*'])
-
-p.setup()
-
-p.run_model()
-
-J = p.compute_totals(of='bar', wrt='foo')
-
-if p.model.comm.rank == 0: 
-    print(J)
+# Semi-structured data inputs
+X = [1,2,3]
+Y = [[1,2,3,4], 
+     [3,4,5], 
+     [10,11]]
+# semi-structured data outputs
+Z = [[10,20,30,40], 
+     [60,80,100], 
+     [300, 330]]
+inputs=[X,Y]
+outputs=[Z,]
 ```
-When run with via `mpiexec -n 3 python <file_name>.py`,
-with `DISTRIB = True` you would see the total derivative of `foo` with respect to `bar` is a size (6,1) array: `[[2],[2],[2],[2],[2],[2]]`.
-The length of the output here is set by the sum of the sizes across the 3 processors: 1+2+3=6. 
-Each local partial derivative Jacobian will be of size (1,1), (2,1), and (3,1) respectively. 
-Each local partial derivative Jacobian represent a portion of the global partial derivative Jacobian across all 3 processes. 
-
-With `DISTRIB = False` you would see the total derivative of `foo` with respect to `bar` is a size (3,1) array: `[[2],[2],[2]]`.
-The local partial derivative Jacobian will be of size (3,1) on every processor. 
-In this case, the local partial derivative Jacobian is the same as the global partial derivative Jacobian.
-
-
-# Proposed API for controlling how serial components are executed on multiple processors
-
-As shown in the examples above, OpenMDAO duplicates all components across every process in their comm. 
-For serial components, this means that by default all calculations are duplicated across the various processes. 
-This design works well because it allows local data transfers (vs requiring a broadcast from the root proc) which avoids MPI communication overhead. 
-It also has advantages when computing derivatives, because the multiple copies can be used to improve parallelism in both forward and reverse mode calculations. 
-
-However, there are some cases where duplication of the serial calculations is not desirable. 
-Perhaps there is a numerically unstable matrix inverse that would get slightly different results on different processes, which could cause problems. 
-Or there may be some file I/O involved which should not be done by more than one process. 
-In these cases, the desired behavior is for a serial component to do all its calculations on the root process, and then broadcast the results out to all the copies. 
-If you need/want the broadcast approach, 
-you can manually create it by adding an internal broadcast to the compute method of your component: 
-
-```python 
-def compute(self, inputs, outputs):
-        bar = 0
-        if self.comm.rank == 0:
-            bar = inputs['foo'] + 1
-        bar = self.comm.bcast(bar, root=0)
-        outputs['bar'] = bar
-``` 
-
-This would give the desired behavior, but it requires modifying a component's compute method. 
-Requiring modifications of serial components in order to run them as part of a distributed model is undesirable. 
-To avoid this, components will be given a new option that controls their serial behavior: `run_root_only`. 
-
-If `self.options['run_root_only'] = True` then a component will internally restrict its own compute method to run only on the root process, and will broadcast all its outputs. 
-This same behavior will also be applied to any derivative methods (`linearize`, `compute_partials`, `apply_linear`, `compute_jac_vec_product`), which will only get run on the root process and their computed results broadcast out to all the other processes. 
-In the case of any reverse mode derivatives, OpenMDAO will internally do a reduce to the root processor to capture any derivative information that was being propagated backwards on other processors. 
-
-When `self.options['run_root_only'] = True`, all inputs and outputs of the component MUST be `serial`. 
-The variables can either be left unlabeled and will be assumed `serial` or they can be explicitly labeled as such. 
-If any component variables are labeled as `distributed`, an error will be raised during setup. 
-
-One other detail that is worth noting is that the `run_root_only` option will not interact cleanly with some of the parallel derivative functionality in OpenMDAO. 
-[Parallel-FD](http://openmdao.org/twodocs/versions/3.8.0/features/core_features/working_with_derivatives/parallel_fd.html), and [parallel-coloring for multi point problems](http://openmdao.org/twodocs/versions/3.8.0/features/core_features/working_with_derivatives/parallel_derivs.html) will both not work in combination with this option. 
-During setup, if either of these features is mixed with a component that has this option turned on an error will be raised. 
-
-
-# Proposed API for labeling serial/distributed variables
-
-A `distributed` argument will be added to the `add_input` and `add_output` methods on components. 
-The default will be `False`. 
-Users are required to set `distributed=True` for any variable they want to be treated as distributed. 
-
-one serial input (size 1 on all procs, value same on all procs), 
-one distributed output (size rank+1 on each proc).
+The list of `inputs` and `outputs` at the end provides the necessary hierarchical information so that you can traverse the input data sets in the correct order. 
+Search `X` first then `Y` and for each entry in `X` there should be one entry in `Y`. 
+Each entry in `Y` should be matched with an entry in `Z` of the same length. 
+This data format is compact, but since the sub-lists are not all of the same length the data doesn't fit into the NDarray paradigm. 
+We can use `NAN` to pad out sub-lists so they are all filled and would fit into an NDarray.
 ```python
-class TestComp(om.ExplicitComponent): 
+# Semi-structured data inputs
+input_order=['X','Y']
+input_sizes={'X':3, 'Y':[4,3,2]}
+X = [1,2,3]
+Y = [[1,2,3,4], 
+    [3,4,5,np.NAN], 
+    [10,11,np.NAN],np.NAN]
 
-    def setup(self): 
-
-        self.add_input('foo')
-        self.add_output('bar', shape=self.comm.rank+1, distributed=True)
+# semi-structured data outputs
+Z = [[10,20,30,40], 
+    [60,80,100,np.NAN], 
+    [300, 330,np.NAN]]
 ```
 
-one distributed input (size 1 on all procs), 
-one distributed output (size 1 on all proc).
+It is possible to make the input format match the Structured format exactly 
+by converting the semi-structured data into a structured format and using `NAN` to pad out the resulting training data arrays. 
+This conversion requires that each input dimension be given as a monotonic 1D list that contained all the possible training points from the data set. 
+The primary advantage of this data format is that it would allow the MetaModelStructuredComp component to accept semi-structured data with essentially no modifications to its API.
+The downside is that this data format is not very human readable/writable.  
 ```python
-class TestComp(om.ExplicitComponent): 
+x = [1,2,3]
+y = [1,2,3,4,5,10,11]
 
-    def setup(self): 
-
-        self.add_input('foo', distributed=True)
-        self.add_output('bar', distributed=True)
+X,Y = np.meshgrid(x, y, indexing='ij')
+Z =[[10,20,30,40,NAN,NAN,NAN], 
+    [NAN,NAN,60,80,100,NAN,NAN],
+    [NAN,NAN,NAN,NAN,NAN,300,330]]
 ```
+However, it would be strait forward to write a utility that could parse a more human readable data format and convert it into the NAN-padded-structured format. 
 
-one distributed input (size 1 on all procs), 
-one serial output (size 10 on all procs, value same on all procs).
+
+One last option would be to use a string-name based organization for the data, with hierarchy and index information encoded in the string. 
+This would be substantially different from the current MetaModelStructuredComp API, 
+but does still match the OpenMDAO input paradigm.
+Each string would match up with a single input on the component. 
 ```python
-class TestComp(om.ExplicitComponent): 
+# Semi-structured data inputs
+input_names=['X','Y']
+input_sizes={'X':3, 'Y':[4,3,2]}
+input_data = {'X_0':[1,2,3], 
+                  'X_0:Y_0':[1,2,3,4], 
+                  'X_0:Y_1':[3,4,5],
+                  'X_0:Y_2':[10,11]
+              }
+# semi-structured data outputs
+output_data ={'X_0:Y_0:Z':[1,2,3,4], 
+              'X_0:Y_1:Z':[60,80,100], 
+              'X_0:Y_2:Z':[300,330]} 
 
-    def setup(self): 
+```
+This data format has the advantages of being very human readable and not requiring any NAN entries. 
+Its primary disadvantage is that it would require a very different API from the existing MetaModelStructuredComp component. 
 
-        self.add_input('foo', distributed=True)
-        self.add_output('bar', shape=(10,))
+# Primary considerations for selecting a data format
+
+## Compute cost of interpolation
+
+The interpolation algorithms must do a large amount of bisection-searching of input arrays to find boundary conditions for any interpolation. 
+The performance of these searches impacts the compute cost of interpolation. 
+Poor choice of data format could have negative impact on the cost of the searchers. 
+
+## Fixed training data use case
+
+If you have a single fixed set of training data (e.g. a fixed efficiency map for a propeller) that you only need to be able to interpolate on, 
+then you only need to provide that data one time during instantiation. 
+In this were the only use case, then preference would be given to the most easily worked with data format. 
+The data could be stored in a properly formatted text file, and a pointer to that file given to the interpolation component. 
+
+You would not even need to create inputs on the interpolation component boundary for the training data, 
+so there would be no concerns about compatibility of the data format and OpenMDAO's input format. 
+
+## Changing training data use case
+
+If the training data is expected to change during an analysis/optimization (e.g. you are computing the training data itself as part of the model) then you do need to consider compatibility with OpenMDAO's input format. 
+An example of would be for aircraft sizing when the geometry is changing so you may compute vehicle aerodynamics at a predetermined set of points to fill out the meta-model which is then used as in a trajectory analysis. 
+A similar process could be used for generating engine performance data for aircraft sizing, when the engine design itself was part of the design loop. 
+
+In these cases, there is a key step of mux-ing the various training data results into the training data array. 
+For structured cases every entry in the training data matrix can be handled with the standard OpenMDAO MuxComponent. 
+
+For semi-structured data, only some of the entries need to be filled, and others need to be set to NaN. Determining which entries need to be filled translates into a tricky connection problem.  
+The connection problem could be lessened by the variable naming based data-structure
+```python
+# Semi-structured data inputs
+input_order=['X','Y']
+input_sizes={'X':3, 'Y':[4,3,2]}
+input_data = {'X_0':[1,2,3], 
+                  'X_0:Y_0':[1,2,3,4], 
+                  'X_0:Y_1':[3,4,5],
+                  'X_0:Y_2':[10,11]
+              }
+# semi-structured data outputs
+output_data ={'X_0:Y_0:Z':[1,2,3,4], 
+              'X_0:Y_1:Z':[60,80,100], 
+              'X_0:Y_2:Z':[300,330]} 
+
+```
+One option would be to offer a semi-structured specific mux component, which could take in the individual data points and then output them in whatever semi-structured mux data format is needed. 
+
+## Value of having one class vs two
+
+When choosing data formats, some consideration should be given to combining both structured and unstructured data into one MetaModel class or if they should be separate classes. 
+If they are going to be the same class, then that forces the NAN format for the sake of backwards compatibility: 
+```python
+x = [1,2,3]
+y = [1,2,3,4,5,10,11]
+
+X,Y = np.meshgrid(x, y, indexing='ij')
+Z =[[10,20,30,40,NAN,NAN,NAN], 
+    [NAN,NAN,60,80,100,NAN,NAN],
+    [NAN,NAN,NAN,NAN,NAN,300,330]]
 ```
 
-This API will allow components to have mixtures of serial and distributed variables. 
-For any serial variables, 
-OpenMDAO will be able to check for size-consistency across processors during setup.
+However, the difficulty of getting semi-structured data into this format --- even if utilities were provided to translate from a more natural format --- is also a consideration. 
+Additionally, there is likely to be some differences in the binary-searches required between structured and semi-structured data due to the presence of NaN values. 
 
-Although value-consistency is in theory a requirement for serial variables in practice it will be far too expensive to enforce this. 
-Hence it will be assumed, but not enforced. 
+Though one less class for users to have to know about would be nice, the downsides of consolidation outweight the advantages. 
 
-# Connections between serial and distributed variables
+## Semi-structured vs. unstructured interpolation
 
-In general there are multiple ways to handle data connections when working with multiple processors. 
+It is not strictly necessary to support semi-structured data as a separate data format, 
+because OpenMDAO already supports an unstructured format that could be used. 
+However the unstructured format is less flexible in the kind of interpolations that can be used 
+and effectively requires you to put more care into the construction of the surrogate itself. 
 
-Serial/distributed labels are a property of the variables, 
-which are themselves attached to components. 
-However, the transfer of data from one component to another is governed by `connect` and `promotes` methods at the group level. 
-When working with multiple processors, you have to consider not just which two variables are connected but also what processor the data is coming from. 
-This is all controlled via the `src_indices` that are given to `connect` or `promote` methods on `Group`. 
+Many users find the pure interpolation based results preferable, even though they often offer lower performance, because of their simplicity of use. 
+Semi-structured data is capable of being used with the same interpolation routines and hence OpenMDAO should offer this feature. 
 
-One of primary contributions of POEM_046 is to provide a simple and self consistent default assumption for `src_indices` in the case of connections between serial and distributed components. 
+# API for MetaModelSemiStructuredComp
 
+For ease of human readability and ease of data entry, the simplest text based data format is selected: 
+```
+x = 1
+    y = 1, 2, 3, 4
+    z = 10, 20, 30, 40
+x = 2 
+    y = 3, 4, 6
+    Z = 60, 80, 120
+x = 3
+    y = 10, 11
+    z = 300, 330
+```
+Since this is not valid python code, a semi-structured data parsing utility will be provided that will convert the text file to a semi-structured data object with the following attributes:
+```python
+# Semi-structured data inputs
+input_order=['X','Y']
+input_sizes={'X':3, 'Y':[4,3,2]}
+X = [1,2,3]
+Y = [[1,2,3,4], 
+    [3,4,5,np.NAN], 
+    [10,11,np.NAN],np.NAN]
 
-## Default behavior
+# semi-structured data outputs
+Z = [[10,20,30,40], 
+    [60,80,100,np.NAN], 
+    [300, 330,np.NAN]]
+```
+This data format was chosen for multiple reasons. 
+It allows a highly similar API for both semi-structured and structured data, 
+even though the actual data format itself is not the same. 
+It groups all the relevant interpolation data to the left side of every row of data (i.e. NAN padding is only ever used to fill empty space at the end of an array), 
+which allows for an efficient bisection search to be done. 
 
-The primary guiding principal for default `src_indices` is to always assume local-process data transfers. 
-By "default" we are specifically addressing the situation where a connection is made (either via `connect` or `promote`) without any `src_indices` specified. 
-In this case, OpenMDAO is asked to assume what the `src_indices` should be, or in other words to use default `src_indices`. 
+The component class, named MetaModelSemiStructuredComp, will have the following APIs: 
+``` python
+ss_data = om.semi_struct_data_loader('sstruct_data.txt')
+interp = om.MetaModelSemiStructuredComp(method='scipy_slinear')
 
-There are four cases to consider: 
-- serial->serial 
-- distributed->distributed
-- serial->distributed 
-- distributed->serial 
+# set up inputs and outputs
+interp.add_input('x', 0.0, training_data=ss_data.X, units=None)
+interp.add_input('y', 1.0, training_data=ss_data.Y, units=None)
+# NOTE: Setting order and sizes is optional. 
+#       If not set, is infferred form addition order of inputs. 
+#       Setting this allows for error checking of data and makes the order inputs are declared irrelevant
+interp.set_input_metadata(order=ss_data.input_order, sizes=ss_data.input_sizes)
 
-### serial->serial 
-Serial variables are duplicated on all processes, and are assumed to have the same value on all processes as well. 
-Following the "always assume local" convention, a serial->serial connection will default to `src_indices` that transfer the local output copy to the local input.
-However, for serial variables OpenMDAO expects the user to give those src indices relative to the local size of the variable, regardless of which process you happen to be on. 
-This keeps the interface uniform and unchanging regardless of the number of processes allocated. 
-
-Example: Serial output of size 5, connected to a serial input of size 5; duplicated on three procs. 
-If no `src_indices` are given, then the default on each processor would assumed to be: 
-- On process 0, default src_indices=[0,1,2,3,4]
-- On process 1, default src_indices=[0,1,2,3,4]
-- On process 2, default src_indices=[0,1,2,3,4]
-
-Internally OpenMDAO offsets the indices to enforce local data transfers:
-- On process 0, effective src_indices=[0,1,2,3,4]
-- On process 1, effective src_indices=[5,6,7,8,9]
-- On process 2, effective src_indices=[10,11,12,13,14]
-
-
-### distributed->distributed
-Since these are distributed variables, the size may vary from one process to another. 
-Following the "always assume local" convention, the size of the output must match the size of the connected input on every processor and then the `src_indices` will just match up with the local indices of the output. 
-
-Example: distributed output with sizes 1,2,3 on ranks 0,1,2 connected to a distributed input. 
-- On process 0, default src_indices=[0]
-- On process 1, default src_indices=[1,2]
-- On process 2, default src_indices=[3,4,5]
-
-Since the variables are distributed, OpenMDAO does not do additional internal mapping of these src indices
-
-### serial->distributed (deprecated)
-Connecting a serial output to a distributed input does not make much sense.
-It is recommended that you change the type of the input to be serial instead. 
-However, for backwards compatibility reasons default `src_indices` for this type of connection needs to be supported. 
-It will be removed in OpenMDAO V4.0
-
-If no `src_indices` are given, then the distributed input must take the same shape on all processors to match the output. 
-Effectively then, the distributed input will actually behave as if it is serial, and we end up with the same exact default behavior as a serial->serial connection. 
-
-### distributed->serial (not allowed by default)
-This type of connection presents a contradiction, which prevents any unambiguous assumption about `src_indices`. 
-Serial variables must take the same size and value across all processes. 
-While we could force the distributed variable to have the same size across all processes, the same-value promise still needs to be enforced somehow. 
-
-The only way to ensure that would be to make sure that both the size and `src_indices` matches for the connections across all processes. 
-However any assumed way of doing that would violate the "always assume local" convention of the POEM. 
-
-So this connection will raise an error during setup if no `src_indices` are given. 
-If `src_indices` are specified manually then the connection is allowed. 
-
-
-## How to achieve non-standard connections
-
-There are some cases where a user may want to use non default `src_indices` or to connect a mixture of serial or distributed variables.
-OpenMDAO supports this by allowing you to explicitly provide whatever `src_indices` you like to `connect` and `promotes`. 
-In this case, the default assumptions don't apply. 
-
-This capability remains the same before and after POEM_046. 
-All that is changing is the default behavior when no `src_indices` are given. 
-
-
-## `shape_by_conn` functionality
-POEM_046 relates to POEM_022 because of the overlap with the APIs proposed here and their impact on the `shape_by_conn` argument to `add_input` and `add_output`. 
-
-To start, consider the following philosophical view of how `shape_by_conn` and default `src_indices` interact. 
-Inputs and outputs are sized as part of their declarations, inside the component definitions. 
-They are then connected inside the setup/configure methods of groups. 
-Generally, component definitions are in different files --- or at least different parts of the same file --- from group definitions. 
-So we can assume that you would not normally see the size of a variable in the same chunk of code that you see how its connected. 
-When you see a connection with default `src_indices` you won't necessarily know if either side I/O pair has been set to `shape_by_conn`, 
-but you should still be able to clearly infer the expected behavior from the "always assume local" rule. 
-
-The conclusion of this is that `shape_by_conn` should have no direct impact on the default `src_indices`. 
-It should give an identical result to the analogous situation where the I/O pair happened to have the same size on each process and were connected with default `src_indices`. 
-The result of this is that `shape_by_conn` will be symmetric with regard to whether the argument is set on the input or output side of a connection. The resulting size of the unspecified variable will be the same as the local size on the other side of the connection. 
-
-# Backwards (in)compatibility
-
-## Deprecation of the 'distributed' component option
-
-Prior to this POEM, the old API was to set `<component>.options['distributed'] = <True|False>`. 
-As noted in the overview, components themselves are not actually serial or distributed, 
-so this doesn't make sense. 
-The option will be deprecated, scheduled to be removed completely in OpenMDAO 4.0. 
-
-While deprecated the behavior will be that if this option is set,
-then **ALL** the inputs and outputs will default their `distributed` setting to match this option. 
-Users can still override the default on any specific variable by using the new API. 
-
-This behavior should provide almost complete backwards compatibility for older models, 
-in terms of component definitions, with a few small exceptions. 
-See the section on connections for more details. 
-
-## Change to the default behavior of connections with shape_by_conn
-
-The original implementation of `shape_by_conn` stems from POEM_022. 
-The work provides the correct foundation for this feature, 
-but POEM_022 did not specify expected behavior for serial->distributed or distributed->serial connections, 
-and some of the original implementations did not default to "always assume local". 
-
-
-### Behavior before POEM 46 
-
-#### serial -> distributed 
-- the local size of the distributed input is the found by evenly distributing the local size of the serial output  
-- example:  [5] -> (2,2,1)
-
-#### distributed -> serial
-- the local size of the serial input is the sum of the local sizes of distributed output on each processors   
-- example:  (2,2,1) -> [5]
-
-### Behavior after POEM 46 
-
-#### serial -> distributed (deprecated! Will be removed in V4.0)
-- the local size of the input on each processor is equal to the local size of the serial output  
-- example:  [5] -> (5,5,5)
-
-#### distributed -> serial
-- An error will be raised since if no `src_indices` are given
-
+interp.add_output('interp', 1.0, training_data=ss_data.Z, units=None)
+```
