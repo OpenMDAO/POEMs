@@ -1,9 +1,9 @@
-POEM ID: 048 
-Title: Semistructured Training Data for MetaModel
-authors: justinsgray
-Competing POEMs: N/A    
-Related POEMs: 
-Associated implementation PR:
+POEM ID: 048  
+Title: Semistructured Training Data for MetaModel  
+authors: justinsgray  
+Competing POEMs: N/A     
+Related POEMs:   
+Associated implementation PR:  
 
 #  Status
 
