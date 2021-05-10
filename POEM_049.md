@@ -17,16 +17,16 @@ Status:
 Motivation
 ----------
 
-In the early development of OpenMDAO, there the cost of computing total derivatives was somewhat heavily impacted by cost of doing matrix-vector products using the DictionaryJacobian directly. 
-This performance issue did not affect components that used the matrix-free APIs (`apply_linear`, `solve_linear`), but did strongly impact components that used the full-Jacobian APIs (`compute_partials`, `linearize`). 
+In the early development of OpenMDAO, there the cost of computing total derivatives was heavily impacted by cost of doing matrix-vector products using the DictionaryJacobian directly. 
+This performance issue did not affect components that used the matrix-free APIs as strongly (`compute_jacvec_product`, `apply_linear`, `solve_linear`). 
+It did, however, strongly impact components that used the full-Jacobian APIs (`compute_partials`, `linearize`). 
 
 At the time, one proposed solution was to include not only a matrix-vector product API, but also a matrix-matrix product API as well. 
 This would limit the number of loops over the internal dictionaries and offer better performance. 
-However, in practice this offered only a modest speed up and only in very specific situations when there was no feedback between components. 
+In practice this offered only a modest speed up and only in very specific situations when there was no feedback between components. 
 
 Later the AssembledJacobian classes were added which allowed for much more efficient interaction with partial derivative data, and better overall performance. 
-The newer features have eliminated the need for the matrix-matrix APIs, which not go unused. 
-Hence they can be removed.  
+The newer features have eliminated the need for the matrix-matrix APIs, which now go unused (at least to the knowledge of the development team). 
 
 Description
 -----------
