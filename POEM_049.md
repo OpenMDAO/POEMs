@@ -1,9 +1,9 @@
-POEM ID: 049  
-Title: Removal of matrix-matrix derivative APIs
-authors: [justinsgray, naylor-b]  
-Competing POEMs: N/A  
-Related POEMs: N/A  
-Associated implementation PR:
+POEM ID: 049    
+Title: Removal of matrix-matrix derivative APIs  
+authors: [justinsgray, naylor-b]   
+Competing POEMs: N/A   
+Related POEMs: N/A   
+Associated implementation PR:   
 
 Status:
 
