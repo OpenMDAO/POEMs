@@ -226,38 +226,50 @@ Semi-structured data is capable of being used with the same interpolation routin
 
 # API for MetaModelSemiStructuredComp
 
+## Data format
 For ease of human readability and ease of data entry, the simplest text based data format is selected: 
 ```
+inputs = [x,y]
+outputs = [z1,z2]
 x = 1
     y = 1, 2, 3, 4
-    z = 10, 20, 30, 40
+    z1 = 10, 20, 30, 40
+    z2 = 5, 10, 15, 20
 x = 2 
     y = 3, 4, 6
-    Z = 60, 80, 120
+    z1 = 60, 80, 120
+    z2 = 30, 40, 60
 x = 3
     y = 10, 11
-    z = 300, 330
+    z1 = 300, 330
+    z2 = 150, 165
 ```
 Since this is not valid python code, a semi-structured data parsing utility will be provided that will convert the text file to a semi-structured data object with the following attributes:
 ```python
 # Semi-structured data inputs
-input_order=['X','Y']
-input_sizes={'X':3, 'Y':[4,3,2]}
-X = [1,2,3]
-Y = [[1,2,3,4], 
+input_order=['x','y']
+input_sizes={'x':3, 'y':[4,3,2]}
+x = [1,2,3]
+y = [[1,2,3,4], 
     [3,4,5,np.NAN], 
     [10,11,np.NAN],np.NAN]
 
 # semi-structured data outputs
-Z = [[10,20,30,40], 
-    [60,80,100,np.NAN], 
-    [300, 330,np.NAN]]
+z1 = [[10,20,30,40], 
+     [60,80,100,np.NAN], 
+     [300,330,np.NAN]]
+
+z2 = [[5,10,15,20], 
+     [30,40,50,np.NAN], 
+     [150,165,np.NAN]]
 ```
-This data format was chosen for multiple reasons. 
-It allows a highly similar API for both semi-structured and structured data, 
+This data format allows the compatible APIs for both semi-structured and structured meta models, 
 even though the actual data format itself is not the same. 
-It groups all the relevant interpolation data to the left side of every row of data (i.e. NAN padding is only ever used to fill empty space at the end of an array), 
-which allows for an efficient bisection search to be done. 
+It also groups all the relevant interpolation data to the left side of every row of data (i.e. NAN padding is only ever used to fill empty space at the end of an array), 
+which allows for an efficient bisection search to be done giving efficient interpolation
+Finally, it also allows the output data to fit nicely into an NDarray, which makes that data compatible with the OpenMDAO input needs. 
+
+## SemiStructuredMetaModelComp API
 
 The component class, named MetaModelSemiStructuredComp, will have the following APIs: 
 ``` python
@@ -265,11 +277,17 @@ ss_data = om.semi_struct_data_loader('sstruct_data.txt')
 interp = om.MetaModelSemiStructuredComp(method='scipy_slinear')
 
 # set up inputs and outputs
-interp.add_input('x', 0.0, training_data=ss_data.X, units=None)
-interp.add_input('y', 1.0, training_data=ss_data.Y, units=None)
+interp.add_input('x', 0.0, training_data=ss_data.x, units=None)
+interp.add_input('y', 1.0, training_data=ss_data.y, units=None)
+interp.add_output('z1', 1.0, training_data=ss_data.z1, units=None)
+interp.add_output('z2', 1.0, training_data=ss_data.z2, units=None)
+
 # NOTE: Setting order and sizes is optional. 
-#       If not set, is infferred form addition order of inputs. 
-#       Setting this allows for error checking of data and makes the order inputs are declared irrelevant
+#       If not set, is inferred form addition order of inputs. 
+#       Setting this allows for error checking of data and makes 
+#       the order inputs are declared irrelevant. 
+#       It also allows error checking to make sure that expected NAN 
+#       values in the training data do not contain non-NAN values.
 interp.set_input_metadata(order=ss_data.input_order, sizes=ss_data.input_sizes)
 
 interp.add_output('interp', 1.0, training_data=ss_data.Z, units=None)
