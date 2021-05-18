@@ -8,10 +8,13 @@ Associated implementation PR: #2005 (Implementation 1)
 Status:
 
 - [ ] Active
-- [x] Requesting decision
+- [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
+
+Portions of this POEM were implemented, but others were rejected.
+See notes under pull requests.
 
 ## Motivation
 Most usage example of OpenMDAO are very script based rather than object
@@ -303,4 +306,8 @@ Implementation 2 involves the creation of new System method called
 `run_post_run()` (or something that sounds better than that) which is
 essentially a deep duplicate of `System.run_solve_nonlinear()` and the methods
 it calls where at the end, the new `post_run()` is called instead of `compute()`
+
+NOTE: We're leaving this part of the implementation out.  We feel it would be better to
+have such access be a user-created post-processing function for a specific use-case
+rather than modifying the API.
 
