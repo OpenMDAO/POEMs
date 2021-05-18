@@ -78,4 +78,5 @@ That way, github's built in notification system to get emails when things are ch
 | [045](POEM_045.md) | Promote-as change | [robfalck](https://github.com/robfalck) | rejected |
 | [046](POEM_046.md) | Definition of serial and distributed variables | justinsgray, naylor-b, joanibal, anilyildirim, kejacobson | integrated |
 | [047](POEM_047.md) | Component I/O independance from Problem Object | Andrew Ellis | integrated |
+| [049](POEM_049.md) | Removal of matrix-matrix derivative APIs | justinsgray, naylor-b | accepted |
 
