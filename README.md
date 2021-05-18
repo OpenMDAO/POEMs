@@ -77,4 +77,5 @@ That way, github's built in notification system to get emails when things are ch
 | [044](POEM_044.md) | OpenMDAO-Specific Warnings | [robfalck](https://github.com/robfalck) | accepted |
 | [045](POEM_045.md) | Promote-as change | [robfalck](https://github.com/robfalck) | rejected |
 | [046](POEM_046.md) | Definition of serial and distributed variables | justinsgray, naylor-b, joanibal, anilyildirim, kejacobson | integrated |
+| [047](POEM_047.md) | Component I/O independance from Problem Object | Andrew Ellis | requesting decision |
 
