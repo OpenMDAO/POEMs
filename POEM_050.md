@@ -29,6 +29,23 @@ Notable exceptions are metadata for I/O which uses `value`, and (ironically) `se
 Use of `value` will still function, with deprecation warnings, until version 4.0.0, which is expected to be released in the summer of 2021.
 At that point, all metadata references and keyword argument names which were previously `value` must be replaced with `val`.
 
+Examples 
+--------
+
+`list_inputs` and `list_outputs` will change from `values=True` to `vals=True`. `values` will still be available but it will be deprecated.
+
+```
+prob.model.list_inputs(vals=True)
+prob.model.list_outputs(vals=True)
+```
+
+`set_val` will also deprecate `value` in favor of `val`. Set `val` to your values to avoid deprecation warnings.
+
+```
+def set_val(self, name, value=None, units=None, indices=None, val=None):
+```
+
+
 Backwards Compatibility
 ------------------------
 
