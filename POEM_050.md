@@ -35,8 +35,8 @@ Examples
 `list_inputs` and `list_outputs` will change from `values=True` to `vals=True`. `values` will still be available but it will be deprecated.
 
 ```
-prob.model.list_inputs(vals=True)
-prob.model.list_outputs(vals=True)
+prob.model.list_inputs(val=True)
+prob.model.list_outputs(val=True)
 ```
 
 `set_val` will also deprecate `value` in favor of `val`. Set `val` to your values to avoid deprecation warnings.
