@@ -32,7 +32,7 @@ At that point, all metadata references and keyword argument names which were pre
 Examples 
 --------
 
-`list_inputs` and `list_outputs` will change from `values=True` to `vals=True`. `values` will still be available but it will be deprecated.
+`list_inputs` and `list_outputs` will change from `values=True` to `val=True`. `values` will still be available but it will be deprecated.
 
 ```
 prob.model.list_inputs(val=True)
