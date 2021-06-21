@@ -90,7 +90,7 @@ specified on a per-variable basis. A new interface would have to look like this:
 
     # In subsequent calls, we set values for individual 'wrt' inputs.
     # These take precedence over defaults.
-    model.approx_totals(of='sub1.comp1.y', wrt=sub1.comp1.x',
+    model.approx_totals(wrt=sub1.comp1.x',
                         step=[1e-7, 1e-5, 1e-6])
 ```
 
