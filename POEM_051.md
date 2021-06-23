@@ -94,5 +94,5 @@ In summary:
 | "rel_avg"       | Average absolute value of the vector.           |
 | "rel_element"   | Absolute value of each vector element.          |
 | "rel_legacy"    | Norm of the vector.                             |
-| "rel_avg"       | "rel_legacy" during transition, then "rel_avg"  |
+| "rel"           | "rel_legacy" during transition, then "rel_avg"  |
 
