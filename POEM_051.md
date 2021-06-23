@@ -1,9 +1,9 @@
-POEM ID:  051  
-Title:  Modifications to relative step sizing in finite difference  
-authors: [kenneth-t-moore]  
-Competing POEMs: N/A  
-Related POEMs: N/A  
-Associated implementation PR:  
+POEM ID:  051
+Title:  Modifications to relative step sizing in finite difference
+authors: [kenneth-t-moore]
+Competing POEMs: N/A
+Related POEMs: N/A
+Associated implementation PR:
 
 Status:
 
@@ -37,11 +37,10 @@ Description
 This POEM proposes two new ways to compute the relative step.
 
 
-Use average absolute vector value instead of the norm.
-======================================================
+Use average absolute vector value.
+==================================
 
-Compute the step as:
-
+Compute the step for a variable's vector as:
 ```
     rel_step = step * np.sum(np.abs(x)) / n
 ```
@@ -49,59 +48,51 @@ Compute the step as:
 This fixes the bug that caused the relative step to be larger than expected for wide vectors. The
 absolute value ensures that we won't be taking a forward step when we request backward.
 
-
-Allow the user to specify a relative step for every element in the vector.
-==========================================================================
-
-This gives the user finer control over the approximation. For `declare_partials`, the simplest API
-would be to allow the user to pass a list (or tuple) with the same length as the input whose
-derivatives are being approximated. Here is a simple example for a 3-wide input 'x':
-
+Note, changing the default behavior for the relative step size is a disruptive change that can
+affect and break existing models. To prevent that from happening, we create a new step_calc
+method for enabling relative stepping with the average vector value.
 ```
-   self.declare_partials(of='*', wrt='x', method='fd',
-                         step=[1e-7, 1e-5, 1e-6], form='forward', step_calc='rel')
+    # Uses the vector average absolute value.
+    self.declare_partials(of='*', wrt='x', method='fd', step_calc='rel_avg')
 ```
 
-The key difference here is that relative step_size is computed individually for each vector element:
+
+Use value of each element.
+==========================
+
+Compute the step for an element of a variable's vector as:
 ```
     rel_step_j = step_j * np.abs(x_j)
 ```
 
-This API might be able to be expanded to allow specification of other aspects of the approximation:
-
+The key difference here is that relative step_size is computed individually for each vector element.
+This is a better choice for vectors whose elements with disparate magnitude ranges. The user can
+select this method by choosing 'rel_element' as the value for the step_calc argument.
 ```
    self.declare_partials(of='*', wrt='x', method='fd',
-                         step=[1e-7, 1e-5, 1e-6],
-                         form=['forward', 'forward', 'central'], step_calc='rel')
-   self.declare_partials(of='*', wrt='x', method='fd',
-                         step=[1e-7, 1e-5, 1e-6],
-                         form=['forward', 'forward', 'central'],
-                         step_calc=['rel', 'abs', 'rel'])
-```
-Note that element-wise specification of method ('fd' or 'cs') will not be possible.
-
-All API changes would also be applied to `set_check_partial_options` as well.
-
-The largest change would be in `approx_totals`, which currently doesn't allow settings to be
-specified on a per-variable basis. A new interface would have to look like this:
-```
-    # In first call, we specify 'fd' and set defaults.
-    model.approx_totals(method='fd', step=1e-7, form='central', step_calc='rel')
-
-    # In subsequent calls, we set values for individual 'wrt' inputs.
-    # These take precedence over defaults.
-    model.approx_totals(wrt=sub1.comp1.x',
-                        step=[1e-7, 1e-5, 1e-6])
+                         step=[1e-7, 1e-5, 1e-6], form='forward', step_calc='rel_element')
 ```
 
-There is a risk that implementing some or all of this API will introduce code complications that
-outweigh the benefit of the feature, but that may not be understood until implementation.
 
+Deprecation of the current method
+=================================
 
-Allow Both
-==========
+To preserve legacy model performance, the old method in 'rel' can be kept available by selecting
+'rel_legacy' for the step_calc.
 
-The proposed API allows both methods to exist. If the user doesn't specify element-wise steps, the
-relative step can be computed from the average absolute value.
+To minimize impact on existing models, the current behavior when 'rel' is selected as the step_calc
+will be preserved for a release cycle. Where ever it is used, the following deprecation warning
+will be raised:
 
-Care should be taken to make sure that zero-magnitude cases are handled by taking a small step.
+    Warning. The method for computing relative step sizes is changing, switch to "rel_legacy" to keep
+    the old behavior. In the next release, "rel" will be the same as "rel_avg".
+
+In summary:
+
+| step_calc       | Computed Step                                   |
+| :---            |    :----:                                       |
+| "rel_avg"       | Average absolute value of the vector.           |
+| "rel_element"   | Absolute value of each vector element.          |
+| "rel_legacy"    | Norm of the vector.                             |
+| "rel_avg"       | "rel_legacy" during transition, then "rel_avg"  |
+
