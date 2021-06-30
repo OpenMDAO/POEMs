@@ -80,4 +80,5 @@ That way, github's built in notification system to get emails when things are ch
 | [047](POEM_047.md) | Component I/O independance from Problem Object | Andrew Ellis | integrated |
 | [049](POEM_049.md) | Removal of matrix-matrix derivative APIs | justinsgray, naylor-b | accepted |
 | [050](POEM_050.md) | Fix val/value inconsistency in the API | [robfalck](https://github.com/robfalck) | integrated |
+| [051](POEM_051.md) | Modifications to relative step sizing in finite difference | [kenneth-t-moore](https://github.com/kenneth-t-moore) | active |
 
