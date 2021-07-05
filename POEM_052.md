@@ -17,7 +17,7 @@ Associated implementation PR:
 
 Define an OpenMDAO component, including all I/O with metadata, the compute method, and potentially derivatives using a purely function based syntax. 
 
-## API Description
+## Explicit API Description
 
 A purely function based syntax for component definition has several nice properties. 
 It offers a fairly compact syntax, especially in cases where there is uniform metadata all I/O in the component. 
@@ -33,19 +33,25 @@ Here is a basic example of the proposed API for a function with three inputs (`x
 def some_func(x:{'units':'m'}=np.zeros(4),
               y:{'units':'m'}=np.ones(4),
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}} : 
+              -> [('foo', {'units':1/m, 'shape':4}), 
+                  ('bar', {'units':'m', 'shape':4})]:
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
     return foo, bar
 ```
 
-The use of simple dictionaries is intentional, because it allows users to build capability that has no direct dependence on OpenMDAO. 
+
+### No direct OpenMDAO Dependency 
+
+The use of simple Python data structures is intentional.
+It allows users to build capability that has no direct dependence on OpenMDAO. 
 The annotations contain all the metadata, except for the default value which can be provided by normal python syntax for default argument values. 
 An overarching goal of this API is to include all the critical data in the function annotations themselves. 
 No additional data should be needed when creating a `FuncComponent` other than the function itself. 
 
-One key aspect of this API is that the return annotation must provide the names of the output variables. 
+### Why return annodations must provide output names 
+
 While the names of the inputs are guaranteed to be able to be introspected from the function definition, the same is not true for return values. 
 Consider a function like this: 
 
@@ -54,16 +60,49 @@ def ambiguous_return_func(x,y,z):
     return 3*x, 2*y+Z
 
 ```
-There is no way to infer output names from that because the computation doesn't declaring intermediate variables with names that could be parsed using the abstract syntax tree. 
-So output data needs to be given as a nested dictionary annotation on the function return. 
+There is no way to infer output names from that because the computation doesn't declaring intermediate variables with names at all. 
+Hence out variable names have to be given as part of the function annotation. 
 
+### Return annotations must be either list of tuple or OrderedDict
+
+It API provides output annotations in a strictly ordered data structure so that the metadata can be matched with the correct return value. 
+So return annotations must be either a list of (<var_name>, <var_meta>) or alternatively users can provide an OrderedDict. 
+```python
+def some_func(x:{'units':'m'}=np.zeros(4),
+              y:{'units':'m'}=np.ones(4),
+              z:{'units':None}=3) 
+              -> OrderedDict(('foo', {'units':1/m, 'shape':4}), 
+                             ('bar', {'units':'m', 'shape':4})):
+
+    foo = np.log(z)/(3*x+2*y)
+    bar = 2*x+y
+    return foo, bar
+```
+
+Note: a standard dictionary is not allowed and will raise an error when creating the OpenMDAO component because it lacks the ordering necessary to properly resolve the outputs.
+```python
+def some_func(x:{'units':'m'}=np.zeros(4),
+              y:{'units':'m'}=np.ones(4),
+              z:{'units':None}=3) 
+              -> Dict(('foo', {'units':1/m, 'shape':4}), 
+                      ('bar', {'units':'m', 'shape':4})):
+
+    foo = np.log(z)/(3*x+2*y)
+    bar = 2*x+y
+    return foo, bar
+
+try: 
+    comp = om.ExplicitFuncComp(some_func,)
+except ValueError: 
+    print('Not Allowed!!!')    
+```
 
 ### Shorthand for uniform metadata 
 There is a simple case where all the the metadata for every input and output variable is the same (i.e. same size, units, value). 
 In these cases, we can offer a more compact syntax with a function decorator: 
 
 ```python
-@om.io_meta(units'm', shape=4, out_names=('foo', 'bar', 'baz'))
+@om.func_meta(units'm', shape=4, out_names=('foo', 'bar', 'baz'))
 def uniform_meta_func(x, y, z): 
 
     foo = x+y+z
@@ -71,6 +110,8 @@ def uniform_meta_func(x, y, z):
     baz = 42*foo
     return foo, bar, baz
 ```
+
+Any annotations provided in the function definition will take precedence over the ones given in the decorator
 
 ### Naming I/O with non-valid Python variable names
 
@@ -85,7 +126,7 @@ it may be more convenient to provide a string based name for inputs as part of t
 def some_func(x:{'units':'m', 'name'='flow:x'}=np.zeros(4),
               y:{'units':'m', 'name'='flow:y'}=np.ones(4),
               z:{'units':None, 'name'='flow:z'}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}} : 
+              -> [('foo',{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4})] : 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
@@ -104,7 +145,7 @@ If a shape is given as metadata, then the default value will be broadcast out to
 def some_func(x:{'units':'m', 'shape':4}=0.,
               y:{'units':'m', 'shape':4}=1.,
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}} : 
+              -> [('foo',{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4})] : 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
@@ -121,7 +162,7 @@ OpenMDAO will add a new Component to the standard library called `FuncComponent`
 def some_func(x:{'units':'m'}=np.zeros(4),
               y:{'units':'m'}=np.ones(4),
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}} : 
+              ->  [('foo',{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4})] : 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
@@ -131,7 +172,7 @@ def some_func(x:{'units':'m'}=np.zeros(4),
 def some_other_func(x, y): : 
     return x**y
 
-comp = FuncComp(some_func, some_other_func)    
+comp = om.ExplicitFuncComp(some_func, some_other_func)    
 ```
 
 The resulting `comp` component instance would have three inputs: `x`, `y`, `z`. 
@@ -149,16 +190,16 @@ Users should have access to the full `declare_partials` API, including specifyin
 def some_func(x:{'units':'m'}=np.zeros(4),
               y:{'units':'m'}=np.ones(4),
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}, 
-                  'declare_partials': [{'of':'*', 'wrt':'*', 'method':'cs'},], 
-                  'declare_coloring': [{'wrt': '*', 'method':'cs'},]
-                 } : 
+              -> [('foo':{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4}),, 
+                  ('declare_partials', [{'of':'*', 'wrt':'*', 'method':'cs'},]), 
+                  ('declare_coloring', [{'wrt': '*', 'method':'cs'},])
+                 ]: 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
     return foo, bar
 
-comp = FuncComp(some_func,)    
+comp = om.ExplicitFuncComp(some_func,)    
 ```
 
 The dictionary keys intentionally match the existing OpenMDAO API method names. 
@@ -172,16 +213,16 @@ As a shorthand, if a user is going to provide only a single dictionary they can 
 def some_func(x:{'units':'m'}=np.zeros(4),
               y:{'units':'m'}=np.ones(4),
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}, 
-                  'declare_partials': {'of':'*', 'wrt':'*', 'method':'cs'}, 
-                  'declare_coloring': {'wrt': '*', 'method':'cs'}
-                 } : 
+              -> [('foo',{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4}), 
+                  ('declare_partials', {'of':'*', 'wrt':'*', 'method':'cs'}), 
+                  ('declare_coloring', {'wrt': '*', 'method':'cs'}),
+                 ]: 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
     return foo, bar
 
-comp = FuncComp(some_func,)    
+comp = om.ExplicitFuncComp(some_func,)    
 ```
 
 ### Providing a `compute_partials` or `compute_jacvec_product`
@@ -204,22 +245,22 @@ def J_some_func(x, y, z, J):
 def some_func(x:{'units':'m'}=np.zeros(4),
               y:{'units':'m'}=np.ones(4),
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}, 
-                  'declare_partials': [{'of':'foo', 'wrt':'*', 'rows':np.arange(4), 'cols':np.arange(4)}, 
-                                       {'of':'bar', 'wrt':('x', 'y'), 'rows':np.arange(4), 'cols':np.arange(4)}
-                                      ], 
-                   'compute_partials': J_some_func,
-                 } : 
+              -> [('foo',{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4}), 
+                  ('declare_partials', [{'of':'foo', 'wrt':'*', 'rows':np.arange(4), 'cols':np.arange(4)}, 
+                                        {'of':'bar', 'wrt':('x', 'y'), 'rows':np.arange(4), 'cols':np.arange(4)}
+                                       ]),
+                  ('compute_partials',J_some_func)
+                 ]: 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
     return foo, bar
 
-comp = FuncComp(some_func,)    
+comp = om.ExplicitFuncComp(some_func,)    
 ```
 
-Just like a normal component, if you are using the matrix free API then you don't want to declare any partials. 
-The matrix free API will expect three additional arguments added beyond those in the nonlinear function: `d_inputs, d_outputs, mode` 
+Just like a normal explicit component, if you are using the matrix free API then you should not declare any partials. 
+The matrix vector product method method signature will expect three additional arguments added beyond those in the nonlinear function: `d_inputs, d_outputs, mode` 
 
 ```python
 
@@ -229,13 +270,112 @@ def jac_vec_some_func(x, y, z, d_inputs, d_outputs, mode):
 def some_func(x:{'units':'m'}=np.zeros(4),
               y:{'units':'m'}=np.ones(4),
               z:{'units':None}=3) 
-              -> {'foo':{'units':1/m, 'shape':4}, 'bar':{'units':'m', 'shape':4}, 
-                  'compute_jacvec_product': jac_vec_some_func, 
-                 } : 
+              -> [('foo',{'units':1/m, 'shape':4}), ('bar',{'units':'m', 'shape':4}), 
+                  ('compute_jacvec_product', jac_vec_some_func), 
+                 ] : 
 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
     return foo, bar
 
-comp = FuncComp(some_func,)    
+comp = om.ExplicitFuncComp(some_func,)    
+```
+
+
+## Implicit API Description
+
+Implicit components must have at least an `apply_nonlinear` method to compute the residual given values for input variables and implicit output variables (a.k.a state variables). 
+From the perspective of the residual computation, both input *variables* and implicit output *variables* are effectively input *arguments*. 
+This creates a slight API challenge, because it is ambiguous which arguments correspond to input or output variables. 
+
+For explicit components, output variable names were given as part of the metadata in the function return annotation. 
+That approach is also used for implicit components with one slight change to accommodate the output-variable function arguments. 
+Output names must still be given in the return metadata, but they must name-match one of the function arguments. 
+
+```python
+
+@om.func_meta(units=None, shape=1)
+def some_implicit_resid(x, y) -> [('y', None),]:
+
+    R_y = y - tan(y**x)
+    return R_y
+
+comp = om.ImplicitFuncComp(some_implicit_resid,)    
+```
+
+If you want to use OpenMDAO variables names that contain characters that are non valid for arguments, then provide `name` metadata for that output. 
+
+```python
+
+@om.func_meta(units=None, shape=1)
+def some_implicit_resid(x, y)->[('y',{'name':'foo:y'})]:
+
+    R_y = y - tan(y**x)
+    return R_y
+
+comp = om.ImplicitFuncComp(some_implicit_resid,)    
+```
+
+
+A `solve_nonlinear` method can also be specified as part of the metadata: 
+
+```python
+@om.func_meta(units=None, shape=1, out_names=['R_x', 'R_y'])
+
+def some_implict_solve(x,y)
+
+def some_implicit_resid(x, y)-> >[('y',{'name':'foo:y'}), 
+                                  ('solve_nonlinear',some_implict_solve)
+                                 ]:
+
+    R_x = x + np.sin(x+y)
+    R_y = y - tan(y)**x
+    return R_x, R_y
+
+comp = om.ImplicitFuncComp(some_implicit_resid,)    
+```
+
+### Providing a `linearize` and/or `apply_linear` for implicit functions
+
+The derivative APIs look very similar to the ones for those of the explicit functions, but with different method names to match the OpenMDAO implicit API. 
+Implicit components use `linearize` and `apply_linear` methods (instead of the analogous `compute_partials` and `compute_jacvec_product` methods). 
+
+```python
+
+def deriv_implicit_resid(x, y, J): 
+    ... 
+
+@om.func_meta(units=None, shape=1)
+def some_implicit_resid(x, y)->[('y',{'name':'foo:y'}), 
+                                ('linearize', deriv_implicit_resid)]:
+
+    R_y = y - tan(y**x)
+    return R_y
+
+comp = om.ImplicitFuncComp(some_implicit_resid,)    
+```
+
+## Helper decorators
+
+Though the annotation API is designed to be usable without any OpenMDAO dependency, the dictionary and list based syntax may be somewhat cumbersome. 
+OpenMDAO can provide some decorators to make the syntax slightly cleaner. 
+
+One example is the `func_meta` decorator already described. 
+Two more decorators, `in_var_meta` and `out_var_meta`, will be provided to specify metadata for individual variables. 
+These decorators can be stacked to fully defined the component and variable metadata.
+
+```python
+
+def deriv_implicit_resid(x, y, J): 
+    ... 
+
+@om.in_var_meta('x', units=None, shape=1)
+@om.out_var_meta('y', units=None, shape=1, name='foo:y')
+@om.func_meta(linearize=deriv_implicit_resid)
+def some_implicit_resid(x, y):
+
+    R_y = y - tan(y**x)
+    return R_y
+
+comp = om.ImplicitFuncComp(some_implicit_resid,)    
 ```
