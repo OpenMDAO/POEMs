@@ -1,9 +1,9 @@
-POEM ID: 052
-Title:  Function based component definition for OpenMDAO
+POEM ID: 052  
+Title:  Function based component definition for OpenMDAO  
 authors: [justinsgray, Ben Margolis, Kenny Lyons]  
 Competing POEMs: N/A    
 Related POEMs: 039   
-Associated implementation PR:
+Associated implementation PR:  
 
 ##  Status
 
