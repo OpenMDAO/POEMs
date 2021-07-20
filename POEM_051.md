@@ -73,6 +73,14 @@ select this method by choosing 'rel_element' as the value for the step_calc argu
                          step=[1e-7, 1e-5, 1e-6], form='forward', step_calc='rel_element')
 ```
 
+When sizing steps individually, there is more risk of encountering an element whose value is close to
+zero. In such a case, the finite difference needs to take some small step to prevent division by zero,
+so a new option "minimum step" will be added.
+```
+   self.declare_partials(of='*', wrt='x', method='fd',
+                         step=[1e-7, 1e-5, 1e-6], form='forward', step_calc='rel_element',
+                         minimum_step=1e-9)
+```
 
 Deprecation of the current method
 =================================
