@@ -1,10 +1,13 @@
 POEM ID: 052
 Title: Make src_indices behave in the same way as indices applied to a normal numpy array
 
-authors: [naylor-b, swryan]
+Authors: [naylor-b, swryan]
+
 Competing POEMs: N/A
+
 Related POEMs: N/A
-Associated implementation PR:
+
+Associated implementation PR: #2212
 
 Status:
 
