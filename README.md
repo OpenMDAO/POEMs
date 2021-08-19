@@ -75,4 +75,12 @@ That way, github's built in notification system to get emails when things are ch
 | [042](POEM_042.md) | DOEDriver different number of levels for different DVs. | Péter Onódi | integrated |
 | [043](POEM_043.md) | No `src_indices` warning when both components are distributed | [Mark Leader](https://github.com/markleader) | rejected |
 | [044](POEM_044.md) | OpenMDAO-Specific Warnings | [robfalck](https://github.com/robfalck) | accepted |
+| [045](POEM_045.md) | Promote-as change | [robfalck](https://github.com/robfalck) | rejected |
+| [046](POEM_046.md) | Definition of serial and distributed variables | justinsgray, naylor-b, joanibal, anilyildirim, kejacobson | integrated |
+| [047](POEM_047.md) | Component I/O independance from Problem Object | Andrew Ellis | integrated |
+| [048](POEM_048.md) | Semistructured Training Data for MetaModel | [justinsgray](https://github.com/justinsgray) | integrated |
+| [049](POEM_049.md) | Removal of matrix-matrix derivative APIs | justinsgray, naylor-b | accepted |
+| [050](POEM_050.md) | Fix val/value inconsistency in the API | [robfalck](https://github.com/robfalck) | integrated |
+| [051](POEM_051.md) | Modifications to relative step sizing in finite difference | [kenneth-t-moore](https://github.com/kenneth-t-moore) | accepted |
+| [053](POEM_053.md) | Make src_indices behave in the same way as indices applied to a normal numpy array | naylor-b, swryan | integrated |
 
