@@ -5,7 +5,7 @@ Authors: [naylor-b]
 
 Competing POEMs: N/A  
 
-Related POEMs: N/A  
+Related POEMs: [https://github.com/OpenMDAO/POEMs/blob/master/POEM_053.md]  
 
 Associated implementation PR: #  
 
