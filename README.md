@@ -84,4 +84,5 @@ That way, github's built in notification system to get emails when things are ch
 | [051](POEM_051.md) | Modifications to relative step sizing in finite difference | [kenneth-t-moore](https://github.com/kenneth-t-moore) | accepted |
 | [053](POEM_053.md) | Make src_indices behave in the same way as indices applied to a normal numpy array | naylor-b, swryan | integrated |
 | [054](POEM_054.md) | Specifying source array as flat or non-flat when setting src_indices or dv or constraint indices | [naylor-b](https://github.com/naylor-b) | active |
+| [055](POEM_055.md) | Min/Max Variable Print Option for Arrays | Andrew Ellis | accepted |
 
