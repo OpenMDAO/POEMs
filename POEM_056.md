@@ -1,7 +1,7 @@
-POEM ID: 052  
-Title:  Function based component definition for OpenMDAO  
-authors: [justinsgray, Ben Margolis, Kenny Lyons, Bret Naylor]  
-Competing POEMs: N/A    
+POEM ID: 056  
+Title:  Function based API usable by OpenMDAO and others  
+authors: [Bret Naylor]  
+Competing POEMs: 052    
 Related POEMs: 039   
 Associated implementation PR:  
 
@@ -15,8 +15,130 @@ Associated implementation PR:
 
 ## Motivation
 
-Define an OpenMDAO component, including all I/O with metadata, the compute method, and potentially 
-derivatives using a function based syntax. 
+Define an API for attaching metadata to and retrieving metadata from a function object.  This API
+will enable a user to attach metadata to a function object sufficient for OpenMDAO to create a 
+fully operational Component, including input and output variable names, shapes and units as well
+as partial derivative and coloring information.  The body of the function will act as the 
+component's `compute` method.
+
+Depending upon the importance of eliminating any dependence on OpenMDAO, this API could either be
+released as a standalone distribution called, for example, `openmdao_funct_wrap`, or as just a
+sub-package within the openmdao distribution, e.g., `openmdao.funct_wrap`.
+
+For the rest of this document, assume that we've imported this package as either
+
+```python
+import openmdao_funct_wrap.api as omf
+```
+
+or
+
+```python
+import openmdao.funct_wrap as omf
+```
+
+A two-way API as described above, where API functions are used to both attach and retrieve data,
+allows the underlying data layout and location to be hidden and potentially updated later without 
+negatively impacting users of the API.
+
+
+## Variable metadata
+
+### Setting the metadata
+
+OpenMDAO needs to know a variable's shape, initial value, and optionally other things like units.  
+This information can be specified using the `in_var` and `out_var` decorators.  For example:
+
+```python
+@omf.in_var('x', shape=(2,2))
+@omf.out_var('y', shape=2)
+def func(x):
+    y = x.dot(np.random.random(2)).
+    return y
+```
+
+### Getting the metadata
+
+Variable metadata is retrieved from the callable object by passing it to the `get_invar_meta` and 
+`get_outvar_meta` functions. Each function returns an iterator over (name, metadata_dict) for
+each input or output variable respectively.  For example, the following code snippet will
+print the name and shape of each output variable.
+
+```python
+for name, meta in omf.get_outvar_meta(func):
+    print(name, meta['shape'])
+```
+
+## Setting function default metadata
+
+Some metadata will be the same for all, or at least most of the variables within a given function,
+so we want to be able to specify those defaults easily without too much boilerplate.  That's the
+purpose of the `defaults` decorator.  For example:
+
+```python
+@omf.defaults(shape=4, units='m')
+def func(a, b, c):
+    d = a * b * c
+    return d
+```
+
+Any metadata that is specific to a particular variable will override any defaults specified in
+`defaults`. For example:
+
+```python
+@omf.defaults(shape=4, units='m')
+def func(a, b, c=np.ones(3)):  # shape of c is 3 so just override default shape
+    d = a * b * c
+    return d
+```
+
+### Getting the function default metadata
+
+Currently there doesn't seem to be a need to add this, as the defaults are automatically applied
+to the variable metadata, but a function to do this could always be added later if needed.
+
+
+## Setting variable names
+
+Functions have input arguments which give us the names of the input variables for our OpenMDAO 
+component, and they also have return values.  Those return values, if they are simple variables, 
+for example, `return x, y`, will give us the output variable names we need.  But in those cases where 
+the function returns expressions rather than simple variables, we need another way to specify what 
+the names of those output variables should be.  The `metadata` decorator can be used to specify the output
+names, via the `out_names` arg, as well as other metadata that is intended to apply to the function 
+as a whole.  It's similar to defaults in that it describes metadata for the whole function, but if 
+later metadata conflicts with metadata specified in `defaults`, it simply overrides it.  In the case 
+of `metadata` however, a conflict will raise an exception.  For example:
+
+
+```python
+@omf.metadata(out_names=['d'], shape=4, units='m')  # name of return value is 'd'
+def func(a, b, c=np.ones(3)):  # shape of c is 3 so raise an exception
+    return a * b * c
+```
+
+Note that if `out_names` is not specified and the output names cannot be determined by inspection
+of the return values, then they must be specified using `out_var` calls, and the order (top to bottom)
+of those `out_var` calls determines how those names map to the return value positions.  For example:
+
+```python
+@omf.in_var('x', shape=(2,2))
+@omf.out_var('y', shape=2)
+@omf.out_var('z', shape=(2,2))
+def func(x):
+    return x.dot(np.random.random(2))., x*1.5
+```
+
+In the example above, the output names would be assumed to be `['y', 'z']`.
+
+
+
+
+
+
+
+
+
 
 ## Explicit API Description
 
