@@ -139,7 +139,7 @@ assume that is has the value 1.0.  If the `shape` is provided and either the def
 not provided or is provided as a scalar value, then the assumed default value will be
 `np.ones(shape) * scalar_default_value`, where `scalar_default_value` is 1.0 if not specified.
 If `shape` is provided along with a non-scalar default value that has a different shape, then
-and exception will be raised.
+an exception will be raised.
 
 
 ## Setting non-default function metadata
