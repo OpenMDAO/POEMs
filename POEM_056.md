@@ -30,19 +30,19 @@ as partial derivative and coloring information.  The body of the function will a
 component's `compute` method.
 
 Depending upon the importance of eliminating any dependence on OpenMDAO, this API could either be
-released as a standalone distribution called, for example, `openmdao_funct_wrap`, or as just a
-sub-package within the openmdao distribution, e.g., `openmdao.funct_wrap`.
+released as a standalone distribution called, for example, `openmdao_func_api`, or as just a
+sub-package within the openmdao distribution, e.g., `openmdao.func_api`.
 
 For the rest of this document, assume that we've imported this package as either
 
 ```python
-import openmdao_funct_wrap.api as omf
+import openmdao_func_api.api as omf
 ```
 
 or
 
 ```python
-import openmdao.funct_wrap as omf
+import openmdao.func_api as omf
 ```
 
 A two-way API as described above, where API functions are used to both attach and retrieve data,
