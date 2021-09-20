@@ -55,24 +55,46 @@ negatively impacting users of the API.
 ### Setting the metadata for a single variable
 
 OpenMDAO needs to know a variable's shape, initial value, and optionally other things like units.  
-This information can be specified using the `in_var` and `out_var` decorators.  For example:
+This information can be specified using the `add_input` and `add_output` decorators.  For example:
 
 ```python
-@omf.in_var('x', shape=(2,2))
-@omf.out_var('y', shape=2)
+@omf.add_input('x', shape=(2,2))
+@omf.add_output('y', shape=2)
 def func(x):
     y = x.dot(np.random.random(2)).
     return y
 ```
 
+### Setting metadata for option variables
+
+A function may have additional non-float or not float ndarray arguments that, at least in the
+OpenMDAO context, will be treated as component options that don't change during a given model
+execution.  These can be specified using the `declare_option` decorator.  For example:
+
+```python
+
+@omf.add_input('x', shape=(2,2))
+@omf.declare_option('opt', values=[1, 2, 3])
+@omf.add_output('y', shape=2)
+def func(x, opt):
+    if opt == 1:
+        y = x.dot(np.random.random(2))
+    elif opt == 2:
+        y = x[:, 1] * 2.
+    elif opt == 3:
+        y = x[1, :] * 3.
+    return y
+
+```
+
 ### Setting metadata for multiple variables
 
-Using the `in_vars` and `out_vars` decorators you can specify metadata for multiple variables
+Using the `add_inputs` and `add_outputs` decorators you can specify metadata for multiple variables
 in the same decorator.  For example:
 
 ```python
-@omf.in_vars(a={'shape': (2,2), 'units': 'm'}, b={'shape': 2, 'units': 'm'})
-@omf.out_vars(x={'shape': 2, 'units': 'm**2'}, y={'shape': 2, 'units': 'm**3'})
+@omf.add_inputs(a={'shape': (2,2), 'units': 'm'}, b={'shape': 2, 'units': 'm'})
+@omf.add_outputs(x={'shape': 2, 'units': 'm**2'}, y={'shape': 2, 'units': 'm**3'})
 def func(a):
     return a.dot(b), a[:,0] * b * b
 
@@ -91,13 +113,13 @@ derivatives would be computed using `jax` for AD.
 
 ### Getting the metadata
 
-Variable metadata is retrieved from the callable object by passing that object to the `get_invar_meta` and 
-`get_outvar_meta` functions. Each function returns a list of (name, metadata_dict) tuples, one for
+Variable metadata is retrieved from the callable object by passing that object to the `get_input_meta`
+and `get_output_meta` functions. Each function returns a list of (name, metadata_dict) tuples, one for
 each input or output variable respectively.  For example, the following code snippet will
 print the name and shape of each output variable.
 
 ```python
-for name, meta in omf.get_outvar_meta(func):
+for name, meta in omf.get_output_meta(func):
     print(name, meta['shape'])
 ```
 
@@ -167,44 +189,44 @@ We don't need to set input names because the function can always be inspected fo
 we also need to associate output names with function return values. Those return values, if they are 
 simple variables, for example, `return x, y`, will give us the output variable names we need.  
 But in those cases where the function returns expressions rather than simple variables, we need 
-another way to specify what the names of those output variables should be.  The `out_names` decorator 
-provides a concise way to do this, for example:
+another way to specify what the names of those output variables should be.  The `output_names` 
+decorator provides a concise way to do this, for example:
 
 
 ```python
-@omf.out_names('d', 'e')  # name of return values are 'd' and 'e'
+@omf.output_names('d', 'e')  # name of return values are 'd' and 'e'
 def func(a, b, c):
     return a * b * c, a * b -c
 ```
 
 If we don't want to bother with a separate decorator for output names, we could instead use the
-`out_vars` decorator mentioned earlier, for example:
+`add_outputs` decorator mentioned earlier, for example:
 
 ```python
-@omf.out_vars(d={}, e={})  # name of return values are 'd' and 'e' and they have no other metadata
+@omf.add_outputs(d={}, e={})  # name of return values are 'd' and 'e' and they have no other metadata
 def func(a, b, c):
     return a * b * c, a * b -c
 ```
 
 As mentioned above, if the function's return values are simple variable names, we don't need to
-call `out_names` because we can determine the names from inspecting the function, e.g., 
+call `output_names` because we can determine the names from inspecting the function, e.g., 
 
 
 ```python
 def func(a, b, c):
     d = a * b * c
     e = a * b -c
-    return d, e  # output names are 'd' and 'e'. no call to out_names needed
+    return d, e  # output names are 'd' and 'e'. no call to output_names needed
 ```
 
-Note that if neither `out_names` nor `out_vars` is specified and the output names cannot be determined 
-by inspection of the return values, then they must be specified using `out_var` calls, and the order (top to bottom)
-of those `out_var` calls determines how those names map to the return value positions.  For example:
+Note that if neither `output_names` nor `add_outputs` is specified and the output names cannot be 
+determined by inspection of the return values, then they must be specified using `add_output` calls, 
+and the order (top to bottom) of those `add_output` calls determines how those names map to the return value positions.  For example:
 
 ```python
-@omf.in_var('x', shape=(2,2))
-@omf.out_var('y', shape=2)
-@omf.out_var('z', shape=(2,2))
+@omf.add_input('x', shape=(2,2))
+@omf.add_output('y', shape=2)
+@omf.add_output('z', shape=(2,2))
 def func(x):
     return x.dot(np.random.random(2))., x*1.5
 ```
@@ -214,13 +236,13 @@ In the example above, the output names would be assumed to be `['y', 'z']`.
 
 ### Getting variable names
 
-Lists of input names and output names can be retrieved by calling `get_in_names` and `get_out_names`
+Lists of input names and output names can be retrieved by calling `get_in_names` and `get_output_names`
 respectively, e.g., 
 
 ```python
 
 invar_names = omf.get_in_names(func)
-outvar_names = omf.get_out_names(func)
+outvar_names = omf.get_output_names(func)
 
 ```
 
