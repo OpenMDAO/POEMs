@@ -266,11 +266,16 @@ def func(x, y, z=3):
 
 ```
 
-The args for the `declare_partials` and `declare_coloring` decorators exactly match those
+The args for the `declare_partials` and `declare_coloring` decorators match those
 of the  `declare_partials` and `declare_coloring` methods of an OpenMDAO component.  Multiple calls
 can be made to either decorator to set up different partials/colorings.  The partials will be
 ordered top to bottom, just as they would be if the corresponding methods were called on a
 component.
+
+Note that for a regular OpenMDAO component, the `method` argument can have values of 'fd' or 'cs'.
+This function based API allows one additional allowed value, 'jax', which specifies that the 
+'jax' library be used to compute derivatives using AD.
+
 
 ### Getting partial derivative information
 
