@@ -124,6 +124,11 @@ for name, meta in omf.get_output_meta(func):
     print(name, meta['shape'])
 ```
 
+Note that in addition to user supplied metadata, metadata for each added output will include a
+'deps' entry which contains a set of names of inputs that that output depends on.  This does
+not include any sparsity information if the input and/or output are array variables.  It only 
+shows whether a given output depends in any way upon a particular input variable.
+
 ## Setting function default metadata
 
 Some metadata will be the same for all, or at least most of the variables within a given function,
