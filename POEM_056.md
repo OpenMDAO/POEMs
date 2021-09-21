@@ -107,8 +107,9 @@ could remove some boilerplate from the function decoration, but would have the u
 effect of making that particular function definition dependent on `jax`, i.e. if someone with
 `jax` created the function as part of a library and that library was used by someone else without
 `jax` then the function definition would raise an exception because the output shape(s) would be
-unknown.  This is less of an issue if the function is created with the expectation that its
-derivatives would be computed using `jax` for AD.
+unknown.  This is not an issue if the function is decorated with `declare_partials` (see below)
+specifying that `jax` be used as the method to compute partial derivatives because in that case,
+there will already be a `jax` dependency.
 
 
 ### Getting the metadata
