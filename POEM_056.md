@@ -49,33 +49,71 @@ A two-way API as described above, where API functions are used to both attach an
 allows the underlying data layout and location to be hidden and potentially updated later without 
 negatively impacting users of the API.
 
+This API consists primarily of methods on the OMWrappedFunc class, which wraps a plain python or
+potentially annotated function and stores metadata needed by openmdao along with that function.
+
+To obtain a wrapped function requires a call to the `wrap` function.
+
+```python
+def func(a, b, c):
+    d = a * b + c
+    return d
+
+f = omf.wrap(func)
+```
+
+The wrapped function has a number of methods for setting and retrieving metadata. The setting
+methods all return the function wrapper instance so they can be stacked together to allow a 
+somewhat more concise syntax if desired.  For example:
+
+```python
+f = omf.wrap(func).defaults(shape=5).add_input('x', units='m').add_output('y', units='ft')
+```
+
+The stacked methods can also be lined up vertically, but only if the entire expression is enclosed in
+parentheses.  For example:
+
+```python
+f = (omf.wrap(func)
+        .defaults(shape=5)
+        .add_input('x', units='m')
+        .add_output('y', units='ft'))
+```
+
+If stacking isn't desired, the methods can just be called in the usual way:
+
+```python
+f = omf.wrap(func)
+f.defaults(shape=5)
+f.add_input('x', units='m')
+f.add_output('y', units='ft')
+```
 
 ## Variable metadata
 
 ### Setting the metadata for a single variable
 
 OpenMDAO needs to know a variable's shape, initial value, and optionally other things like units.  
-This information can be specified using the `add_input` and `add_output` decorators.  For example:
+This information can be specified using the `add_input` and `add_output` methods.  For example:
 
 ```python
-@omf.add_input('x', shape=(2,2))
-@omf.add_output('y', shape=2)
 def func(x):
     y = x.dot(np.random.random(2)).
     return y
+
+f = (omf.wrap(func)
+        .add_input('x', shape=(2,2))
+        .add_output('y', shape=2))
 ```
 
 ### Setting metadata for option variables
 
 A function may have additional non-float or not float ndarray arguments that, at least in the
 OpenMDAO context, will be treated as component options that don't change during a given model
-execution.  These can be specified using the `declare_option` decorator.  For example:
+execution.  These can be specified using the `declare_option` method.  For example:
 
 ```python
 
-@omf.add_input('x', shape=(2,2))
-@omf.declare_option('opt', values=[1, 2, 3])
-@omf.add_output('y', shape=2)
 def func(x, opt):
     if opt == 1:
         y = x.dot(np.random.random(2))
@@ -85,42 +123,48 @@ def func(x, opt):
         y = x[1, :] * 3.
     return y
 
+f = (omf.wrap(func)
+        .add_input('x', shape=(2,2))
+        .declare_option('opt', values=[1, 2, 3])
+        .add_output('y', shape=2))
 ```
 
 ### Setting metadata for multiple variables
 
-Using the `add_inputs` and `add_outputs` decorators you can specify metadata for multiple variables
-in the same decorator.  For example:
+Using the `add_inputs` and `add_outputs` methods you can specify metadata for multiple variables
+in the same call.  For example:
 
 ```python
-@omf.add_inputs(a={'shape': (2,2), 'units': 'm'}, b={'shape': 2, 'units': 'm'})
-@omf.add_outputs(x={'shape': 2, 'units': 'm**2'}, y={'shape': 2, 'units': 'm**3'})
 def func(a):
     return a.dot(b), a[:,0] * b * b
 
+f = (omf.wrap(func)
+        .add_inputs(a={'shape': (2,2), 'units': 'm'}, b={'shape': 2, 'units': 'm'})
+        .add_outputs(x={'shape': 2, 'units': 'm**2'}, y={'shape': 2, 'units': 'm**3'}))
 ```
 
 It's also possible, depending on the contents of the function, that the output shapes could be 
 determined automatically using the `jax` package.  This functionality could be implemented in 
 such a way that `jax` would not be a hard dependency but would only be used if found.  This
-could remove some boilerplate from the function decoration, but would have the unfortunate side
+could remove some boilerplate from the function metadata specification, but would have the 
+unfortunate side
 effect of making that particular function definition dependent on `jax`, i.e. if someone with
 `jax` created the function as part of a library and that library was used by someone else without
 `jax` then the function definition would raise an exception because the output shape(s) would be
-unknown.  This is not an issue if the function is decorated with `declare_partials` (see below)
-specifying that `jax` be used as the method to compute partial derivatives because in that case,
+unknown.  This is not an issue if `declare_partials` (see below)
+specifies that `jax` be used as the method to compute partial derivatives because in that case,
 there will already be a `jax` dependency.
 
 
 ### Getting the metadata
 
 Variable metadata is retrieved from the callable object by passing that object to the `get_input_meta`
-and `get_output_meta` functions. Each function returns a list of (name, metadata_dict) tuples, one for
-each input or output variable respectively.  For example, the following code snippet will
-print the name and shape of each output variable.
+and `get_output_meta` methods. Each function returns an iterator over (name, metadata_dict) tuples, 
+one for each input or output variable respectively.  For example, the following code snippet will
+print the name and shape of each output variable (assuming f is a wrapped function).
 
 ```python
-for name, meta in omf.get_output_meta(func):
+for name, meta in f.get_output_meta():
     print(name, meta['shape'])
 ```
 
@@ -133,24 +177,26 @@ shows whether a given output depends in any way upon a particular input variable
 
 Some metadata will be the same for all, or at least most of the variables within a given function,
 so we want to be able to specify those defaults easily without too much boilerplate.  That's the
-purpose of the `defaults` decorator.  For example:
+purpose of the `defaults` method.  For example:
 
 ```python
-@omf.defaults(shape=4, units='m')
 def func(a, b, c):
     d = a * b * c
     return d
+
+f = omf.wrap(func).defaults(shape=4, units='m')
 ```
 
 Any metadata that is specific to a particular variable will override any defaults specified in
 `defaults`. For example:
 
 ```python
-@omf.defaults(shape=4, units='m')
-def func(a, b, c=np.ones(3)):  # shape of c is 3 so just override default shape
+def func(a, b, c=np.ones(3)):  # shape of c is 3 which overrides the `defaults` shape
     d = a * b
     e = c * 1.5
     return d, e
+
+f = omf.wrap(func).defaults(shape=4, units='m')
 ```
 
 ### Getting the function default metadata
@@ -179,11 +225,12 @@ is if a function default argument differs in shape from a shape specified in `me
 
 
 ```python
-@omf.metadata(shape=4, units='m')  # name of return value is 'd'
-def func(a, b, c=np.ones(3)):  # shape of c is 3 so raise an exception
+def func(a, b, c=np.ones(3)):  # shape of c is 3 so raise an exception because `metadata` shape is 4
     d = a * b
     e = c * 1.5
     return d, e
+
+f = omf.wrap(func).metadata(shape=4, units='m')
 ```
 
 
@@ -196,22 +243,25 @@ we also need to associate output names with function return values. Those return
 simple variables, for example, `return x, y`, will give us the output variable names we need.  
 But in those cases where the function returns expressions rather than simple variables, we need 
 another way to specify what the names of those output variables should be.  The `output_names` 
-decorator provides a concise way to do this, for example:
+method provides a concise way to do this, for example:
 
 
 ```python
-@omf.output_names('d', 'e')  # name of return values are 'd' and 'e'
 def func(a, b, c):
     return a * b * c, a * b -c
+
+f = omf.wrap(func).output_names('d', 'e')  # name of return values are 'd' and 'e'
 ```
 
 If we don't want to bother with a separate decorator for output names, we could instead use the
 `add_outputs` decorator mentioned earlier, for example:
 
 ```python
-@omf.add_outputs(d={}, e={})  # name of return values are 'd' and 'e' and they have no other metadata
 def func(a, b, c):
     return a * b * c, a * b -c
+
+# names of return values are 'd' and 'e' and they have no other metadata
+f = omf.wrap(func).add_outputs(d={}, e={})  
 ```
 
 As mentioned above, if the function's return values are simple variable names, we don't need to
@@ -227,14 +277,16 @@ def func(a, b, c):
 
 Note that if neither `output_names` nor `add_outputs` is specified and the output names cannot be 
 determined by inspection of the return values, then they must be specified using `add_output` calls, 
-and the order (top to bottom) of those `add_output` calls determines how those names map to the return value positions.  For example:
+and the order of those `add_output` calls determines how those names map to the return value positions.  For example:
 
 ```python
-@omf.add_input('x', shape=(2,2))
-@omf.add_output('y', shape=2)
-@omf.add_output('z', shape=(2,2))
 def func(x):
     return x.dot(np.random.random(2))., x*1.5
+
+f = (omf.wrap(func)
+        .add_input('x', shape=(2,2))
+        .add_output('y', shape=2)
+        .add_output('z', shape=(2,2))) 
 ```
 
 In the example above, the output names would be assumed to be `['y', 'z']`.
@@ -242,13 +294,13 @@ In the example above, the output names would be assumed to be `['y', 'z']`.
 
 ### Getting variable names
 
-Lists of input names and output names can be retrieved by calling `get_in_names` and `get_output_names`
-respectively, e.g., 
+Lists of input names and output names can be retrieved by calling `get_input_names` and 
+`get_output_names` respectively, e.g., 
 
 ```python
 
-invar_names = omf.get_in_names(func)
-outvar_names = omf.get_output_names(func)
+invar_names = f.get_input_names()
+outvar_names = f.get_output_names()
 
 ```
 
@@ -257,26 +309,25 @@ outvar_names = omf.get_output_names(func)
 ### Setting partial derivative information
 
 Metadata that will help OpenMDAO or potentially other libraries to compute partial derivatives
-for the function can be defined using the `declare_partials` and `declare_coloring` decorators.
+for the function can be defined using the `declare_partials` and `declare_coloring` methods.
 For example:
 
 ```python
 
-@omf.declare_partials(of='*', wrt='*', method='cs')
-@omf.declare_coloring(wrt='*', method='cs')
-@omf.defaults(shape=4)
 def func(x, y, z=3): 
     foo = np.log(z)/(3*x+2*y)
     bar = 2*x+y
     return foo, bar
 
+f = (omf.wrap(func)
+        .declare_partials(of='*', wrt='*', method='cs')
+        .declare_coloring(wrt='*', method='cs')
+        .defaults(shape=4))
 ```
 
-The args for the `declare_partials` and `declare_coloring` decorators match those
+The args for the `declare_partials` and `declare_coloring` methods match those
 of the  `declare_partials` and `declare_coloring` methods of an OpenMDAO component.  Multiple calls
-can be made to either decorator to set up different partials/colorings.  The partials will be
-ordered top to bottom, just as they would be if the corresponding methods were called on a
-component.
+can be made to either decorator to set up different partials/colorings.
 
 Note that for a regular OpenMDAO component, the `method` argument can have values of 'fd' or 'cs'.
 This function based API allows one additional allowed value, 'jax', which specifies that the 
@@ -285,31 +336,14 @@ This function based API allows one additional allowed value, 'jax', which specif
 
 ### Getting partial derivative information
 
-The args passed to the `declare_partials` and `declare_coloring` decorators can be retrieved 
-using the `get_declare_partials` and `get_declare_coloring` calls respectively.  Each of these
-returns a list where each entry is the keyword args dict from each call, in top to bottom order.
+The args passed to the `declare_partials` and `declare_coloring` methods can be retrieved 
+using the `get_declare_partials` and `get_declare_colorings` methods respectively.  Each of these
+returns a list where each entry is the keyword args dict from each call, in the order that they
+where called.
 
 ```python
 
-dec_partials_calls = omf.get_declare_partials(func)
-dec_coloring_calls = omf.get_declare_coloring(func)
-
-```
-
-## Late calls to decorators
-
-Arguments passed to decorators are determined at the time that the function is defined, which can
-in some cases be earlier than desired.  If this is the case, keeping in mind that decorators are
-just syntactic sugar for calling a normal function that takes a function as an arg and returns a
-function, we could provide a function to make the decorator processing of a function less painful
-if it must be done at some time other than function definition time.
-
-```python
-
-myfunc = omf.apply_decorators(func, 
-                              omf.declare_partials(of='*', wrt='*', method='cs'),
-                              omf.declare_coloring(wrt='*', method='cs'),
-                              omf.defaults(shape=myshape)
-                             )
+dec_partials_calls = f.get_declare_partials()
+dec_coloring_calls = f.get_declare_colorings()
 
 ```
