@@ -147,13 +147,12 @@ It's also possible, depending on the contents of the function, that the output s
 determined automatically using the `jax` package.  This functionality could be implemented in 
 such a way that `jax` would not be a hard dependency but would only be used if found.  This
 could remove some boilerplate from the function metadata specification, but would have the 
-unfortunate side
-effect of making that particular function definition dependent on `jax`, i.e. if someone with
-`jax` created the function as part of a library and that library was used by someone else without
-`jax` then the function definition would raise an exception because the output shape(s) would be
-unknown.  This is not an issue if `declare_partials` (see below)
-specifies that `jax` be used as the method to compute partial derivatives because in that case,
-there will already be a `jax` dependency.
+unfortunate side effect of making that particular function definition dependent on `jax`, i.e. if 
+someone with `jax` created the function as part of a library and that library was used by someone 
+else without `jax` then the function definition would raise an exception because the output shape(s) 
+would be unknown.  This is not an issue if `declare_partials` (see below) specifies that `jax` be 
+used as the method to compute partial derivatives because in that case, there will already be a `jax` 
+dependency.
 
 
 ### Getting the metadata
@@ -198,11 +197,6 @@ def func(a, b, c=np.ones(3)):  # shape of c is 3 which overrides the `defaults` 
 
 f = omf.wrap(func).defaults(shape=4, units='m')
 ```
-
-### Getting the function default metadata
-
-Currently there doesn't seem to be a need to add this, as the defaults are automatically applied
-to the variable metadata, but a function to do this could easily be added later if needed.
 
 
 ### Assumed default values
