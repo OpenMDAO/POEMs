@@ -216,24 +216,6 @@ If `shape` is provided along with a non-scalar default value that has a differen
 an exception will be raised.
 
 
-## Setting non-default function metadata
-
-The `metadata` method can be used to specify metadata that is intended to apply to the function 
-as a whole.  It's similar to `defaults` in that it describes metadata for the whole function, but unlike
-`defaults`, a conflicting metadata value will raise an exception.  One possible source of conflict 
-is if a function default argument differs in shape from a shape specified in `metadata`. For example:
-
-
-```python
-def func(a, b, c=np.ones(3)):  # shape of c is 3 so raise an exception because `metadata` shape is 4
-    d = a * b
-    e = c * 1.5
-    return d, e
-
-f = omf.wrap(func).metadata(shape=4, units='m')
-```
-
-
 ## Variable names
 
 ### Setting variable names
