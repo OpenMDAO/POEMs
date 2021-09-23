@@ -49,8 +49,8 @@ A two-way API as described above, where API functions are used to both attach an
 allows the underlying data layout and location to be hidden and potentially updated later without 
 negatively impacting users of the API.
 
-This API consists primarily of methods on the OMWrappedFunc class, which wraps a plain python or
-potentially annotated function and stores metadata needed by openmdao along with that function.
+This API consists primarily of methods on the OMWrappedFunc class, which wraps a plain python 
+function and stores metadata needed by openmdao along with that function.
 
 To obtain a wrapped function requires a call to the `wrap` function.
 
@@ -211,14 +211,14 @@ In order to stay consistent with OpenMDAO's default value policy, we'll assume t
 behavior for functions, so if no shape or default value is supplied for a function variable, we'll
 assume that is has the value 1.0.  If the `shape` is provided and either the default value is
 not provided or is provided as a scalar value, then the assumed default value will be
-`np.ones(shape) * scalar_default_value`, where `scalar_default_value` is 1.0 if not specified.
+`np.ones(shape) * scalar_value`, where `scalar_value` is 1.0 if not specified.
 If `shape` is provided along with a non-scalar default value that has a different shape, then
 an exception will be raised.
 
 
 ## Setting non-default function metadata
 
-The `metadata` decorator can be used to specify metadata that is intended to apply to the function 
+The `metadata` method can be used to specify metadata that is intended to apply to the function 
 as a whole.  It's similar to `defaults` in that it describes metadata for the whole function, but unlike
 `defaults`, a conflicting metadata value will raise an exception.  One possible source of conflict 
 is if a function default argument differs in shape from a shape specified in `metadata`. For example:
@@ -239,7 +239,7 @@ f = omf.wrap(func).metadata(shape=4, units='m')
 ### Setting variable names
 
 We don't need to set input names because the function can always be inspected for those, but
-we also need to associate output names with function return values. Those return values, if they are 
+we do need to associate output names with function return values. Those return values, if they are 
 simple variables, for example, `return x, y`, will give us the output variable names we need.  
 But in those cases where the function returns expressions rather than simple variables, we need 
 another way to specify what the names of those output variables should be.  The `output_names` 
@@ -248,20 +248,20 @@ method provides a concise way to do this, for example:
 
 ```python
 def func(a, b, c):
-    return a * b * c, a * b -c
+    return a * b * c, a * b -c  # two return values that don't have simple names
 
 f = omf.wrap(func).output_names('d', 'e')  # name of return values are 'd' and 'e'
 ```
 
-If we don't want to bother with a separate decorator for output names, we could instead use the
-`add_outputs` decorator mentioned earlier, for example:
+If we don't want to bother with a separate method for output names, we could instead use the
+`add_outputs` method mentioned earlier, for example:
 
 ```python
 def func(a, b, c):
-    return a * b * c, a * b -c
+    return a * b * c, a * b -c  # two return values that don't have simple names
 
 # names of return values are 'd' and 'e' and they have no other metadata
-f = omf.wrap(func).add_outputs(d={}, e={})  
+f = omf.wrap(func).add_outputs(d={}, e={})
 ```
 
 As mentioned above, if the function's return values are simple variable names, we don't need to
@@ -272,21 +272,27 @@ call `output_names` because we can determine the names from inspecting the funct
 def func(a, b, c):
     d = a * b * c
     e = a * b -c
-    return d, e  # output names are 'd' and 'e'. no call to output_names needed
+    return d, e  # we know from inspection that the output names are 'd' and 'e'
 ```
 
-Note that if neither `output_names` nor `add_outputs` is specified and the output names cannot be 
+Note that in the function above, we didn't have to wrap it at all.  This is possible because we can 
+inspect the source code to determine the output names and we assume the default value of all inputs
+and outputs is 1.0.  If any inputs or outputs of a function have any non-default metadata, e.g.,
+val, units, shape, etc., then that function would have to be wrapped and those metadata values
+would have to be specified.
+
+If neither `output_names` nor `add_outputs` is specified and the output names cannot be 
 determined by inspection of the return values, then they must be specified using `add_output` calls, 
 and the order of those `add_output` calls determines how those names map to the return value positions.  For example:
 
 ```python
 def func(x):
-    return x.dot(np.random.random(2))., x*1.5
+    return x.dot(np.random.random(2))., x*1.5  # 2 return values and we can't infer the names
 
 f = (omf.wrap(func)
         .add_input('x', shape=(2,2))
-        .add_output('y', shape=2)
-        .add_output('z', shape=(2,2))) 
+        .add_output('y', shape=2)       # 'y' is the name of the first return value
+        .add_output('z', shape=(2,2)))  # 'z' is the name of the second return value
 ```
 
 In the example above, the output names would be assumed to be `['y', 'z']`.
@@ -327,23 +333,25 @@ f = (omf.wrap(func)
 
 The args for the `declare_partials` and `declare_coloring` methods match those
 of the  `declare_partials` and `declare_coloring` methods of an OpenMDAO component.  Multiple calls
-can be made to either decorator to set up different partials/colorings.
+can be made to `declare_partials` to set up different partials, but `declare_coloring` may only
+be called once.
 
-Note that for a regular OpenMDAO component, the `method` argument can have values of 'fd' or 'cs'.
-This function based API allows one additional allowed value, 'jax', which specifies that the 
-'jax' library be used to compute derivatives using AD.
+Note that for a regular OpenMDAO component, the `method` argument can currently only have values of
+'fd' or 'cs'. This function based API allows one additional allowed value, 'jax', which specifies that 
+the 'jax' library be used to compute derivatives using AD.  In the future it's possible that 'jax'
+will also be added as an allowed value for `method` in regular OpeMDAO components as well.
 
 
 ### Getting partial derivative information
 
 The args passed to the `declare_partials` and `declare_coloring` methods can be retrieved 
-using the `get_declare_partials` and `get_declare_colorings` methods respectively.  Each of these
+using the `get_declare_partials` and `get_declare_coloring` methods respectively.  Each of these
 returns a list where each entry is the keyword args dict from each call, in the order that they
 where called.
 
 ```python
 
-dec_partials_calls = f.get_declare_partials()
-dec_coloring_calls = f.get_declare_colorings()
+dec_partials_calls = f.get_declare_partials()  # gives list of args dicts for multiple calls
+dec_coloring_args = f.get_declare_coloring()   # gives args dict for a single call
 
 ```
