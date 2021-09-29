@@ -138,7 +138,7 @@ A `solve_nonlinear` method can also be specified as part of the metadata:
 ```python
 
 def implict_solve(x, y):
-    pass
+    ...
 
 def implicit_resid(x, y):
     R_x = x + np.sin(x+y)
@@ -162,7 +162,6 @@ the analogous `compute_partials` and `compute_jacvec_product` methods in explici
 def func_linearize(x, y, J): 
     ... 
 
-@om.func_meta(units=None, shape=1)
 def some_implicit_resid(x, y):
     R_y = y - tan(y**x)
     return R_y
