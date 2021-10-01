@@ -3,7 +3,7 @@ Title:  Function based API usable by OpenMDAO and others
 authors: [Bret Naylor]  
 Competing POEMs: 052    
 Related POEMs: 039   
-Associated implementation PR:  
+Associated implementation PR: 2281  
 
 ##  Status
 
