@@ -10,8 +10,10 @@ Associated implementation PR:
 - [x] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
+
+Rejected in favor of [POEM 056](https://github.com/OpenMDAO/POEMs/blob/master/POEM_056.md)
 
 ## Motivation
 
