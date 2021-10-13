@@ -42,7 +42,7 @@ If partials were added using the function wrapping API then the `method` specifi
 declarations will be used to compute the partials for the component.  If no partials were declared,
 then dense partials based on full variable dependencies between outputs and inputs of the function 
 will be declared automatically, and complex step will be used to compute the partials, similarly to 
-what is currently done in the `ExecComp`.
+what is currently done in `ExecComp`.
 
 
 ## ExplicitFuncComp
@@ -62,53 +62,46 @@ comp = om.ExplicitFuncComp(func)
 ### Providing a `compute_partials`
 
 Users can provide a second function that gives `compute_partials` functionality. 
-For `compute_partials`, the argument structure must follow that of the primary function, with one
-additional argument: a Jacobian object.   The Jacobian object is expected to be dict like and
+For `compute_partials`, the argument structure must follow that of the primary function and must
+return a Jacobian object.   The Jacobian object is expected to be a dict and
 to take an (of, wrt) name pair as a key, with the corresponding sub-jacobian as the value for that
 key.  The shape of the expected sub-jacobian is determined by the shapes of the inputs and outputs and whether or not any rows and cols are given when the partials are declared, i.e., if rows and cols
 are specified then the value stored in the jacobian will be only the nonzero part of that sub-jacobian. See POEM 056 for a description of how partials are declared for a function.
 
 ```python
 
-def J_func(x, y, z, J): 
+def J_func(x, y, z): 
 
+    J = {}
+
+    # the following sub-jacs are 4x4 based on the sizes of foo, bar, x, and y, but the partials
+    # were declared specifying rows and cols (in this case sub-jacs are diagonal), so we only
+    # store the nonzero values of the sub-jacs, resulting in an actual size of 4 rather than 4x4.
     J['foo', 'x'] = -3*np.log(z)(3*x+2*y)**2 
     J['foo', 'y'] = -2*np.log(z)(3*x+2*y)**2 
-    J['foo', 'z'] = 1/(3*x+2*y) * 1/z
 
-    J['bar', 'x'][:] = 2
-    J['bar', 'y'][:] = 1
+    J['bar', 'x'] = 2.*np.ones(4)
+    J['bar', 'y'] = np.ones(4)
+
+    # z is a scalar so the true size of this sub-jac is 4x1
+    J['foo', 'z'] = 1/(3*x+2*y) * 1./z
+
+    return J
 
 def func(x=np.zeros(4), y=np.ones(4), z=3): 
     foo = np.log(z)/(3*x+2*y)
-    bar = 2*x+y
+    bar = 2.*x + y
     return foo, bar
 
 f = (omf.wrap(func)
         .defaults(units='m')
-        .add_input('z', units=None)
         .add_output('foo', units='1/m', shape=4)
         .add_output('bar', shape=4)
-        .declare_partials(of='foo', wrt='*', rows=np.arange(4), cols=np.arange(4))
+        .declare_partials(of='foo', wrt=('x', 'y'), rows=np.arange(4), cols=np.arange(4))
+        .declare_partials(of='foo', wrt='z')
         .declare_partials(of='bar', wrt=('x', 'y'), rows=np.arange(4), cols=np.arange(4)))
 
 comp = om.ExplicitFuncComp(f, compute_partials=J_func)
-```
-
-### Providing a jacobian vector product function
-
-Just like a normal explicit component, if you are using the matrix free API then you should not 
-declare any partials.  The matrix vector product method signature will expect three additional arguments added beyond those in the nonlinear function: `d_inputs`, the array of input derivatives,
-`d_outputs`, the array of output derivatives, and `mode`, which indicates derivative direction,
-either `fwd` or `rev`.
-
-```python
-
-def jac_vec_func(x, y, z, d_inputs, d_outputs, mode):
-    ...  
-
-# func is some wrapped function with inputs x, y, and z
-comp = om.ExplicitFuncComp(func, compute_jacvec_product=jac_vec_func)
 ```
 
 
@@ -159,8 +152,10 @@ the analogous `compute_partials` and `compute_jacvec_product` methods in explici
 
 ```python
 
-def func_linearize(x, y, J): 
-    ... 
+def func_linearize(x, y): 
+    J = {}
+    ...
+    return J
 
 def some_implicit_resid(x, y):
     R_y = y - tan(y**x)
