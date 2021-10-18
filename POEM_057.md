@@ -129,7 +129,7 @@ def implict_solve_nl(a):
     # do stuff
     return x, y
 
-def implicit_resid(a, x, y):
+def implicit_resid(a, x, y):  # a is input, x and y are states
     R_x = x + np.sin(a+y)
     R_y = y - tan(y)**x
     return R_x, R_y
@@ -148,8 +148,8 @@ the analogous `compute_partials` and `compute_jacvec_product` methods in explici
 
 ```python
 
-def func_linearize(x, y, J): 
-    ...
+def func_linearize(x, y, J):  # x is input, y is output
+    J['y', 'x'] = ...
 
 def implicit_resid(x, y):
     R_y = y - tan(y**x)
