@@ -35,14 +35,12 @@ This POEM makes heavy use of the function wrapping API described in POEM 056.
 Both component types are intended to work with an instance of `OMWrappedFunc` which wraps a plain
 python function.  Passing a plain python function directly to the `__init__` function of 
 `ExplicitFuncComp` or `ImplicitFuncComp` is allowed as long as no additional metadata is needed
-by OpenMDAO.  This will often be true if all of the function's inputs and outputs are scalar and
-none of them have units.
+by OpenMDAO.  This will sometimes be true if all of the function's inputs and outputs are scalar and
+none of them have units, and there is no need to compute derivatives for the component.
 
-If partials were added using the function wrapping API then the `method` specified in those partials
-declarations will be used to compute the partials for the component.  If no partials were declared,
-then dense partials based on full variable dependencies between outputs and inputs of the function 
-will be declared automatically, and complex step will be used to compute the partials, similarly to 
-what is currently done in `ExecComp`.
+If partials are added using the function wrapping API then the `method` specified in those partials
+declarations will be used to compute the partials for the component.  If no partials are declared,
+then all partials are assumed to be zero.
 
 
 ## ExplicitFuncComp
@@ -62,17 +60,15 @@ comp = om.ExplicitFuncComp(func)
 ### Providing a `compute_partials`
 
 Users can provide a second function that gives `compute_partials` functionality. 
-For `compute_partials`, the argument structure must follow that of the primary function and must
-return a Jacobian object.   The Jacobian object is expected to be a dict and
-to take an (of, wrt) name pair as a key, with the corresponding sub-jacobian as the value for that
+For `compute_partials`, the argument structure must follow that of the primary function followed by
+a Jacobian object.   The Jacobian object is expected to be dict-like and
+to take (of, wrt) name pairs as keys, with the corresponding sub-jacobian as the value for a given
 key.  The shape of the expected sub-jacobian is determined by the shapes of the inputs and outputs and whether or not any rows and cols are given when the partials are declared, i.e., if rows and cols
 are specified then the value stored in the jacobian will be only the nonzero part of that sub-jacobian. See POEM 056 for a description of how partials are declared for a function.
 
 ```python
 
-def J_func(x, y, z): 
-
-    J = {}
+def J_func(x, y, z, J): 
 
     # the following sub-jacs are 4x4 based on the sizes of foo, bar, x, and y, but the partials
     # were declared specifying rows and cols (in this case sub-jacs are diagonal), so we only
@@ -86,7 +82,6 @@ def J_func(x, y, z):
     # z is a scalar so the true size of this sub-jac is 4x1
     J['foo', 'z'] = 1/(3*x+2*y) * 1./z
 
-    return J
 
 def func(x=np.zeros(4), y=np.ones(4), z=3): 
     foo = np.log(z)/(3*x+2*y)
@@ -152,12 +147,10 @@ the analogous `compute_partials` and `compute_jacvec_product` methods in explici
 
 ```python
 
-def func_linearize(x, y): 
-    J = {}
+def func_linearize(x, y, J): 
     ...
-    return J
 
-def some_implicit_resid(x, y):
+def implicit_resid(x, y):
     R_y = y - tan(y**x)
     return R_y
 
