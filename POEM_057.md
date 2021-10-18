@@ -105,7 +105,7 @@ comp = om.ExplicitFuncComp(f, compute_partials=J_func)
 Implicit components must have at least an `apply_nonlinear` method to compute the residual given 
 values for input variables and implicit output variables (a.k.a state variables).  The mapping 
 between a residual output and its corresponding state variable must be specified in the metadata 
-when the output is added.
+when the output (state) is added.
  
 
 ```python
@@ -115,7 +115,7 @@ def implicit_resid(x, y):  # y is a state variable here
     return R_y
 
 f = (omf.wrap(implicit_resid)
-        .add_output('R_y', state='y'))  # R_y's corresponding state is 'y'
+        .add_output('y', resid='R_y'))  # y's corresponding resid is 'R_y'
 
 comp = om.ImplicitFuncComp(f)
 ```
@@ -125,8 +125,8 @@ A `solve_nonlinear` method can also be specified as part of the metadata:
 
 ```python
 
-def implict_solve_nl(a):
-    # do stuff
+def implict_solve_nl(a, x, y):
+    ...
     return x, y
 
 def implicit_resid(a, x, y):  # a is input, x and y are states
@@ -135,8 +135,8 @@ def implicit_resid(a, x, y):  # a is input, x and y are states
     return R_x, R_y
 
 f = (omf.wrap(implicit_resid)
-        .add_output('R_x', state='x')   # R_x's corresponding state is 'x'
-        .add_output('R_y', state='y'))  # R_y's corresponding state is 'y'
+        .add_output('x', resid='R_x')   # x's corresponding resid is 'R_x'
+        .add_output('y', resid='R_y'))  # y's corresponding resid is 'R_y'
 
 comp = om.ImplicitFuncComp(f, solve_nonlinear=implict_solve_nl)
 ```
@@ -156,7 +156,7 @@ def implicit_resid(x, y):
     return R_y
 
 f = (omf.wrap(implicit_resid)
-        .add_output('R_y', state='y'))  # R_y's corresponding state is 'y'
+        .add_output('y', resid='R_y'))  # y's corresponding resid is 'R_y'
 
 comp = om.ImplicitFuncComp(f, linearize=func_linearize)
 ```
