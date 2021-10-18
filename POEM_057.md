@@ -125,11 +125,12 @@ A `solve_nonlinear` method can also be specified as part of the metadata:
 
 ```python
 
-def implict_solve(x, y):
-    ...
+def implict_solve_nl(a):
+    # do stuff
+    return x, y
 
-def implicit_resid(x, y):
-    R_x = x + np.sin(x+y)
+def implicit_resid(a, x, y):
+    R_x = x + np.sin(a+y)
     R_y = y - tan(y)**x
     return R_x, R_y
 
@@ -137,7 +138,7 @@ f = (omf.wrap(implicit_resid)
         .add_output('R_x', state='x')   # R_x's corresponding state is 'x'
         .add_output('R_y', state='y'))  # R_y's corresponding state is 'y'
 
-comp = om.ImplicitFuncComp(f, solve_nonlinear=implicit_solve)
+comp = om.ImplicitFuncComp(f, solve_nonlinear=implict_solve_nl)
 ```
 
 ### Providing a `linearize` and/or `apply_linear` for implicit functions
