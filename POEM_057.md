@@ -104,28 +104,38 @@ comp = om.ExplicitFuncComp(f, compute_partials=J_func)
 
 Implicit components must have at least an `apply_nonlinear` method to compute the residual given 
 values for input variables and implicit output variables (a.k.a state variables).  The mapping 
-between a residual output and its corresponding state variable must be specified in the metadata 
-when the output (state) is added.
+between a state and its residual output must be specified in the metadata when the output (state) 
+is added by setting 'resid' to the name of the residual.
+
+It may seem confusing to use `add_output` to specify state variables since the state variables
+are actually inputs to the function, but in OpenMDAO's view of the world, states are outputs so
+we use `add_output` to specify them.
  
 
 ```python
 
-def implicit_resid(x, y):  # y is a state variable here
+def apply_nl(x, y):  # y is a state variable here
     R_y = y - tan(y**x)
     return R_y
 
-f = (omf.wrap(implicit_resid)
+f = (omf.wrap(apply_nl)
         .add_output('y', resid='R_y'))  # y's corresponding resid is 'R_y'
 
 comp = om.ImplicitFuncComp(f)
 ```
 
 
-A `solve_nonlinear` method can also be specified as part of the metadata: 
+### Providing additional methods to the ImplicitFuncComp
+
+Other functions in addition to the `apply_nonlinear` function can be specified to provide additional 
+functionality to the ImplicitFuncComp.
+
+
+A `solve_nonlinear` method can also be passed in to the `ImplicitFuncComp`: 
 
 ```python
 
-def implict_solve_nl(a, x, y):
+def solve_nl(a, x, y):
     ...
     return x, y
 
@@ -138,25 +148,51 @@ f = (omf.wrap(implicit_resid)
         .add_output('x', resid='R_x')   # x's corresponding resid is 'R_x'
         .add_output('y', resid='R_y'))  # y's corresponding resid is 'R_y'
 
-comp = om.ImplicitFuncComp(f, solve_nonlinear=implict_solve_nl)
+comp = om.ImplicitFuncComp(f, solve_nonlinear=solve_nl)
 ```
 
-### Providing a `linearize` and/or `apply_linear` for implicit functions
-
-Implicit components use `linearize` and `apply_linear` methods to compute derivatives (instead of 
-the analogous `compute_partials` and `compute_jacvec_product` methods in explicit components). 
+A `linearize` method can be provided to compute partial derivatives.  The return value of
+`linearize` will be passed on to a user-provided `solve_linear` function, if it exists.
+Below is an example of defining an ImplicitFunction comp for a simple linear system that defines
+a custom `linearize` and `solve_linear`.
 
 ```python
 
-def func_linearize(x, y, J):  # x is input, y is output
-    J['y', 'x'] = ...
+x = np.array([1, 2, -3])
+A = np.array([[1., 1., 1.], [1., 2., 3.], [0., 1., 3.]])
+b = A.dot(x)
 
-def implicit_resid(x, y):
-    R_y = y - tan(y**x)
-    return R_y
+# d_x here will be either d_residuals['x'] in fwd mode or d_outputs['x'] in rev mode
+# linearize_return_val is what we returned from the last call to linearize_func
+def solve_linear_func(d_x, mode, linearize_return_val):
+    if mode == 'fwd':
+        return linalg.lu_solve(linearize_return_val, d_x, trans=0)
+    else:  # rev
+        return linalg.lu_solve(linearize_return_val, d_x, trans=1)
 
-f = (omf.wrap(implicit_resid)
-        .add_output('y', resid='R_y'))  # y's corresponding resid is 'R_y'
+# in the linearize func we populate the sub-jacobians of the partial jacobian J.
+# note that all of our sub-jacobians are sparse in this case (based on our setting of rows
+# and cols in the declare_partials calls below) so we only set the nonzero values.
+def linearize_func(A, b, x, J):
+    J['x', 'A'] = np.tile(x, 3).flat
+    J['x', 'x'] = A.flat
+    J['x', 'b'] = np.full(3, -1.0)
 
-comp = om.ImplicitFuncComp(f, linearize=func_linearize)
+    # return LU decomp for use later in solve_linear
+    return linalg.lu_factor(A)
+
+def apply_nl(A, b, x):
+    rx = A.dot(x) - b
+    return rx
+
+# here we wrap the apply_nl function and attach metadata needed by OpenMDAO to it.
+f = (omf.wrap(apply_nl)
+        .add_input('A', val=A)
+        .add_input('b', val=b)
+        .add_output('x', resid='rx', val=x)
+        .declare_partials(of='x', wrt='b', rows=np.arange(3), cols=np.arange(3))
+        .declare_partials(of='x', wrt='A', rows=np.repeat(np.arange(3), 3), cols=np.arange(9))
+        .declare_partials(of='x', wrt='x', rows=np.repeat(np.arange(3), 3), cols=np.tile(np.arange(3), 3)))
+
+comp = om.ImplicitFuncComp(f, linearize=linearize_func, solve_linear=solve_linear_func)
 ```
