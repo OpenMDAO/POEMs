@@ -99,6 +99,31 @@ f = (omf.wrap(func)
 comp = om.ExplicitFuncComp(f, compute_partials=J_func)
 ```
 
+### Matrix free operation
+
+Users can also provide a function analagous to the `compute_jacvec_product` method on openmdao
+components that will compute a jacobian vector product in fwd mode or a vector jacobian product 
+in rev mode.  This allows derivatives to be computed without allocating space for the full jacobian. 
+The order of the args is input0, ... input_n, followed by d_input0, ... d_input_n, followed by
+d_output0, ... d_output_n, followed by mode and lin_data.  Also, if a given d_() arg is not relevant 
+its value will be set to `None`.
+
+
+```python
+
+def jvp_func(input0, ..., input_n, d_input0, ..., d_input_n, d_output0, ... d_output_n, 
+             mode, lin_data):
+    if mode == 'fwd':
+        # do stuff
+        return d_outputs0, ... d_outputs_n
+
+    if mode == 'rev':
+        # do stuff
+        return d_inputs0, ... d_inputs_n
+
+comp = om.ExplicitFuncComp(f, compute_jacvec_product=jvp_func)
+
+```
 
 ## ImplicitFuncComp
 
@@ -205,16 +230,16 @@ f = (omf.wrap(apply_nl)
 comp = om.ImplicitFuncComp(f, linearize=linearize_func, solve_linear=solve_linear_func)
 ```
 
-You can also provide an `apply_linear` function that will compute a jacobian vector product in 
+Users can also provide an `apply_linear` function that will compute a jacobian vector product in 
 fwd mode or a vector jacobian product in rev mode.  This will allow derivatives to be computed
-without allocating space for the full jacobian.  For example:
+without allocating space for the full jacobian. The order of the args is determined by the order 
+of the args of the `apply_nonlinear` function. In the case below, the `apply_linear` args were 
+output0, ... output_n, input0, ... input_n, so the args to the `apply_linear` funcion are those 
+same args, followed by d_(those same args), followed by d_resid(just the output args), followed by 
+mode and lin_data.  Also, if a given d_() arg or d_resid() arg is not relevant its value will be 
+set to `None`.
 
 ```python
-
-# The order of the args is determined by the order of the args of the `apply_nonlinear` function.
-# In the case below, the `apply_linear` args were output0, ... output_n, input0, ... input_n,
-# so the args to the `apply_linear` funcion are those same args, followed by d_(those same args),
-# followed by d_resid(just the output args), followed by mode and lin_data
 
 def apply_linear_func(output0, ... output_n, input0, ..., input_n, d_output0, ... d_output_n, 
                       d_input0, ..., d_input_n, d_resid0, .. d_resid_n, mode, lin_data):
