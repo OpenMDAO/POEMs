@@ -206,7 +206,8 @@ comp = om.ImplicitFuncComp(f, linearize=linearize_func, solve_linear=solve_linea
 ```
 
 You can also provide an `apply_linear` function that will compute a jacobian vector product in 
-fwd mode or a vector jacobian product in rev mode.  For example:
+fwd mode or a vector jacobian product in rev mode.  This will allow derivatives to be computed
+without allocating space for the full jacobian.  For example:
 
 ```python
 
