@@ -87,4 +87,5 @@ That way, github's built in notification system to get emails when things are ch
 | [054](POEM_054.md) | Specifying source array as flat or non-flat when setting src_indices or dv or constraint indices | [naylor-b](https://github.com/naylor-b) | accepted |
 | [055](POEM_055.md) | Min/Max Variable Print Option for Arrays | Andrew Ellis | accepted |
 | [056](POEM_056.md) | Function based API usable by OpenMDAO and others | Bret Naylor | accepted |
+| [057](POEM_057.md) | OpenMDAO function based components | Bret Naylor | active |
 
