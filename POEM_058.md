@@ -3,13 +3,13 @@ Title: Fixed grid interpolation methods
 authors: Kenneth-T-Moore  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR:  
+Associated implementation PR: 2329  
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
