@@ -3,7 +3,7 @@ Title:  Unitless And Percentage Based Units
 authors: Andrew Ellis 
 Competing POEMs: N/A    
 Related POEMs: N/A  
-Associated implementation PR:  
+Associated implementation PR: PR #2340  
 
 ##  Status
 
