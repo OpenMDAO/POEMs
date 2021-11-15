@@ -42,7 +42,7 @@ Unitless: none
 
 Given the classes defined as 
 
-```pyton
+```python
 import openmdao.api as om
 
 class Diameter(om.ExplicitComponent):
