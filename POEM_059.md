@@ -104,7 +104,7 @@ The following lines (with the nomenclature up for discussion) can be added to th
 percent: unitless/100, percentage
 ```
 
-This will allow use of percent to dec conversions as seen below
+This will allow use of percent to unitless conversions as seen below
 
 ```python
 import openmdao.api as om
