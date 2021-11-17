@@ -129,7 +129,15 @@ if __name__ == '__main__':
     prob.setup()
     prob.run_model()
 
-    print('Margin of Safety (%): ', prob.get_val('margin_of_safety', units='percent'))
+    print('Margin of Safety (decimal): ', 
+          prob.get_val('margin_of_safety', units='unitless')[0])
+    print('Margin of Safety (%)      : ',
+          prob.get_val('margin_of_safety', units='percent')[0])
+```
+Which would give the output
+```
+Margin of Safety (decimal):  0.020408163265306145
+Margin of Safety (%)      :  2.0408163265306145
 ```
 
 ## Main Topic of Discussion
