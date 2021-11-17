@@ -20,15 +20,14 @@ This PEOM relates to the introduction of a defined dimentionless unit and units 
 percentages.  
 
 Often times quantities in engineering such as ratio are by definiton unitless 
-quantities. When working in large teams, it is not uncommen for someone to 
+quantities. When working in large teams, it is not uncommon for someone to 
 accidentally connect a dimentional value to a dimentionless value. This is raised
 as a warning, but is not explicitly forbidden the way connecting something with
 different units would be.
 
 Furthermore on the topic of units, percentages are frequently used in engineering.
-While sometime the percentage representation is the best representation, sometimes
-a decimal representation can be preferable. This POEM proposes a unit set for 
-percentages that allows these to be interchangeable
+With the introduction of a 'unitless' quantity, a percentage could simply be defined
+as a scalar of the unitless quantity.
 
 
 ## Summary of Changes to add Unitless Quantities
@@ -99,41 +98,38 @@ RuntimeError: <model> <class Group>: Output units of 'm' for 'D.diameter' are in
 
 The following lines (with the nomenclature up for discussion) can be added to the unit_library.ini file
 
-[base_units] - # Other
-```
-percent: percent
-```
-
-And 
 
 [units] - # Other miscellaneous
 ```
-dec: 100*percent, decimal representation of percent
+percent: unitless/100, percentage
 ```
 
 This will allow use of percent to dec conversions as seen below
 
-```pyton
+```python
 import openmdao.api as om
 
-
-class DectoPercent(om.ExplicitComponent):
-
+class MarginOfSafety(om.ExplicitComponent):
     def setup(self):
+        self.add_input('stress', units='MPa', val=392)
+        self.add_input('tensile_strength', units='MPa', val=400)
 
-        self.add_input('val', units='percent')
+        self.add_output('margin_of_safety', units='unitless')
 
+    def compute(self, inputs, outputs):
+        stress = inputs['stress']
+        tensile_strength = inputs['tensile_strength']
+        outputs['margin_of_safety'] = tensile_strength / stress - 1
 
 if __name__ == '__main__':
 
     prob = om.Problem()
-    prob.model.add_subsystem('val_comp', DectoPercent(), promotes=['*'])
+    prob.model.add_subsystem('margin_comp', MarginOfSafety(), promotes=['*'])
 
     prob.setup()
-    prob.set_val('val', 10, 'percent')
+    prob.run_model()
 
-    print('Dec: ', prob.get_val('val', 'dec'))
-    print('%: ', prob.get_val('val', 'percent'))
+    print('Margin of Safety (%): ', prob.get_val('margin_of_safety', units='percent'))
 ```
 
 ## Main Topic of Discussion
