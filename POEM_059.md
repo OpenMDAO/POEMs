@@ -1,6 +1,6 @@
-POEM ID: 059 
+POEM ID: 059  
 Title:  Unitless And Percentage Based Units  
-authors: Andrew Ellis 
+authors: Andrew Ellis  
 Competing POEMs: N/A    
 Related POEMs: N/A  
 Associated implementation PR: PR #2340  
@@ -37,7 +37,7 @@ The following lines (with the nomenclature up for discussion) can be added to th
 
 ```
 # Unitness
-Unitless: none
+Unitless: unitless
 ```
 
 Given the classes defined as 
@@ -55,13 +55,13 @@ class DiameterRatioA(om.ExplicitComponent):
 
     def setup(self):
 
-        self.add_output('diameter_ratio_a', units='none')
+        self.add_output('diameter_ratio_a', units='unitless')
 
 class DiameterRatioB(om.ExplicitComponent):
 
     def setup(self):
 
-        self.add_input('diameter_ratio_b', units='none')
+        self.add_input('diameter_ratio_b', units='unitless')
 ```
 
 The following code may run
