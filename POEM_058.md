@@ -118,7 +118,7 @@ operations.
 ## Naming Convention for the New Algorithms
 
 The new methods will be available on `MetaModelSemiStructuredComp` and `InterpND`, and their names will include "#D-" prepended to the
-algorithm name. So, a fixed implementation of "akima" on a 1-dimensional grid will be called "akima-1D".
+algorithm name. So, a fixed implementation of "akima" on a 1-dimensional grid will be called "1D-akima".
 
 ```python
 comp = om.MetaModelSemiStructuredComp(method='3D-lagrange3', extrapolate=True)
