@@ -88,4 +88,6 @@ That way, github's built in notification system to get emails when things are ch
 | [055](POEM_055.md) | Min/Max Variable Print Option for Arrays | Andrew Ellis | accepted |
 | [056](POEM_056.md) | Function based API usable by OpenMDAO and others | Bret Naylor | accepted |
 | [057](POEM_057.md) | OpenMDAO function based components | Bret Naylor | accepted |
+| [058](POEM_058.md) | Fixed grid interpolation methods | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
+| [059](POEM_059.md) | Unitless And Percentage Based Units | Andrew Ellis | accepted |
 
