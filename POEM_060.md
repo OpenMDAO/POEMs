@@ -21,7 +21,7 @@ OpenMDAO is capable of outputting a variety of diagnostic information to both st
 The current implementation isn't completely user friendly in two ways.
 
 1. Prolific standard output can make it difficult to find relevant information when using diagnostics that print there, such as `p.list_problem_vars()`.
-2. HTML reports often require the user consult the documenation to see how to enable a given report (assuming they know it exists), modify their code, and rerun.
+2. HTML reports often require the user consult the documentation to see how to enable a given report (assuming they know it exists), modify their code, and rerun.
 
 This POEM proposes to turn on common reports **by default**.
 This gives novice users this information for free.
@@ -39,7 +39,7 @@ This can be done by using a `reports` argument to Problem.setup (similar to chec
 ### How is this different than checks?
 
 Checks will be diagnostic tests that issue warnings or raise exceptions.
-Any current check that silently prints out information and continues should be converted to saving an HTML report.
+Any current check that silently prints out information for review by the user and continues should be converted to saving an HTML report.
 
 ### Proposed Default Reports
 
