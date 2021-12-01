@@ -3,7 +3,7 @@ Title: The `allow_desvar` tag
 authors: @robfalck  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR:
+Associated implementation PR: [#2350](https://github.com/OpenMDAO/OpenMDAO/pull/2350)
 
 Status:
 
