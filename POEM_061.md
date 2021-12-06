@@ -1,5 +1,5 @@
 POEM ID: 061  
-Title: The `allow_desvar` tag  
+Title: The `openmdao:allow_desvar` tag  
 authors: @robfalck  
 Competing POEMs:  
 Related POEMs:  
@@ -7,9 +7,9 @@ Associated implementation PR: [#2350](https://github.com/OpenMDAO/OpenMDAO/pull/
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
