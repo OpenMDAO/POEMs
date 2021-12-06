@@ -53,3 +53,5 @@ By default, this tag will be applied to outputs of
 - ImplicitComponent
 
 Checking whether a variable can be validly made a design variable is then just a matter of testing if it has this tag applied to it.
+
+In the rare corner case that a user implements their own IndepVarComp-like component, they will be able to tag outputs to allow them to be design variables.
