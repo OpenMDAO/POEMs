@@ -23,7 +23,7 @@ This prevents users from adding multiple constraints/objectives to different ind
 
 Handling constraints internally is currently done through a dictionary keyed by variable name.
 To allow multiple constraints on a single variable breaks this storage assumption.
-The design team considered two paths:
+The design team considered three paths:
 
 1. change the storage data structure for responses
 
