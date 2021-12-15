@@ -3,15 +3,15 @@ Title:  Min/Max Variable Print Option for Arrays
 authors: @andrewellis55(Andrew Ellis)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: N/A
+Associated implementation PR: [#2280](https://github.com/OpenMDAO/OpenMDAO/pull/2280)
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 When printing various debugging data, be in from the debug print or from 

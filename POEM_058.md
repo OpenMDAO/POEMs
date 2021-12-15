@@ -3,19 +3,19 @@ Title: Fixed grid interpolation methods
 authors: Kenneth-T-Moore  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: OpenMDAO/OpenMDAO#2285 : Initial implementation of 3D-slinear and 1D-akima  
-                              OpenMDAO/OpenMDAO#2300 : Full vectorization and caching for fixed interpolation methods.  
-                              OpenMDAO/OpenMDAO#2314 : Initial implementation of 3D-lagrange3.  
-                              OpenMDAO/OpenMDAO#2325 : More speed improvements for 3D-lagrange3.  
-                              OpenMDAO/OpenMDAO#2329 : Consistent naming scheme, as per this POEM.  
+Associated implementation PR: [OpenMDAO/OpenMDAO#2285 : Initial implementation of 3D-slinear and 1D-akima](https://github.com/OpenMDAO/OpenMDAO/pull/2285)  
+                              [OpenMDAO/OpenMDAO#2300 : Full vectorization and caching for fixed interpolation methods.](https://github.com/OpenMDAO/OpenMDAO/pull/2300)  
+                              [OpenMDAO/OpenMDAO#2314 : Initial implementation of 3D-lagrange3.](https://github.com/OpenMDAO/OpenMDAO/pull/2314)  
+                              [OpenMDAO/OpenMDAO#2325 : More speed improvements for 3D-lagrange3.](https://github.com/OpenMDAO/OpenMDAO/pull/2325)  
+                              [OpenMDAO/OpenMDAO#2329 : Consistent naming scheme, as per this POEM.](https://github.com/OpenMDAO/OpenMDAO/pull/2329)
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation

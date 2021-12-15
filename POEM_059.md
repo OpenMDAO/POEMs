@@ -3,25 +3,25 @@ Title:  Unitless And Percentage Based Units
 authors: Andrew Ellis  
 Competing POEMs: N/A    
 Related POEMs: N/A  
-Associated implementation PR: PR #2340  
+Associated implementation PR: [#2340](https://github.com/OpenMDAO/OpenMDAO/pull/2340)
 
 ##  Status
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
 
-This PEOM relates to the introduction of a defined dimentionless unit and units for
+This POEM relates to the introduction of a defined dimentionless unit and units for
 percentages.  
 
-Often times quantities in engineering such as ratio are by definiton unitless 
+Often times quantities in engineering such as ratio are by definition unitless
 quantities. When working in large teams, it is not uncommon for someone to 
-accidentally connect a dimentional value to a dimentionless value. This is raised
+accidentally connect a dimensional value to a dimensionless value. This is raised
 as a warning, but is not explicitly forbidden the way connecting something with
 different units would be.
 
