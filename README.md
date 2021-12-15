@@ -91,4 +91,5 @@ That way, github's built in notification system to get emails when things are ch
 | [058](POEM_058.md) | Fixed grid interpolation methods | [Kenneth-T-Moore](https://github.com/Kenneth-T-Moore) | accepted |
 | [059](POEM_059.md) | Unitless And Percentage Based Units | Andrew Ellis | accepted |
 | [061](POEM_061.md) | The `openmdao:allow_desvar` tag | @robfalck | accepted |
+| [062](POEM_062.md) | Stricter Option Naming | Bret Naylor | active |
 
