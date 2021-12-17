@@ -3,15 +3,15 @@ Title:  Function based API usable by OpenMDAO and others
 authors: [Bret Naylor]  
 Competing POEMs: 052    
 Related POEMs: 039   
-Associated implementation PR: 2281  
+Associated implementation PR: [#2281](https://github.com/OpenMDAO/OpenMDAO/pull/2281)
 
 ##  Status
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 First a note about competing POEM 52.  This POEM is more limited in scope than POEM 52 and 

@@ -3,15 +3,15 @@ Title:  OpenMDAO function based components
 authors: [Bret Naylor]  
 Competing POEMs:     
 Related POEMs: 056   
-Associated implementation PR:  
+Associated implementation PR: [#2309](https://github.com/OpenMDAO/OpenMDAO/pull/2309)
 
 ##  Status
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation

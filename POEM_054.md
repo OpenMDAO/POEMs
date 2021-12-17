@@ -7,15 +7,15 @@ Competing POEMs: N/A
 
 Related POEMs: [https://github.com/OpenMDAO/POEMs/blob/master/POEM_053.md]  
 
-Associated implementation PR: #2279  
+Associated implementation PR: [#2279](https://github.com/OpenMDAO/OpenMDAO/pull/2279)
 
 Status:  
 
 - [ ] Active  
 - [ ] Requesting decision  
-- [x] Accepted  
+- [ ] Accepted
 - [ ] Rejected  
-- [ ] Integrated  
+- [x] Integrated
 
 
 ## Motivation  
