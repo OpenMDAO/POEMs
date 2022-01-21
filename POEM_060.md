@@ -34,7 +34,7 @@ Add `report_dir` as an option to Problem so that the user can override the defau
 ### Disabling report generation
 
 Experienced users may not want to deal with generating reports on each run of their model, especially if their systems are especially large and the report generation is too time consuming.
-This can be done by using a `reports` argument to Problem.setup (similar to checks), or by setting an environment variable `OPENMDAO_REPORTS`, where a value that is one of `['0', 'false', 'off']` (noisily) disables all report generation.
+This can be done by using a `reports` option on Problem, or by setting an environment variable `OPENMDAO_REPORTS`, where a value that is one of `['0', 'false', 'off']` (noisily) disables all report generation.
 
 ### How is this different than checks?
 
@@ -56,7 +56,13 @@ Where `func` is a method of Problem (in this case) and `hook_func` is the functi
 
 It may makes sense to have a convenience method in problem (`register_report`) that associates a name with the report writing function.
 
-### Potential API changes
+### API changes
+
+The following API changes will be made as part of this POEM
+
+1. The abity to disable recording when invoking `run_solve_nonlinear`, `run_model`, and `run_driver` with a `record` argument which defaults to True.
+
+In the process of implementation we have found that some reports, which need to execute the model, will cause a recording iteration which may not be wanted by the user.  This argument will give us the ability to avoid unwanted recording iterations when reports are being generated.
 
 If all non-warning, non-raising checks are converted to HTML reports, then available options to the `check` argument will change.
 In addition, the logger function may be irrelevant after this change.
