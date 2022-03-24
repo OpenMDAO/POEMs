@@ -56,5 +56,5 @@ par.add_subsystem('C6', Comp6(), proc_weight=1.0)
 ```
 
 Note that if multiple subsystems share the same proc_group, then their values (if any) for 
-min_procs, max_procs, and proc_wight must match or an exception will be raised.
+min_procs, max_procs, and proc_weight must match or an exception will be raised.
 
