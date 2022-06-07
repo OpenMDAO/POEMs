@@ -95,4 +95,5 @@ That way, github's built in notification system to get emails when things are ch
 | [062](POEM_062.md) | Stricter Option Naming | Bret Naylor | accepted |
 | [063](POEM_063.md) | Allow multiple responses on a single variable | @robfalck | accepted |
 | [065](POEM_065.md) | Add a 'proc_group' option to add_subsystem | @naylor-b | integrated |
+| [066](POEM_066.md) | Adopt NEP29 | @robfalck | accepted |
 
