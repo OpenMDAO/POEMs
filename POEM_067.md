@@ -18,7 +18,7 @@ Status:
 
 There may be occasions when a developer may want to detect if a Vector has changed without having to
 keep a copy of the Vector around in order to be able to detect differences between the Vector's old
-and new versions.  Computing a hash of the Vector would provide a simple to accomplish this.
+and new versions.  Computing a hash of the Vector would provide a simple way to accomplish this.
 
 ## Proposed solutions
 
