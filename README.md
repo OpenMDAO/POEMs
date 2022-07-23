@@ -97,4 +97,5 @@ That way, github's built in notification system to get emails when things are ch
 | [065](POEM_065.md) | Add a 'proc_group' option to add_subsystem | @naylor-b | integrated |
 | [066](POEM_066.md) | Adopt NEP29 | @robfalck | accepted |
 | [067](POEM_067.md) | Add a method to Vector to compute a hash. | @naylor-b | accepted |
+| [068](POEM_068.md) | Nonlinear Solver System Output Caching | @lamkina | active |
 
