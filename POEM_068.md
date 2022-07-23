@@ -31,7 +31,7 @@ relationships are vulnerable to a number of failure cases that break the warm st
 backtracking.
 
 For example, a residual equation in the model may involve a `log` function that depends on a state
-of the nonlinear system.  Certain design variable combinations can cause an iterative solver towards a negative value
+of the nonlinear system.  Certain design variable combinations will push an iterative solver towards a negative value
 for this state, therefore raising an `AnalysisError`.  If the optimizer attempts to backtrack from the failed
 evaluation, but warm starts the solver using the bad negative state, the `log` function will once again fail.
 In this scenario, often seen in propulsion modeling due to chemical equilibrium analysis equations, the optimizer
@@ -78,8 +78,8 @@ solver.options["err_on_non_converge"] = True
 ### Reference Implementation
 
 The system output cache only requires changes to the `NonlinearSolver` base class. The
-first change is adding a `_prev_fail` attribute to record when the solver will require a
-restart on the next optimization iteration.
+first changes are adding `_prev_fail` and `_output_cache` attributes to record when the solver will require a
+restart on the next optimization iteration and a data structure for saving the outputs.
 
 ```python
 def __init__(self, **kwargs):
@@ -88,10 +88,9 @@ def __init__(self, **kwargs):
     """
     super().__init__(**kwargs)
     self._err_cache = OrderedDict()
-    self._state_cache = OrderedDict()
+    self._output_cache = OrderedDict()
     self._prev_fail = False
 ```
-
 
 The second change involves adding the `use_cached_states` option in the `_declare_options` method:
 
@@ -147,12 +146,10 @@ def solve(self):
     # Get the system for this solver
     system = self._system()
     try:
-
-        # print(system._subsystems_allprocs)
         # If we have a previous solver failure, we want to replace
         # the states using the cache.
         if self._prev_fail and self.options["use_cached_states"]:
-            system._outputs.set_vec(self._state_cache["outputs"])
+            system._outputs.set_vec(self._output_cache["outputs"])
 
         # Run the solver
         self._solve()
@@ -169,7 +166,7 @@ def solve(self):
             self._prev_fail = False
 
             # Save the states upon a successful solve
-            self._state_cache["outputs"] = deepcopy(system._outputs)
+            self._output_cache["outputs"] = deepcopy(system._outputs)
 
     except Exception as err:
         # The solver failed so we need to set the flag to True
