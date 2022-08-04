@@ -1,5 +1,5 @@
-POEM ID: 069
-Title: Declare residual names for implicit components
+POEM ID: 069  
+Title: Declare residual names for implicit components  
 authors: @joanibal, @eytanadler  
 Competing POEMs:  
 Related POEMs:  
