@@ -215,7 +215,7 @@ class HBTF(pyc.Cycle):
         newton.options["solve_subsystems"] = True
         newton.options["max_sub_solves"] = 10
         newton.options["reraise_child_analysiserror"] = False
-        newton.options["use_cached_states"] = True
+        newton.options["restart_from_successful"] = True
         newton.options["err_on_non_converge"] = True
         ls = newton.linesearch = om.ArmijoGoldsteinLS()
         ls.options["maxiter"] = 3
@@ -384,7 +384,7 @@ if __name__ == "__main__":
     prob["TOC.balance.FAR"] = 0.025
 
     prob.set_solver_print(level=-1)
-    prob.set_solver_print(level=2, depth=1)
+    prob.set_solver_print(level=2, depth=2)
 
     prob.run_model()
 

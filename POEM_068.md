@@ -7,8 +7,8 @@ Associated implementation PR: (not submitted yet)
 
 Status:
 
-- [x] Active
-- [ ] Requesting decision
+- [ ] Active
+- [x] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
 - [ ] Integrated
@@ -22,10 +22,10 @@ After a failed evaluation, the user in conjunction with OpenMDAO must decide how
 for the next backtracking iteration.  Three main options exist:
 
 1. **Cold Start:**  Use the initial guesses to the model at the onset of the optimization problem.
-2. **Warm Start:**  Use the final states from the previous optimization iteration.
-3. **Restart**:  Use cached states from the last successful model evaluation.
+2. **Restart From Previous:**  Use the final states from the previous optimization iteration.
+3. **Restart From Successful**:  Use cached states from the last successful model evaluation.
 
-Currently, OpenMDAO relies on the *warm start* method because in general it behaves well for consecutive
+Currently, OpenMDAO relies on the *restart from previous* method because in general it behaves well for consecutive
 successful model evaluations. However, models that rely on nonlinear solvers to resolve implicit
 relationships are vulnerable to a number of failure cases that break the warm start approach during
 backtracking.
@@ -37,7 +37,7 @@ evaluation, but warm starts the solver using the bad negative state, the `log` f
 In this scenario, often seen in propulsion modeling due to chemical equilibrium analysis equations, the optimizer
 enters an indefinite fail loop and eventually exits.
 
-OpenMDAO can avoid this outcome using the *restart* method because in the backtracking iteration, cached states
+OpenMDAO can avoid this outcome using the *restart from successful* method because in the backtracking iteration, cached states
 from a previous successful model solution are used as initial guesses to the nonlinear system.  In theory,
 the previous successful solution should be the current point, and as the backtracking steps approach this point,
 the cached states become an increasingly better initial guess for the nonlinear solver.
@@ -46,8 +46,8 @@ the cached states become an increasingly better initial guess for the nonlinear 
 
 ### Summary
 
-This POEM implements the *restart* method using system output caching in the nonlinear solver base class. A
-reference implementation can be found [here](https://github.com/lamkina/OpenMDAO/blob/solver_cache/openmdao/solvers/solver.py).
+This POEM implements the *restart from successful* method using system output caching in the nonlinear solver base class. A
+reference implementation can be found [here](https://github.com/naylor-b/OpenMDAO/tree/solver_output_cache).
 
 The premise behind the method is as follows:
 
@@ -63,15 +63,15 @@ The caching feature will exist within the `NonlinearSolver` base class and work 
 
 The addition of system output caching introduces a change to user interaction with the nonlinear solver interface.
 
-- The user can set a new option `use_cached_states=True` to enable the system output cache feature.
+- The user can set a new option `restart_from_successful=True` to enable the system output cache feature.
 
-> **_NOTE:_** The `use_cached_states` option only works when `err_on_non_converge=True` because it needs to set the fail flag when an `AnalysisError` is thrown by the solver exit conditions.
+> **_NOTE:_** The `restart_from_successful` option only works when `err_on_non_converge=True` because it needs to set the fail flag when an `AnalysisError` is thrown by the solver exit conditions.
 
 Here is an example of a nonlinear solver setup with this new option:
 
 ```python
 solver = self.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
-solver.options["use_cached_states"] = True
+solver.options["restart_from_successful"] = True
 solver.options["err_on_non_converge"] = True
 ```
 
@@ -92,7 +92,7 @@ def __init__(self, **kwargs):
     self._prev_fail = False
 ```
 
-The second change involves adding the `use_cached_states` option in the `_declare_options` method:
+The second change involves adding the `restart_from_successful` option in the `_declare_options` method:
 
 ```python
 def _declare_options(self):
@@ -122,7 +122,7 @@ def _declare_options(self):
         "residual norm is considered unchanged.",
     )
     self.options.declare(
-       "use_cached_states",
+       "restart_from_successful",
        types=bool,
        default=False,
        desc="If true, the states are cached after a successful solve and "
@@ -139,7 +139,7 @@ def solve(self):
     """
     # The state caching only works if we throw an error on non-convergence, otherwise
     # the solver will disregard the state caching options and throw a warning.
-    if self.options["use_cached_states"] and not self.options["err_on_non_converge"]:
+    if self.options["restart_from_successful"] and not self.options["err_on_non_converge"]:
         msg = "Caching states does nothing unless option 'err_on_non_converge' is set to 'True'"
         issue_warning(msg, category=SolverWarning)
 
@@ -148,7 +148,7 @@ def solve(self):
     try:
         # If we have a previous solver failure, we want to replace
         # the states using the cache.
-        if self._prev_fail and self.options["use_cached_states"]:
+        if self._prev_fail and self.options["restart_from_successful"]:
             system._outputs.set_vec(self._output_cache["outputs"])
 
         # Run the solver
@@ -158,7 +158,7 @@ def solve(self):
         # was either convergence or a stall.  Either way, the solver didn't
         # fail so we can set the flag to False.
         if (
-            self.options["use_cached_states"]
+            self.options["restart_from_successful"]
             and not system.under_complex_step
             and not system.under_finite_difference
             and not system.under_approx
@@ -177,7 +177,7 @@ def solve(self):
         raise err
 ```
 
-> **_NOTE:_** Until a PR is submitted, the full reference implementation is located [here](https://github.com/lamkina/OpenMDAO/blob/solver_cache/openmdao/solvers/solver.py).
+> **_NOTE:_** Until a PR is submitted, the full reference implementation is located [here](https://github.com/naylor-b/OpenMDAO/tree/solver_output_cache).
 
 ### Example Scripts
 
@@ -190,7 +190,7 @@ Two example scripts are provided to demonstrate the functionality of this featur
 
 1. How will this feature interact with `guess_nonlinear`?
    - Currently, `guess_nonlinear` is called after the solver restart.  This means the `guess_nonlinear` function will operate on the cached outputs after a restart occurs.  I think this makes the most sense because in a majority of cases the user will not want to run `guess_nonlinear` on states that cause underlying functions to fail in the first place.
-   - If the `use_cached_states` option is `False`, `guess_nonlinear` will not be affected and OpenMDAO will use the *warm start* method as expected.
+   - If the `restart_from_successful` option is `False`, `guess_nonlinear` will not be affected and OpenMDAO will use the *warm start* method as expected.
 2. Is any additional logic necessary to prevent unwanted behavior with this feature?
    - Things I've included:
      - Don't use this feature while the system is under complex step, approximation, or finite differencing.
