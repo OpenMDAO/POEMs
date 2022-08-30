@@ -91,9 +91,15 @@ A new user would look at `partials["x", "x"]` and wonder why it isn't equal to 1
 
 ## Proposed solutions
 
-We propose adding the implicit component method `add_residuals` to allow the user to explicitly declare the residuals.
+We propose adding the implicit component method `add_residual` to allow the user to explicitly declare the residuals.
 This would decouple the residual names and shapes from the output names and shapes, making it more intuitive for new users.
 Furthermore, this API modification is consistent with the way that inputs and outputs are declared and used by the methods.
+The `add_residual` method would take the following arguments:
+- `name`: residual name
+- `shape`: (optional) residual shape
+- `ref`: (optional) residual reference value, emulates what `res_ref` does in the `add_output` method
+- `units`: (optional) residual units, emulates what `res_units` does in the `add_output` method
+- `desc`: (optional) description of the residual to match interface of `add_input` and `add_output`
 
 
 ```python
@@ -117,7 +123,7 @@ class Node(om.ImplicitComponent):
             self.add_input(i_name, units='A')
             self.declare_partials('V', i_name, val=-1)
         
-        self.add_residual('I_net', val=0., desc='net current flowing through the node')
+        self.add_residual('I_net', shape=1, ref=1.0, units='A', desc='net current flowing through the node')
         
 
     def apply_nonlinear(self, inputs, outputs, residuals):
