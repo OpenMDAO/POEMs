@@ -26,7 +26,7 @@ Users should be able to expect that `ExecComp` will determine the sparsity patte
 ## Changes
 
 1. `has_diag_partials` will be marked as deprecated but still be allowed as an option that does nothing.
-2. `declare_coloring_kwargs` will allow the user to specify any arguments to be passed to [System.declare_coloring]([https://openmdao.org/newdocs/versions/latest/features/experimental/approx_coloring.html](https://openmdao.org/newdocs/versions/latest/features/experimental/approx_coloring.html#dynamic-coloring))
+2. `declare_coloring_kwargs` will allow the user to specify any arguments to be passed to [System.declare_coloring](https://openmdao.org/newdocs/versions/latest/features/experimental/approx_coloring.html#dynamic-coloring))
 
 Since `declare_coloring` automatically does the work of `declare_partials`, this should simplify the code in `ExecComp` considerably.
 
