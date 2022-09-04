@@ -1,4 +1,3 @@
-
 POEM ID: 072  
 Title: Add ability to modify bounds and scaling of implicit outputs and optimizer variables after creation.  
 authors: @robfalck  
