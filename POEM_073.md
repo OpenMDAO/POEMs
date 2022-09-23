@@ -3,7 +3,7 @@ Title: Add ability for DOEDriver to compute and record total derivatives.
 authors: tuckerbabcock (Tucker Babcock)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: OpenMDAO/OpenMDAO#pr_number  
+Associated implementation PR: OpenMDAO/OpenMDAO#2648  
 
 Status:
 
