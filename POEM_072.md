@@ -64,7 +64,7 @@ prob.model.set_constraint_options('alias' or 'path.to.con', equals=_unspecified,
 prob.model.set_objective_options('path.to.obj', scaler=_unspecified, adder=_unspecified, ref=_unspecified, ref0=_unspecified)
 ```
 
-One complication is the path to constraints in `set_constraint_options`, since a single variable may have multiple constraints imposed upon it provided they are aliased, but we should be able to account for this.
+One complication is the path to constraints in `set_constraint_options`, since a single variable may have multiple constraints imposed upon it provided they are aliased, but we should be able to account for this.  If there is ambiguity (an alias exists), raise an error.
 
 Note that we can arrive at a situation in which, if we're redefining `scaler/adder/ref0/ref`, where all 4 are specified. If the user overrides any of these, the others should be reset to `None`.
 
