@@ -98,5 +98,6 @@ That way, github's built in notification system to get emails when things are ch
 | [066](POEM_066.md) | Adopt NEP29 | @robfalck | accepted |
 | [067](POEM_067.md) | Add a method to Vector to compute a hash. | @naylor-b | accepted |
 | [068](POEM_068.md) | Nonlinear Solver System Output Caching | @lamkina | accepted |
+| [070](POEM_070.md) | Inputs report | @robfalck | integrated |
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | accepted |
 
