@@ -3,15 +3,15 @@ Title: Inputs report
 authors: @robfalck  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: N/A  
+Associated implementation PR: [#2655](https://github.com/OpenMDAO/OpenMDAO/pull/2655)
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
