@@ -3,7 +3,7 @@ Title: Inputs report
 authors: @robfalck  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: [#2655](https://github.com/OpenMDAO/OpenMDAO/pull/2655)
+Associated implementation PR: [#2655](https://github.com/OpenMDAO/OpenMDAO/pull/2655)  
 
 Status:
 
