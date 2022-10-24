@@ -1,18 +1,19 @@
-POEM ID: 064
-Title: Simple Caching for Matrix-Free Derivative APIs
-authors: Justin Gray (jsgray), Kevin Jacobson (kejacobson)
-Competing POEMs: N/A
-Related POEMs: N/A
-Associated implementation PR:
+POEM ID: 064  
+Title: Simple Caching for Matrix-Free Derivative APIs  
+authors: Justin Gray (jsgray), Kevin Jacobson (kejacobson)  
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR:  
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
 
+Rejected because an alternative solution was implemented without an API change via [#2534](#https://github.com/OpenMDAO/OpenMDAO/pull/2534)
 
 ## Motivation
 
