@@ -7,9 +7,9 @@ Associated implementation PR: OpenMDAO/OpenMDAO#2681
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
