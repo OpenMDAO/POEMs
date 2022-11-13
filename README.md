@@ -101,4 +101,5 @@ That way, github's built in notification system to get emails when things are ch
 | [068](POEM_068.md) | Nonlinear Solver System Output Caching | @lamkina | accepted |
 | [070](POEM_070.md) | Inputs report | @robfalck | integrated |
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | accepted |
+| [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | active |
 
