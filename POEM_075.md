@@ -175,24 +175,23 @@ This creates correct partials and total derivatives with any number of processor
 
 ### Proposed Convention
 
-__Proposed Rule: Serial inputs are the same value across all ranks;__
-__therefore, corresponding reverse mode variables (d_input) should have the same value across all ranks.__
+__Proposed Rule: Serial inputs are the same value across all ranks of the component's comm;__
+__therefore, corresponding reverse mode variables (d_input) should have the same value across all ranks of the component's comm.__
 
 Following this rule, the allreduce goes in the component that has serial input and distributed output (the fake flow solver).
-If a component has serial inputs and distributed outputs, the component developer is responsible for ensuring the serial reverse mode state is the same across the comm (subcomm if inside a ParallelGroup).
+If a component has serial inputs and distributed outputs, the component developer is responsible for ensuring the serial reverse mode state is the same across the component's comm.
 The derivatives wrt serial variables are correct with this approach, but analytic partials and totals when the `wrt` is a distributed variable are off by a factor of `n_proc`.
 
-The benefits to this convention are:
+The benefits of this convention are:
 
-1. This is how parallel solvers are written outside of OpenMDAO. When a user asks a flow solver for the derivative wrt angle of attack, the solver will internally perform something like an allreduce to make sure the user sees the same AoA derivative on each rank.
-Conceptually, a user of a physics solver never cares about a ranks contribution to an angle of attack or other serial variable, just the net sensitivity.
-Same with a structural solver and derivatives with respect to panel thickness.
+1. This is how parallel solvers are written outside of OpenMDAO. When a user asks a flow solver for the derivative wrt angle of attack, the solver will internally perform an allreduce or something like it to make sure the user sees the same AoA derivative on each rank.
+Conceptually, a user of a physics solver never cares about a rank's contribution to an angle of attack sensitivity or other serial variable, just the net sensitivity.
+Same with a structural solver and derivatives with respect to panel thickness or geometry parameters.
 
 2. Intermediate reverse mode states (adjoint vectors) are independent of the number of processors used with this convention.
 This is helpful because these intermediate states are used for visualization such as [figure 10 of this paper](https://arc.aiaa.org/doi/full/10.2514/1.C032189).
 
 3. When debugging, printing derivatives such as those wrt serial variables will be consistent across ranks.
-
 
 ### "Fixing" distributed variable derivatives in OpenMDAO for the new convention
 For the final step of computing a derivative, OpenMDAO is doing an allreduce and division by number of processors. This should still be required for ParallelGroup cases and serial variables, but is the `wrt` variable is distributed, these steps should be skipped. I.e., OpenMDAO should add something like `if not variable.distributed` around this final allreduce+division step.
