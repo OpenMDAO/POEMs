@@ -1,9 +1,9 @@
-POEM ID: 075
-Title: Convention for distributed/serial variables and when to allreduce
-authors: kejacobson (Kevin Jacobson)
-Competing POEMs: N/A
-Related POEMs: 046
-Associated implementation PR:
+POEM ID: 075  
+Title: Convention for distributed/serial variables and when to allreduce  
+authors: kejacobson (Kevin Jacobson)  
+Competing POEMs: N/A  
+Related POEMs: 046  
+Associated implementation PR:  
 
 Status:
 
