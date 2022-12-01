@@ -2,7 +2,7 @@ POEM ID: 077
 Title:  Derivative checks with multiple step sizes  
 authors: kejacobson (Kevin Jacobson)  
 Competing POEMs:  
-Related POEMs:  076
+Related POEMs: 076  
 Associated implementation PR:  
 
 Status:
