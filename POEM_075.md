@@ -194,9 +194,14 @@ This is helpful because these intermediate states are used for visualization suc
 3. When debugging, printing derivatives such as those wrt serial variables will be consistent across ranks.
 
 ### "Fixing" distributed variable derivatives in OpenMDAO for the new convention
-For the final step of computing a derivative, OpenMDAO is doing an allreduce and division by number of processors. This should still be required for ParallelGroup cases and serial variables, but is the `wrt` variable is distributed, these steps should be skipped. I.e., OpenMDAO should add something like `if not variable.distributed` around this final allreduce+division step.
+
+For the final step of computing a derivative, OpenMDAO is doing an allreduce and division by number of processors. This should still be required for ParallelGroup cases and serial variables, but if the `wrt` variable is distributed, these steps should be skipped. I.e., OpenMDAO should add something like `if not variable.distributed` around this final allreduce+division step.
 
 ### Proposed test to ensure new convention is followed
 
 When computing a check_totals or check_partials wrt a serial variable, OpenMDAO should check that the derivative is the same across all ranks.
 If not, the component developer did not follow the proposed convention.
+
+__NOTE: Enforcing this convention creates a backwards incompatibility for any users that wrote distributed models using the convention of putting the allreduce in the distributed input + serial output component.__
+These users would see failing `check_partials` for mixed serial/distributed components if run in parallel.
+They would also get incorrect analytic total derivatives if the `wrt` is distributed; the totals would be off by a factor of the number of processors.
