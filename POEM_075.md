@@ -104,10 +104,7 @@ class MixedSerialOutComp(om.ExplicitComponent):
                 if 'aoa_serial' in d_inputs:
                     d_outputs['lift_serial'] += 2.0 * d_inputs['aoa_serial']
                 if 'force_dist' in d_inputs:
-                    if current_om_convention:
-                        d_outputs['lift_serial'] += 3.0 * self.comm.allreduce(np.sum(d_inputs['force_dist']))
-                    else:
-                        d_outputs['lift_serial'] += 3.0 * np.sum(d_inputs['force_dist'])
+                    d_outputs['lift_serial'] += 3.0 * self.comm.allreduce(np.sum(d_inputs['force_dist']))
         if mode == 'rev':
             if 'lift_serial' in d_outputs:
                 if 'aoa_serial' in d_inputs:
