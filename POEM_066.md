@@ -3,15 +3,15 @@ Title: Adopt NEP29
 authors: @robfalck  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR:  
+Associated implementation PR: N/A  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
