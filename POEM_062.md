@@ -3,7 +3,7 @@ Title:  Stricter Option Naming
 authors: @naylor-b 
 Competing POEMs:     
 Related POEMs:    
-Associated implementation PR: [#2378](https://github.com/OpenMDAO/OpenMDAO/pull/2378)
+Associated implementation PR: [#2378](https://github.com/OpenMDAO/OpenMDAO/pull/2378)  
 
 ##  Status
 
