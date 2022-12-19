@@ -3,15 +3,15 @@ Title: Add a method to Vector to compute a hash.
 authors: @naylor-b  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: (not submitted yet)
+Associated implementation PR: [#2534](https://github.com/OpenMDAO/OpenMDAO/pull/2534)
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
