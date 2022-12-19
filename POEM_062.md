@@ -1,17 +1,17 @@
 POEM ID: 062  
 Title:  Stricter Option Naming  
-authors: [Bret Naylor]  
+authors: @naylor-b 
 Competing POEMs:     
 Related POEMs:    
-Associated implementation PR:  
+Associated implementation PR: [#2378](https://github.com/OpenMDAO/OpenMDAO/pull/2378)
 
 ##  Status
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
