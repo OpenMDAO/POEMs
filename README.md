@@ -92,8 +92,8 @@ That way, github's built in notification system to get emails when things are ch
 | [059](POEM_059.md) | Unitless And Percentage Based Units | Andrew Ellis | integrated |
 | [060](POEM_060.md) | Reports | [robfalck](https://github.com/robfalck) | integrated |
 | [061](POEM_061.md) | The `openmdao:allow_desvar` tag | @robfalck | integrated |
-| [062](POEM_062.md) | Stricter Option Naming | Bret Naylor | accepted |
-| [063](POEM_063.md) | Allow multiple responses on a single variable | @robfalck | accepted |
+| [062](POEM_062.md) | Stricter Option Naming | @naylor-b | integrated |
+| [063](POEM_063.md) | Allow multiple responses on a single variable | @robfalck | integrated |
 | [064](POEM_064.md) | Simple Caching for Matrix-Free Derivative APIs | jsgray | rejected |
 | [065](POEM_065.md) | Add a 'proc_group' option to add_subsystem | @naylor-b | integrated |
 | [066](POEM_066.md) | Adopt NEP29 | @robfalck | integrated |
@@ -102,6 +102,6 @@ That way, github's built in notification system to get emails when things are ch
 | [069](POEM_069.md) | Declare residual names for implicit components | @joanibal, @eytanadler | accepted |
 | [070](POEM_070.md) | Inputs report | @robfalck | integrated |
 | [071](POEM_071.md) | POEM_071 - Change ExecComp to use `declare_coloring` | @robfalck | accepted |
-| [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | accepted |
+| [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | integrated |
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | integrated |
 
