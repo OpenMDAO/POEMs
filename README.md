@@ -101,6 +101,7 @@ That way, github's built in notification system to get emails when things are ch
 | [068](POEM_068.md) | Nonlinear Solver System Output Caching | @lamkina | accepted |
 | [069](POEM_069.md) | Declare residual names for implicit components | @joanibal, @eytanadler | accepted |
 | [070](POEM_070.md) | Inputs report | @robfalck | integrated |
+| [071](POEM_071.md) | POEM_071 - Change ExecComp to use `declare_coloring` | @robfalck | accepted |
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | accepted |
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | accepted |
 
