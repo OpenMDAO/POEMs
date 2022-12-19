@@ -3,15 +3,15 @@ Title: Allow multiple responses on a single variable
 authors: @robfalck  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR:
+Associated implementation PR: [#2473](https://github.com/OpenMDAO/OpenMDAO/pull/2473)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
