@@ -41,9 +41,9 @@ This version prints out the offending design variable values and the correspondi
 ```python
 from openmdao.utils.general_utils import env_truthy
 
-class Problem(object):
+class Driver(object):
     
-    def _check_invalid_desvars(self):
+    def _check_for_invalid_desvar_values(self):
         if not env_truthy('OPENMDAO_ALLOW_INVALID_DESVAR'):
             desvar_errors = []
             for var, meta in self.driver._designvars.items():
