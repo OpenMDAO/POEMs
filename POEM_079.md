@@ -27,7 +27,7 @@ But this is also indicative that the user didn't provide a good initial guess fo
 
 In this situation, the default behavior of OpenMDAO should be to raise an exception and stop.
 
-- Checking for this behavior should be included in the run method of the optimization drivers along with teseting for the absense of an objective.
+- Checking for this behavior should be included in the run method of the optimization drivers along with testing for the absense of an objective.
 - This check should raise an exception if any of the design variables has a value that exceeds the specified bounds.
 - Users may disable this check (and get the current behavior) by setting the environment variable `OPENMDAO_ALLOW_INVALID_DESVAR` to a value that is not "falsey," eg `'1'`, '`true'`', `'yes'`, or `'on'`.
 
