@@ -46,6 +46,10 @@ This can be done using the environment variable: `OPENMDAO_INVALID_DESVAR_BEHAVI
 
 We considered offering the ability to clip the offending design variable value to its acceptable range (IPOPT does this by default), but this is really an indication that the user hasn't specified the appropriate initial values for their optimization.
 
+## Exception by default
+
+After a few releases where warnings are issued, raising an exception will become the default behavior in OpenMDAO 3.25.0
+
 ## Prototype Implementation
 
 The following is a notional implementation of `_check_invalid_desvars`.
