@@ -7,9 +7,9 @@ Associated implementation PR: [#2747](https://github.com/OpenMDAO/OpenMDAO/pull/
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
