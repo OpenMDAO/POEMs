@@ -104,4 +104,5 @@ That way, github's built in notification system to get emails when things are ch
 | [071](POEM_071.md) | POEM_071 - Change ExecComp to use `declare_coloring` | @robfalck | accepted |
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | integrated |
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | integrated |
+| [079](POEM_079.md) | Raise exception if the initial design point exceeds bounds. | https://github.com/robfalck | accepted |
 
