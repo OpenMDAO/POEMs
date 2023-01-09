@@ -3,7 +3,7 @@ Title: Raise exception if the initial design point exceeds bounds.
 authors: [Rob Falck](https://github.com/robfalck)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: [#TBD](https://github.com/OpenMDAO/OpenMDAO/pulls)  
+Associated implementation PR: [#2747](https://github.com/OpenMDAO/OpenMDAO/pull/2747)  
 
 Status:
 
