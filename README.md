@@ -102,7 +102,7 @@ That way, github's built in notification system to get emails when things are ch
 | [069](POEM_069.md) | Declare residual names for implicit components | @joanibal, @eytanadler | accepted |
 | [070](POEM_070.md) | Inputs report | @robfalck | integrated |
 | [071](POEM_071.md) | POEM_071 - Change ExecComp to use `declare_coloring` | @robfalck | accepted |
-| [072](POEM_072.md) | Add ability to modify bounds and scaling of implicit outputs and optimizer variables after creation. | @robfalck | accepted |
+| [072](POEM_072.md) | Add ability to modify bounds and scaling of implicit outputs and optimizer variables after creation. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | integrated |
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | integrated |
 | [075](POEM_075.md) | Convention for distributed/serial variables and when to allreduce | [Kevin Jacobson](https://github.com/kejacobson) | accepted |
