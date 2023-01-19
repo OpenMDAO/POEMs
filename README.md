@@ -105,5 +105,6 @@ That way, github's built in notification system to get emails when things are ch
 | [072](POEM_072.md) | Add ability to modify bounds and scaling of implicit outputs and optimizer variables after creation. | @robfalck | accepted |
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | integrated |
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | integrated |
+| [075](POEM_075.md) | Convention for distributed/serial variables and when to allreduce | [Kevin Jacobson](https://github.com/kejacobson) | requesting decision |
 | [079](POEM_079.md) | Raise exception if the initial design point exceeds bounds. | https://github.com/robfalck | accepted |
 
