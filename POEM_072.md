@@ -1,18 +1,18 @@
 POEM ID: 072  
 Title: Add ability to modify bounds and scaling of implicit outputs and optimizer variables after creation.  
-authors: @robfalck  
+authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: N/A  
+Associated implementation PR: OpenMDAO/OpenMDAO#2731  
 
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation
