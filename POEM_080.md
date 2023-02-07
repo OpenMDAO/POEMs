@@ -1,9 +1,9 @@
-POEM ID: 080
-Title: Add an activation function to the standard component set.
-authors: @robfalck
-Competing POEMs:
-Related POEMs:
-Associated implementation PR: [#TBD](https://github.com/OpenMDAO/OpenMDAO/pulls)
+POEM ID: 080  
+Title: Add an activation function to the standard component set.  
+authors: @robfalck  
+Competing POEMs:  
+Related POEMs:  
+Associated implementation PR: [#TBD](https://github.com/OpenMDAO/OpenMDAO/pulls)  
 
 Status:
 
