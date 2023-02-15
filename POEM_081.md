@@ -418,3 +418,4 @@ Component: SubproblemComp 'sub2'
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 [2.]
 ```
+The errors that occur at the top of the output are because I am passing an `om.ExecComp` model to the subproblem which then runs the model. In general, the model can be run with `om.Group` instead and will work just fine.
