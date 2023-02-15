@@ -15,7 +15,7 @@ Status:
 
 ## Motivation
 
-Sometimes, the user might wish to set up a problem that has models that evalutate OpenMDAO systems themselves. However, there is currently no simple way to do this within OpenMDAO.
+Sometimes, the user might wish to set up a problem that has models that evaluate OpenMDAO systems themselves. However, there is currently no simple way to do this within OpenMDAO.
 
 As the depth of a system increases, the input and output vectors can grow quite large. This increases the complexity of the interface and can slow its performance, and OpenMDAO doesn't have any mechanism to remedy this.
 
