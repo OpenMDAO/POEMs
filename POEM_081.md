@@ -29,6 +29,8 @@ Furthermore, it has the added benefit of allowing for nested drivers. The OpenMD
 
 The code below is how the new subproblem component will look. Its inputs are similar to that of `Problem`, and since it is an `om.ExplicitComponent`, it can be added as a subsystem to a model in a top-level problem.
 
+## Prototype Implementation
+
 ```python
 import openmdao.api as om
 from openmdao.core.constants import _UNDEFINED
@@ -307,6 +309,112 @@ class SubproblemComp(om.ExplicitComponent):
                 partials[of, wrt] = tots[of, wrt]
 ```
 
-## Other Notes
+## Example
 
-## Effects of parameters
+```python
+from numpy import pi
+import openmdao.api as om
+from SubproblemComp import SubproblemComp
+
+prob = om.Problem()
+
+model = om.ExecComp('z = x**2 + y')
+sub_model1 = om.ExecComp('x = r*cos(theta)')
+sub_model2 = om.ExecComp('y = r*sin(theta)')
+
+subprob1 = SubproblemComp(model=sub_model1, driver=None, comm=None,
+                            name=None, reports=False, prob_kwargs=None,
+                            inputs=['r', 'theta'],
+                            outputs=['x'])
+subprob2 = SubproblemComp(model=sub_model2, driver=None, comm=None,
+                            name=None, reports=False, prob_kwargs=None,
+                            inputs=['r', 'theta'],
+                            outputs=['y'])
+
+prob.model.add_subsystem('supModel', model, promotes_inputs=['x','y'],
+                            promotes_outputs=['z'])
+prob.model.add_subsystem('sub1', subprob1, promotes_inputs=['r','theta'],
+                            promotes_outputs=['x'])
+prob.model.add_subsystem('sub2', subprob2, promotes_inputs=['r','theta'],
+                            promotes_outputs=['y'])
+
+prob.setup(force_alloc_complex=True)
+
+prob.set_val('r', 1)
+prob.set_val('theta', pi)
+
+prob.run_model()
+cpd = prob.check_partials(method='cs')     
+print(prob.get_val('z'))
+
+# om.n2(prob)
+```
+
+## Outputs
+
+```
+/Users/nsteffen/Projects/openmdao/openmdao/core/problem.py:886: OMDeprecationWarning:The model for this Problem is of type 'ExecComp'. A future release will require that the model be a Group or a sub-class of Group.
+/Users/nsteffen/Projects/openmdao/openmdao/visualization/n2_viewer/n2_viewer.py:596: OpenMDAOWarning:The model is of type ExecComp, viewer data is only available if the model is a Group.
+/Users/nsteffen/Projects/openmdao/openmdao/visualization/n2_viewer/n2_viewer.py:596: OpenMDAOWarning:The model is of type ExecComp, viewer data is only available if the model is a Group.
+--------------------------------
+Component: SubproblemComp 'sub1'
+--------------------------------
+
+  sub1: 'x' wrt 'r'
+    Analytic Magnitude: 1.000000e+00
+          Fd Magnitude: 1.000000e+00 (cs:None)
+    Absolute Error (Jan - Jfd) : 0.000000e+00
+
+    Relative Error (Jan - Jfd) / Jfd : 0.000000e+00
+
+    Raw Analytic Derivative (Jfor)
+[[-1.]]
+
+    Raw CS Derivative (Jcs)
+[[-1.]]
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  sub1: 'x' wrt 'theta'
+    Analytic Magnitude: 1.224647e-16
+          Fd Magnitude: 1.224647e-16 (cs:None)
+    Absolute Error (Jan - Jfd) : 0.000000e+00
+
+    Relative Error (Jan - Jfd) / Jfd : 0.000000e+00
+
+    Raw Analytic Derivative (Jfor)
+[[-1.2246468e-16]]
+
+    Raw CS Derivative (Jcs)
+[[-1.2246468e-16]]
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--------------------------------
+Component: SubproblemComp 'sub2'
+--------------------------------
+
+  sub2: 'y' wrt 'r'
+    Analytic Magnitude: 1.224647e-16
+          Fd Magnitude: 1.224647e-16 (cs:None)
+    Absolute Error (Jan - Jfd) : 0.000000e+00
+
+    Relative Error (Jan - Jfd) / Jfd : 0.000000e+00
+
+    Raw Analytic Derivative (Jfor)
+[[1.2246468e-16]]
+
+    Raw CS Derivative (Jcs)
+[[1.2246468e-16]]
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  sub2: 'y' wrt 'theta'
+    Analytic Magnitude: 1.000000e+00
+          Fd Magnitude: 1.000000e+00 (cs:None)
+    Absolute Error (Jan - Jfd) : 0.000000e+00
+
+    Relative Error (Jan - Jfd) / Jfd : 0.000000e+00
+
+    Raw Analytic Derivative (Jfor)
+[[-1.]]
+
+    Raw CS Derivative (Jcs)
+[[-1.]]
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+[2.]
+```
