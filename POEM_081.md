@@ -244,7 +244,7 @@ class SubproblemComp(om.ExplicitComponent):
         self._output_names = []
 
         # remove the `prom_name` from the metadata and then store it for each
-        # input and output.
+        # input and output
         for var, meta in inputs.items():
             prom_name = meta.pop('prom_name')
             self.add_input(var, **meta)
@@ -265,7 +265,7 @@ class SubproblemComp(om.ExplicitComponent):
     def compute(self, inputs, outputs):
         p = self._subprob
 
-        # switch subproblem to use complex IO if in complex step mode.
+        # switch subproblem to use complex IO if in complex step mode
         if self.under_complex_step != self._prev_complex_step:
             if self.under_complex_step:
                 p.setup(force_alloc_complex=True)
