@@ -289,12 +289,9 @@ model = om.ExecComp('z = x**2 + y')
 sub_model1 = om.ExecComp('x = r*cos(theta)')
 sub_model2 = om.ExecComp('y = r*sin(theta)')
 
-subprob1 = om.Problem()
-subprob2 = om.Problem()
-
-subprob1 = SubproblemComp(problem=subprob1, model=sub_model1,
+subprob1 = SubproblemComp(problem=om.Problem(), model=sub_model1,
                           inputs=['r', 'theta'], outputs=['x'])
-subprob2 = SubproblemComp(problem=subprob2, model=sub_model2,
+subprob2 = SubproblemComp(problem=om.Problem(), model=sub_model2,
                           inputs=['r', 'theta'], outputs=['y'])
 
 prob.model.add_subsystem('supModel', model, promotes_inputs=['x','y'],
