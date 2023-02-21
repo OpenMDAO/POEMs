@@ -1,6 +1,6 @@
 POEM ID: 081  
 Title: Add Subproblem Component to standard component set.  
-authors: nsteffen (Nate Steffen)
+authors: nsteffen (Nate Steffen)  
 Competing POEMs:  
 Related POEMs:  
 Associated implementation PR: #2817  
