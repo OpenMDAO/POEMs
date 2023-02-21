@@ -106,6 +106,6 @@ That way, github's built in notification system to get emails when things are ch
 | [073](POEM_073.md) | Add ability for DOEDriver to compute and record total derivatives. | [Tucker Babcock](https://github.com/tuckerbabcock) | integrated |
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | integrated |
 | [075](POEM_075.md) | Convention for distributed/serial variables and when to allreduce | [Kevin Jacobson](https://github.com/kejacobson) | accepted |
-| [078](POEM_078.md) | Add ability to filter inputs to only those that are connected to IndepVarComp. | [Rob Falck](https://github.com/rfalck) | accepted |
+| [078](POEM_078.md) | Add ability to filter inputs to only those that are connected to IndepVarComp. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [079](POEM_079.md) | Raise exception if the initial design point exceeds bounds. | @robfalck | integrated |
 
