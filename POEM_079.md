@@ -1,6 +1,6 @@
 POEM ID: 079  
 Title: Raise exception if the initial design point exceeds bounds.  
-authors: @robfalck  
+authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  
 Associated implementation PR: [#2747](https://github.com/OpenMDAO/OpenMDAO/pull/2747)  
