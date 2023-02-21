@@ -1,6 +1,6 @@
 POEM ID:  078  
 Title: Add ability to filter inputs to only those that are connected to IndepVarComp.  
-authors: rfalck (Rob Falck)  
+authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  
 Associated implementation PR: TBD  
