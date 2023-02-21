@@ -3,7 +3,7 @@ Title: Add Subproblem Component to standard component set.
 authors: @nsteffen  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: #TBD  
+Associated implementation PR: #2817  
 
 Status:
 
