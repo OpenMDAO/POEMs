@@ -34,13 +34,15 @@ The code below is how the new subproblem component will look. Its inputs are sim
 ```python
 """Define the SubproblemComp class for evaluating OpenMDAO systems within problems."""
 
-import openmdao.api as om
+from openmdao.core.explicitcomponent import ExplicitComponent
+from openmdao.core.problem import Problem
 from openmdao.core.constants import _UNDEFINED
+from openmdao.utils.general_utils import find_matches
 from openmdao.utils.om_warnings import issue_warning
 from openmdao.core.driver import Driver
 
 
-def get_model_vars(varType, vars, model_vars):
+def _get_model_vars(varType, vars, model_vars):
     """
     Get the requested IO variable data from model's list of IO.
 
@@ -49,22 +51,33 @@ def get_model_vars(varType, vars, model_vars):
     varType : str
         Specifies whether inputs or outputs are being extracted.
     vars : list of str or tuple
-        List of provided variable names in str or tuple form. If an element is a str,
-        then it should be the var name in its promoted name. If it is a tuple, then the
-        first element should be the promoted name, and the second element should be the
-        var name you wish to refer to it by within the subproblem [e.g. (prom_name, var_name)].
-    model_vars : dict
-        Dict of model's IO vars and meta data.
+        List of provided var names in str or tuple form. If an element is a str,
+        then it should be the absolute name or the promoted name in its group. If it is a tuple,
+        then the first element should be the absolute name or group's promoted name, and the
+        second element should be the var name you wish to refer to it within the subproblem
+        [e.g. (path.to.var, desired_name)].
+    model_vars : list of tuples
+        List of model variable absolute names and meta data.
 
     Returns
     -------
-    var_dict : dict
+    dict
         Dict to update `self.options` with desired IO data in `SubproblemComp`.
     """
     var_dict = {varType: {}}
 
+    # check for wildcards and append them to vars list
+    wildcards = [i for i in vars if isinstance(i, str) and '*' in i]
+    for i in wildcards:
+        vars.extend(find_matches(i, [meta['prom_name'] for _, meta in model_vars]))
+        vars.remove(i)
+
     for var in vars:
         if isinstance(var, tuple):
+            # check if user tries to use wildcard in tuple
+            if '*' in var[0] or '*' in var[1]:
+                raise Exception('Cannot use \'*\' in tuple variable.')
+
             # check if variable already exists in var_dict[varType]
             # i.e. no repeated variable names
             if var[1] in var_dict[varType]:
@@ -72,8 +85,10 @@ def get_model_vars(varType, vars, model_vars):
                                 ' or delete copy of variable.')
 
             # make dict with given var name as key and meta data from model_vars
-            tmp_dict = {var[1]: meta for _, meta in model_vars.items()
-                        if meta['prom_name'] == var[0]}
+            # check if name == var[0] -> var[0] is abs name and var[1] is alias
+            # check if meta['prom_name'] == var[0] -> var[0] is prom name and var[1] is alias
+            tmp_dict = {var[1]: meta for name, meta in model_vars
+                        if name == var[0] or meta['prom_name'] == var[0]}
 
             # check if dict is empty (no vars added)
             if len(tmp_dict) == 0:
@@ -90,8 +105,11 @@ def get_model_vars(varType, vars, model_vars):
                                 ' or delete copy of variable.')
 
             # make dict with given var name as key and meta data from model_vars
-            tmp_dict = {var: meta for _, meta in model_vars.items()
-                        if meta['prom_name'].endswith(var)}
+            # check if name == var -> given var is abs name
+            # check if meta['prom_name'] == var -> given var is prom_name
+            # check if name.endswith('.' + var) -> given var is last part of abs name
+            tmp_dict = {var: meta for name, meta in model_vars
+                        if name == var or meta['prom_name'] == var}
 
             # check if provided variable appears more than once in model
             if len(tmp_dict) > 1:
@@ -113,7 +131,7 @@ def get_model_vars(varType, vars, model_vars):
     return var_dict
 
 
-class SubproblemComp(om.ExplicitComponent):
+class SubproblemComp(ExplicitComponent):
     """
     System level container for systems and drivers.
 
@@ -122,15 +140,17 @@ class SubproblemComp(om.ExplicitComponent):
     model : <System>
         The system-level <System>.
     inputs : list of str or tuple
-        List of desired inputs to subproblem. If an element is a str, then it should be
-        the var name in its promoted name. If it is a tuple, then the first element
-        should be the promoted name, and the second element should be the var name
-        you wish to refer to it by within the subproblem [e.g. (prom_name, var_name)].
+        List of provided input names in str or tuple form. If an element is a str,
+        then it should be the absolute name or the promoted name in its group. If it is a tuple,
+        then the first element should be the absolute name or group's promoted name, and the
+        second element should be the var name you wish to refer to it within the subproblem
+        [e.g. (path.to.var, desired_name)].
     outputs : list of str or tuple
-        List of desired outputs from subproblem. If an element is a str, then it should be
-        the var name in its promoted name. If it is a tuple, then the first element
-        should be the promoted name, and the second element should be the var name
-        you wish to refer to it by within the subproblem [e.g. (prom_name, var_name)].
+        List of provided output names in str or tuple form. If an element is a str,
+        then it should be the absolute name or the promoted name in its group. If it is a tuple,
+        then the first element should be the absolute name or group's promoted name, and the
+        second element should be the var name you wish to refer to it within the subproblem
+        [e.g. (path.to.var, desired_name)].
     driver : <Driver> or None
         The driver for the problem. If not specified, a simple "Run Once" driver will be used.
     comm : MPI.Comm or <FakeComm> or None
@@ -151,18 +171,15 @@ class SubproblemComp(om.ExplicitComponent):
 
     Attributes
     ----------
-    _prev_complex_step : bool
-        Flag to determine if the system will need to switch to use complex IO
-        or to switch away from using complex IO.
     prob_args : dict
         Extra arguments to be passed to the problem instantiation.
     model : <System>
         The system being analyzed in subproblem.
-    list_inputs : list of str or tuple
+    model_input_names : list of str or tuple
         List of inputs requested by user to be used as inputs in the
         subproblem's system.
-    list_outputs : list of str or tuple
-        List of outputs requested by user to be used as inputs in the
+    model_output_names : list of str or tuple
+        List of outputs requested by user to be used as outputs in the
         subproblem's system.
     """
 
@@ -194,7 +211,6 @@ class SubproblemComp(om.ExplicitComponent):
                              desc='Subproblem Component outputs')
 
         # set other variables necessary for subproblem
-        self._prev_complex_step = False
 
         self.prob_args = {'driver': driver,
                           'comm': comm,
@@ -204,14 +220,14 @@ class SubproblemComp(om.ExplicitComponent):
         self.prob_args.update(prob_options)
 
         self.model = model
-        self.list_inputs = inputs
-        self.list_outputs = outputs
+        self.model_input_names = inputs
+        self.model_output_names = outputs
 
     def setup(self):
         """
         Perform some final setup and checks.
         """
-        p = self._subprob = om.Problem(**self.prob_args)
+        p = self._subprob = Problem(**self.prob_args)
         p.model.add_subsystem('subsys', self.model, promotes=['*'])
 
         p.setup(force_alloc_complex=self._problem_meta['force_alloc_complex'])
@@ -222,12 +238,8 @@ class SubproblemComp(om.ExplicitComponent):
         model_outputs = p.model.list_outputs(out_stream=None, prom_name=True,
                                              units=True, shape=True, desc=True)
 
-        # store model inputs/outputs as dictionary with keys as the promoted name
-        model_inputs = {meta['prom_name']: meta for _, meta in model_inputs}
-        model_outputs = {meta['prom_name']: meta for _, meta in model_outputs}
-
-        self.options.update(get_model_vars('inputs', self.list_inputs, model_inputs))
-        self.options.update(get_model_vars('outputs', self.list_outputs, model_outputs))
+        self.options.update(_get_model_vars('inputs', self.model_input_names, model_inputs))
+        self.options.update(_get_model_vars('outputs', self.model_output_names, model_outputs))
 
         inputs = self.options['inputs']
         outputs = self.options['outputs']
@@ -254,6 +266,10 @@ class SubproblemComp(om.ExplicitComponent):
             for ip in self._input_names:
                 self.declare_partials(of=var, wrt=ip)
 
+    def _set_complex_step_mode(self, active):
+        super()._set_complex_step_mode(active)
+        self._subprob.set_complex_step_mode(active)
+
     def compute(self, inputs, outputs):
         """
         Perform the subproblem system computation at run time.
@@ -268,12 +284,7 @@ class SubproblemComp(om.ExplicitComponent):
         p = self._subprob
 
         # switch subproblem to use complex IO if in complex step mode
-        if self.under_complex_step != self._prev_complex_step:
-            if self.under_complex_step:
-                p.set_complex_step_mode(True)
-            else:
-                p.set_complex_step_mode(False)
-            self._prev_complex_step = self.under_complex_step
+        self._set_complex_step_mode(self.under_complex_step)
 
         # setup input values
         for inp in self._input_names:
@@ -286,7 +297,7 @@ class SubproblemComp(om.ExplicitComponent):
 
         # store output vars
         for op in self._output_names:
-            outputs[op] = p.get_val(op)
+            outputs[op] = p.get_val(self.options['outputs'][op]['prom_name'])
 
     def compute_partials(self, inputs, partials):
         """
