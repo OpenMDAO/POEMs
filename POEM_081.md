@@ -1,5 +1,5 @@
 POEM ID: 081  
-Title: Add Subproblem Component to standard component set.  
+Title: Add Submodel Component to standard component set.  
 authors: nsteffen (Nate Steffen)  
 Competing POEMs:  
 Related POEMs:  
@@ -23,16 +23,14 @@ The current OpenMDAO API doesn't have an intuitive way of nesting drivers (wrapp
 
 ## Proposed Solution
 
-A new subproblem component will allow for a user to modularize their OpenMDAO systems. Not only can this "hide" certain inputs from the top-level model and reduce its input vector size, but it allows for OpenMDAO systems to be evaluated within an overall OpenMDAO system.
-
-Furthermore, it has the added benefit of allowing for nested drivers. The OpenMDAO system within a subproblem can be subject to constraints, have design variables, and objectives at its system level. This makes implementing nested drivers more intuitive for users.
+A new submodel component will allow for a user to modularize their OpenMDAO systems. Not only can this "hide" certain inputs from the top-level model and reduce its input vector size, but it allows for OpenMDAO systems to be evaluated within an overall OpenMDAO system.
 
 The code below is how the new subproblem component will look. Its inputs are similar to that of `Problem`, and since it is an `om.ExplicitComponent`, it can be added as a subsystem to a model in a top-level problem.
 
 ## Prototype Implementation
 
 ```python
-"""Define the SubproblemComp class for evaluating OpenMDAO systems within problems."""
+"""Define the SubmodelComp class for evaluating OpenMDAO systems within components."""
 
 from openmdao.core.explicitcomponent import ExplicitComponent
 from openmdao.core.problem import Problem
@@ -63,7 +61,7 @@ def _get_model_vars(vars, model_vars):
     Returns
     -------
     dict
-        Dict to update `self.options` with desired IO data in `SubproblemComp`.
+        Dict to update `self.options` with desired IO data in `SubmodelComp`.
     """
     var_dict = {}
 
@@ -135,7 +133,7 @@ def _get_model_vars(vars, model_vars):
     return var_dict
 
 
-class SubproblemComp(ExplicitComponent):
+class SubmodelComp(ExplicitComponent):
     """
     System level container for systems and drivers.
 
@@ -175,7 +173,7 @@ class SubproblemComp(ExplicitComponent):
     prob_options : dict or None
         Remaining named args for problem that are converted to options.
     **kwargs : named args
-        All remaining named args that become options for `SubproblemComp`.
+        All remaining named args that become options for `SubmodelComp`.
 
     Attributes
     ----------
@@ -196,12 +194,6 @@ class SubproblemComp(ExplicitComponent):
         List of inputs added to model.
     _output_names : list of str
         List of outputs added to model.
-    subprob_design_vars : dict
-        Dict of design vars and their meta data.
-    subprob_constraints : dict
-        Dict of constraints and their meta data.
-    subprob_objectives : dict
-        Dict of objectives and their meta data.
     """
 
     def __init__(self, model, inputs=None, outputs=None, driver=None,
@@ -243,9 +235,6 @@ class SubproblemComp(ExplicitComponent):
         self.model_input_names = inputs if inputs is not None else []
         self.model_output_names = outputs if outputs is not None else []
         self.is_set_up = False
-        self.subprob_design_vars = {}
-        self.subprob_constraints = {}
-        self.subprob_objectives = {}
 
     def add_input(self, name):
         """
@@ -297,66 +286,6 @@ class SubproblemComp(ExplicitComponent):
         meta['prom_name'] = prom_name
         self._output_names.append(name)
 
-    def add_design_var(self, name, **kwargs):
-        """
-        Add design variable before or after setup.
-
-        Parameters
-        ----------
-        name : str
-            Name of design variable to be added.
-        **kwargs : named args
-            Meta data associated with design variables.
-        """
-        if not self.is_set_up:
-            self.subprob_design_vars.update({name: kwargs})
-            return
-
-        if self._problem_meta['setup_status'] > _SetupStatus.POST_CONFIGURE:
-            raise Exception('Cannot call add_output after configure.')
-
-        self._subprob.model.add_design_var(self.options['inputs'][name]['prom_name'], **kwargs)
-
-    def add_constraint(self, name, **kwargs):
-        """
-        Add constraint before or after setup.
-
-        Parameters
-        ----------
-        name : str
-            Name of constraint to be added.
-        **kwargs : named args
-            Meta data associated with constraint.
-        """
-        if not self.is_set_up:
-            self.subprob_constraints.update({name: kwargs})
-            return
-
-        if self._problem_meta['setup_status'] > _SetupStatus.POST_CONFIGURE:
-            raise Exception('Cannot call add_output after configure.')
-
-        self._subprob.model.add_constraint(self.options['outputs'][name]['prom_name'], **kwargs)
-
-    def add_objective(self, name, **kwargs):
-        """
-        Add objective before or after setup.
-
-        Parameters
-        ----------
-        name : str
-            Name of objectiveto be added.
-        **kwargs : named args
-            Meta data associated with objective.
-        """
-        if not self.is_set_up:
-            self.subprob_objectives.update({name: kwargs})
-            return
-
-        if self._problem_meta['setup_status'] > _SetupStatus.POST_CONFIGURE:
-            raise Exception('Cannot call add_output after configure.')
-
-        self._subprob.model.add_objective(self.options['outputs'][name]['prom_name'], **kwargs)
-
     def setup(self):
         """
         Perform some final setup and checks.
@@ -376,11 +305,11 @@ class SubproblemComp(ExplicitComponent):
             p.setup(force_alloc_complex=self._problem_meta['force_alloc_complex'])
         p.final_setup()
 
-        # boundary inputs are any inputs that externally come into `SubproblemComp`
+        # boundary inputs are any inputs that externally come into `SubmodelComp`
         self.boundary_inputs = p.model.list_inputs(out_stream=None, prom_name=True,
                                                    units=True, shape=True, desc=True,
                                                    is_indep_var=True)
-        # want all outputs from the `SubproblemComp`, including ivcs/design vars
+        # want all outputs from the `SubmodelComp`, including ivcs/design vars
         self.all_outputs = p.model.list_outputs(out_stream=None, prom_name=True,
                                                 units=True, shape=True, desc=True)
 
@@ -416,14 +345,11 @@ class SubproblemComp(ExplicitComponent):
         if len(inputs) == 0 or len(outputs) == 0:
             return
 
-        for name, meta in self.subprob_design_vars.items():
-            p.model.add_design_var(inputs[name]['prom_name'], **meta)
+        for inp in self._input_names:
+            p.model.add_design_var(inputs[inp]['prom_name'])
 
-        for name, meta in self.subprob_constraints.items():
-            p.model.add_constraint(outputs[name]['prom_name'], **meta)
-
-        for name, meta in self.subprob_objectives.items():
-            p.model.add_objective(outputs[name]['prom_name'], **meta)
+        for out in self._output_names:
+            p.model.add_constraint(outputs[out]['prom_name'])
 
         p.driver.declare_coloring()
 
@@ -501,7 +427,6 @@ class SubproblemComp(ExplicitComponent):
             for of, wrt, nzrows, nzcols, _, _, _, _ in self.coloring._subjac_sparsity_iter():
                 partials[of, wrt] = tots[of, wrt][nzrows, nzcols].ravel()
 
-
 ```
 
 ## Example
@@ -536,22 +461,22 @@ submodel2.add_subsystem('subComp2', om.ExecComp('y = r*sin(theta)'),
                         promotes_inputs=['r', 'theta'],
                         promotes_outputs=['y'])
 
-subprob1 = om.SubproblemComp(model=submodel1, inputs=['r', 'theta'],
+sub1 = om.SubmodelComp(model=submodel1, inputs=['r', 'theta'],
                              outputs=['x'])
-subprob2 = om.SubproblemComp(model=submodel2, inputs=['r', 'theta'],
+sub2 = om.SubmodelComp(model=submodel2, inputs=['r', 'theta'],
                              outputs=['y'])
 
-subprob1.add_design_var('r')
-subprob1.add_design_var('theta')
-subprob1.add_constraint('x')
+sub1.add_design_var('r')
+sub1.add_design_var('theta')
+sub1.add_constraint('x')
 
-subprob2.add_design_var('r')
-subprob2.add_design_var('theta')
-subprob2.add_constraint('y')
+sub2.add_design_var('r')
+sub2.add_design_var('theta')
+sub2.add_constraint('y')
 
-p.model.add_subsystem('sub1', subprob1, promotes_inputs=['r','theta'],
+p.model.add_subsystem('sub1', sub1, promotes_inputs=['r','theta'],
                       promotes_outputs=['x'])
-p.model.add_subsystem('sub2', subprob2, promotes_inputs=['r','theta'],
+p.model.add_subsystem('sub2', sub2, promotes_inputs=['r','theta'],
                       promotes_outputs=['y'])
 p.model.add_subsystem('supModel', model, promotes_inputs=['x','y'],
                       promotes_outputs=['z'])
@@ -574,7 +499,7 @@ print(f"z = {p.get_val('z')}")
 
 ```
 --------------------------------
-Component: SubproblemComp 'sub1'
+Component: SubmodelComp 'sub1'
 --------------------------------
 
   sub1: 'x' wrt 'r'
@@ -604,7 +529,7 @@ Component: SubproblemComp 'sub1'
 [[-1.2246468e-16]]
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --------------------------------
-Component: SubproblemComp 'sub2'
+Component: SubmodelComp 'sub2'
 --------------------------------
 
   sub2: 'y' wrt 'r'
