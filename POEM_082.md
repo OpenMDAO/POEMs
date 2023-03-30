@@ -32,7 +32,7 @@ This POEM proposes to add a method to Problem that retrieves a mapping of the pr
 along with their associated metadata.
 
 
-This method will be called `get_indep_vars`.
+This method will be called `list_indep_vars`.
 
 
 To find all of the independent variables in a model that the user needs to be aware of we will check all connections
