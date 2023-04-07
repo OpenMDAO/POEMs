@@ -21,7 +21,7 @@ Status:
 When performing a `check_totals` for arrays of design variables,
 OpenMDAO will perform a finite difference for each element of the design variable array.
 For expensive models with large design variable arrays, such as a finite element model
-with 100s or 1000s of design variables, `check_totals` is not useful because it too slow.
+with 100s or 1000s of design variables, `check_totals` is not useful because it's too slow.
 Our current workaround is to manually perform total checks for a handful DVs 
 with a finite difference of `run_model` compared to `compute_totals` or manually
 do a directional derivative check.
