@@ -109,4 +109,5 @@ That way, github's built in notification system to get emails when things are ch
 | [076](POEM_076.md) | Directional total derivative checks | [Kevin Jacobson](https://github.com/kejacobson) | accepted |
 | [078](POEM_078.md) | Add ability to filter inputs to only those that are connected to IndepVarComp. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [079](POEM_079.md) | Raise exception if the initial design point exceeds bounds. | [Rob Falck](https://github.com/robfalck) | integrated |
+| [082](POEM_082.md) | Add ability to easily retrieve all independent variables within a Problem. | [Rob Falck](https://github.com/robfalck) | accepted |
 
