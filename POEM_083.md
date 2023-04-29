@@ -1,4 +1,4 @@
-POEM ID: 086  
+POEM ID: 083  
 Title: Specifying order when adding a subsystem  
 authors: robfalck (Rob Falck)  
 Competing POEMs:  
