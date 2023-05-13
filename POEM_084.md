@@ -2,7 +2,7 @@ POEM ID: 084
 Title: Add a set of jax functions and documentation on using jax with OpenMDAO.  
 authors: robfalck (Rob Falck)  
 Competing POEMs:  
-Related POEMs:  [POEM 080: TanhActivationComp](https://github.com/OpenMDAO/POEMs/pull/171)  
+Related POEMs:  [POEM 080: TanhActivationComp](https://github.com/OpenMDAO/POEMs/blob/master/POEM_080.md)  
 Associated implementation PR: N/A
 
 Status:
