@@ -28,6 +28,7 @@ A new submodel component will allow for a user to modularize their OpenMDAO syst
 The code below is how the new subproblem component will look. Its inputs are similar to that of `Problem`, and since it is an `om.ExplicitComponent`, it can be added as a subsystem to a model in a top-level problem.
 
 ## Prototype Implementation
+**NOTE:** Driver variables are not automatically respected and must be added manually in this implementation.
 
 ```python
 """Define the SubmodelComp class for evaluating OpenMDAO systems within components."""
@@ -195,9 +196,6 @@ class SubmodelComp(ExplicitComponent):
             p.setup(force_alloc_complex=self._problem_meta['force_alloc_complex'])
         p.final_setup()
 
-        # store prom name differently based on if the var is an input, output, or auto_ivc
-        # because list_indep_vars doesn't have prom_name as part of its meta data
-        # TODO some of this might not be necessary... need to revisit
         self.boundary_inputs = {}
         indep_vars = p.list_indep_vars(out_stream=None)
         for name, meta in indep_vars:
@@ -266,103 +264,6 @@ class SubmodelComp(ExplicitComponent):
             meta.pop('prom_name')
             super().add_output(iface_name, **meta)
             meta['prom_name'] = prom_name
-
-        # NOTE to be looked at later. Trying to get variables from subsystems has been causing
-        # issues and is a goal for a future version
-        #
-        # driver_vars = p.list_problem_vars(out_stream=None,
-        #                                   desvar_opts = ['lower', 'upper', 'ref', 'ref0',
-        #                                                  'indices', 'adder', 'scaler',
-        #                                                  'parallel_deriv_color',
-        #                                                  'cache_linear_solution', 'units',
-        #                                                  'min', 'max'],
-        #                                   cons_opts = ['lower', 'upper', 'equals', 'ref',
-        #                                                'ref0', 'indices', 'adder', 'scaler',
-        #                                                'linear', 'parallel_deriv_color',
-        #                                                'cache_linear_solution', 'units',
-        #                                                'min', 'max'],
-        #                                   objs_opts = ['ref', 'ref0', 'indices', 'adder',
-        #                                               'scaler', 'units', 'parallel_deriv_color',
-        #                                               'cache_linear_solution'])
-        #
-        # self.driver_dvs = driver_vars['design_vars']
-        # self.driver_cons = driver_vars['constraints']
-        # self.driver_objs = driver_vars['objectives']
-        #
-        # for name, dv_meta in self.driver_dvs:
-        #     prom_name = self.boundary_inputs[name]['prom_name']
-        #     iface_name = prom_name.replace('.', ':')
-        #     if self.is_set_up and iface_name in self._var_allprocs_prom2abs_list['input']:
-        #         continue
-        #     self.submodel_inputs[prom_name] = iface_name
-        #     # p.model._var_allprocs_prom2abs_list[iface_name] = name
-        #
-        #     meta = self.boundary_inputs[name]
-        #     meta.pop('prom_name')
-        #     super().add_input(iface_name, **meta)
-        #     meta['prom_name'] = prom_name
-        #     meta['abs_name'] = name
-        #
-        #     size = dv_meta.pop('size')
-        #     val = dv_meta.pop('val')
-        #     dv_meta['indices'] = dv_meta['indices'].as_array() \
-        #                              if dv_meta['indices'] is not None else None
-        #     dv_meta['name'] = prom_name
-        #     self.add_design_var(**dv_meta)
-        #     dv_meta['size'] = size
-        #     dv_meta['val'] = val
-        #
-        # for name, con_meta in self.driver_cons:
-        #     prom_name = self.all_outputs[name]['prom_name']
-        #     # prom_name = con_meta['name']
-        #     iface_name = prom_name.replace('.', ':')
-        #     if self.is_set_up and iface_name in self._var_allprocs_prom2abs_list['output']:
-        #         continue
-        #     self.submodel_outputs[prom_name] = iface_name
-        #     # p.model._var_allprocs_prom2abs_list[iface_name] = name
-        #
-        #     meta = self.all_outputs[name]
-        #     meta.pop('prom_name')
-        #     super().add_output(iface_name, **meta)
-        #     meta['prom_name'] = prom_name
-        #     meta['abs_name'] = name
-        #
-        #     size = con_meta.pop('size')
-        #     val = con_meta.pop('val')
-        #     con_meta['indices'] = con_meta['indices'].as_array() \
-        #                               if con_meta['indices'] is not None else None
-        #     con_meta['lower'] = None if con_meta['lower'] == -INF_BOUND else con_meta['lower']
-        #     con_meta['upper'] = None if con_meta['upper'] == INF_BOUND else con_meta['upper']
-        #     con_meta['name'] = prom_name
-        #     self.add_constraint(**con_meta)
-        #     con_meta['size'] = size
-        #     con_meta['val'] = val
-        #
-        # for name, obj_meta in self.driver_objs: #.items():
-        #     prom_name = self.all_outputs[name]['prom_name']
-        #     # prom_name = obj_meta['name']
-        #     iface_name = prom_name.replace('.', ':')
-        #     if self.is_set_up and iface_name in self._var_allprocs_prom2abs_list['output']:
-        #         continue
-        #     self.submodel_outputs[prom_name] = iface_name
-        #     # p.model._var_allprocs_prom2abs_list[iface_name] = name
-        #
-        #     meta = self.all_outputs[name]
-        #     meta.pop('prom_name')
-        #     super().add_output(iface_name, **meta)
-        #     meta['prom_name'] = prom_name
-        #     meta['abs_name'] = name
-        #
-        #     size = obj_meta.pop('size')
-        #     val = obj_meta.pop('val')
-        #     indices = obj_meta.pop('indices')
-        #     obj_meta['index'] = int(indices.as_array()[0]) if indices is not None else None
-        #     obj_meta['name'] = prom_name
-        #     self.add_objective(**obj_meta)
-        #     obj_meta['size'] = size
-        #     obj_meta['val'] = val
-        #     obj_meta['indices'] = indices
-        #     obj_meta.pop('index')
 
         if not self.is_set_up:
             self.is_set_up = True
