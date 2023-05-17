@@ -75,9 +75,6 @@ class SubmodelComp(ExplicitComponent):
     submodel_outputs : list of tuple
         List of outputs requested by user to be used as outputs in the
         subproblem's system.
-    is_set_up : bool
-        Flag to determne if subproblem is set up. Used for add_input/add_output to
-        determine how to add the io.
     """
 
     def __init__(self, problem, inputs=None, outputs=None, reports=False, **kwargs):
@@ -96,24 +93,22 @@ class SubmodelComp(ExplicitComponent):
         if inputs is not None:
             for inp in inputs:
                 if isinstance(inp, str):
-                    self.submodel_inputs[inp] = inp
+                    self.submodel_inputs[inp] = {'iface_name': inp.replace('.', ':')}
                 elif isinstance(inp, tuple):
-                    self.submodel_inputs[inp[0]] = inp[1]
+                    self.submodel_inputs[inp[0]] = {'iface_name': inp[1]}
                 else:
                     raise Exception(f'Expected input of type str or tuple, got {type(inp)}.')
 
         if outputs is not None:
             for out in outputs:
                 if isinstance(out, str):
-                    self.submodel_outputs[out] = out
+                    self.submodel_outputs[out] = {'iface_name': out.replace('.', ':')}
                 elif isinstance(out, tuple):
-                    self.submodel_outputs[out[0]] = out[1]
+                    self.submodel_outputs[out[0]] = {'iface_name': out[1]}
                 else:
                     raise Exception(f'Expected output of type str or tuple, got {type(out)}.')
 
-        self.is_set_up = False
-
-    def add_input(self, path, name=None):
+    def add_input(self, path, name=None, **kwargs):
         """
         Add input to model before or after setup.
 
@@ -124,24 +119,33 @@ class SubmodelComp(ExplicitComponent):
         name : str or None
             Name of input to be added. If none, it will default to the var name after
             the last '.'.
+        **kwargs : named args
+            All remaining named args that can become options for `add_input`
         """
         if name is None:
             name = path.replace('.', ':')
 
-        self.submodel_inputs[path] = name
+        self.submodel_inputs[path] = {'iface_name': name, **kwargs}
 
-        if not self.is_set_up:
+        # if the submodel is not set up fully, then self._problem_meta will be None
+        # in which case we only want to add inputs to self.submodel_inputs
+        if not self._problem_meta:
             return
 
         if self._problem_meta['setup_status'] > _SetupStatus.POST_CONFIGURE:
             raise Exception('Cannot call add_input after configure.')
 
         meta = self.boundary_inputs[path]
+
+        # if the user wants to change some meta data like val, units, etc. they can update it here
+        for key, val in kwargs.items():
+            meta[key] = val
+
         meta.pop('prom_name')
         super().add_input(name, **meta)
         meta['prom_name'] = path
 
-    def add_output(self, path, name=None):
+    def add_output(self, path, name=None, **kwargs):
         """
         Add output to model before or after setup.
 
@@ -152,19 +156,26 @@ class SubmodelComp(ExplicitComponent):
         name : str or None
             Name of output to be added. If none, it will default to the var name after
             the last '.'.
+        **kwargs : named args
+            All remaining named args that can become options for `add_output`
         """
         if name is None:
             name = path.replace('.', ':')
 
-        self.submodel_outputs[path] = name
+        self.submodel_outputs[path] = {'iface_name': name, **kwargs}
 
-        if not self.is_set_up:
+        # if the submodel is not set up fully, then self._problem_meta will be None
+        # in which case we only want to add outputs to self.submodel_outputs
+        if not self._problem_meta:
             return
 
         if self._problem_meta['setup_status'] > _SetupStatus.POST_CONFIGURE:
             raise Exception('Cannot call add_output after configure.')
 
         meta = self.all_outputs[path]
+
+        for key, val in kwargs.items():
+            meta[key] = val
 
         meta.pop('prom_name')
         super().add_output(name, **meta)
@@ -227,7 +238,7 @@ class SubmodelComp(ExplicitComponent):
             if len(matches) == 0:
                 raise Exception(f'Pattern {inp} not found in model')
             for match in matches:
-                self.submodel_inputs[match] = match.replace('.', ':')
+                self.submodel_inputs[match] = {'iface_name': match.replace('.', ':')}
             self.submodel_inputs.pop(inp)
 
         for out in wildcard_outputs:
@@ -235,14 +246,16 @@ class SubmodelComp(ExplicitComponent):
             if len(matches) == 0:
                 raise Exception(f'Pattern {out} not found in model')
             for match in matches:
-                self.submodel_outputs[match] = match.replace('.', ':')
+                self.submodel_outputs[match] = {'iface_name': match.replace('.', ':')}
             self.submodel_outputs.pop(out)
 
         # NOTE iface_name is what the outer problem knows the variable to be
         # it can't be the same name as the prom name in the inner variable because
         # component var names can't include '.'
         for var in self.submodel_inputs.items():
-            iface_name = var[1]
+            iface_name = var[1]['iface_name']
+            if iface_name in self._static_var_rel2meta or iface_name in self._var_rel2meta:
+                continue
             prom_name = var[0]
             try:
                 meta = self.boundary_inputs[p.model.get_source(prom_name)] \
@@ -251,22 +264,33 @@ class SubmodelComp(ExplicitComponent):
             except Exception:
                 raise Exception(f'Variable {prom_name} not found in model')
             meta.pop('prom_name')
+
+            for key, val in var[1].items():
+                if key == 'iface_name':
+                    continue
+                meta[key] = val
+
             super().add_input(iface_name, **meta)
             meta['prom_name'] = prom_name
 
         for var in self.submodel_outputs.items():
-            iface_name = var[1]
+            iface_name = var[1]['iface_name']
+            if iface_name in self._static_var_rel2meta or iface_name in self._var_rel2meta:
+                continue
             prom_name = var[0]
             try:
                 meta = self.all_outputs[prom_name]
             except Exception:
                 raise Exception(f'Variable {prom_name} not found in model')
             meta.pop('prom_name')
+
+            for key, val in var[1].items():
+                if key == 'iface_name':
+                    continue
+                meta[key] = val
+
             super().add_output(iface_name, **meta)
             meta['prom_name'] = prom_name
-
-        if not self.is_set_up:
-            self.is_set_up = True
 
     def _setup_var_data(self):
         super()._setup_var_data()
@@ -327,17 +351,17 @@ class SubmodelComp(ExplicitComponent):
         """
         p = self._subprob
 
-        for prom_name, iface_name in self.submodel_inputs.items():
-            p.set_val(prom_name, inputs[iface_name])
+        for prom_name, meta in self.submodel_inputs.items():
+            p.set_val(prom_name, inputs[meta['iface_name']])
 
         # set initial output vals
-        for prom_name, iface_name in self.submodel_outputs.items():
-            p.set_val(prom_name, outputs[iface_name])
+        for prom_name, meta in self.submodel_outputs.items():
+            p.set_val(prom_name, outputs[meta['iface_name']])
 
         p.driver.run()
 
-        for prom_name, iface_name in self.submodel_outputs.items():
-            outputs[iface_name] = p.get_val(prom_name)
+        for prom_name, meta in self.submodel_outputs.items():
+            outputs[meta['iface_name']] = p.get_val(prom_name)
 
     def compute_partials(self, inputs, partials):
         """
@@ -356,8 +380,8 @@ class SubmodelComp(ExplicitComponent):
         """
         p = self._subprob
 
-        for prom_name, iface_name in self.submodel_inputs.items():
-            p.set_val(prom_name, inputs[iface_name])
+        for prom_name, meta in self.submodel_inputs.items():
+            p.set_val(prom_name, inputs[meta['iface_name']])
 
         wrt = list(self.submodel_inputs.keys())
         of = list(self.submodel_outputs.keys())
@@ -368,8 +392,8 @@ class SubmodelComp(ExplicitComponent):
 
         if self.coloring is None:
             for (tot_output, tot_input), tot in tots.items():
-                input_iface_name = self.submodel_inputs[tot_input]
-                output_iface_name = self.submodel_outputs[tot_output]
+                input_iface_name = self.submodel_inputs[tot_input]['iface_name']
+                output_iface_name = self.submodel_outputs[tot_output]['iface_name']
                 partials[output_iface_name, input_iface_name] = tot
         else:
             for of, wrt, nzrows, nzcols, _, _, _, _ in self.coloring._subjac_sparsity_iter():
