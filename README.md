@@ -110,7 +110,7 @@ That way, github's built in notification system to get emails when things are ch
 | [078](POEM_078.md) | Add ability to filter inputs to only those that are connected to IndepVarComp. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [079](POEM_079.md) | Raise exception if the initial design point exceeds bounds. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [080](POEM_080.md) | Add an activation function to the standard component set. | [Rob Falck](https://github.com/robfalck) | rejected |
-| [081](POEM_081.md) | Add Submodel Component to standard component set. | [Nate Steffen](https://github.com/nsteffen) | requesting decision |
+| [081](POEM_081.md) | Add Submodel Component to standard component set. | [Nate Steffen](https://github.com/nsteffen) | accepted |
 | [082](POEM_082.md) | Add ability to easily retrieve all independent variables within a Problem. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [084](POEM_084.md) | Add a set of jax functions and documentation on using jax with OpenMDAO. | [Rob Falck](https://github.com/robfalck) | accepted |
 
