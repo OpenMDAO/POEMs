@@ -26,7 +26,7 @@ Through the implementation of some new functions, and documentation of how to in
 
 ## Proposed Solution
 
-OpenMDAO will contain a new subpackage, `openmdao.math` that will include jax-based implementations for some useful differentiable functions.
+OpenMDAO will contain a new subpackage, `openmdao.jax` that will include jax-based implementations for some useful differentiable functions.
 
 The initial set will include:
 - act_tanh : A hyperbolic tangent-based activation function.
@@ -36,7 +36,7 @@ The initial set will include:
 - ks_max : An implementation of the Kreisselmeier-Steinhauser function for differentiable approximation of the maximum value in an array.
 - ks_min : An implementation of the Kreisselmeier-Steinhauser function for differentiable approximation of the minimum value in an array.
 
-`jax` will not become a general dependency of OpenMDAO unless users wish to utilize functions in `openmdao.math` or their own custom `jax` functions.
+`jax` will not become a general dependency of OpenMDAO unless users wish to utilize functions in `openmdao.jax` or their own custom `jax` functions.
 
 ### Documentation of usage in a component
 
