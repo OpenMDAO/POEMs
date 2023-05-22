@@ -112,4 +112,5 @@ That way, github's built in notification system to get emails when things are ch
 | [080](POEM_080.md) | Add an activation function to the standard component set. | [Rob Falck](https://github.com/robfalck) | rejected |
 | [081](POEM_081.md) | Add Submodel Component to standard component set. | [Nate Steffen](https://github.com/nsteffen) | requesting decision |
 | [082](POEM_082.md) | Add ability to easily retrieve all independent variables within a Problem. | [Rob Falck](https://github.com/robfalck) | accepted |
+| [084](POEM_084.md) | Add a set of jax functions and documentation on using jax with OpenMDAO. | [Rob Falck](https://github.com/robfalck) | accepted |
 
