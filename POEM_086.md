@@ -16,7 +16,7 @@ Status:
 ## Motivation
 
 Users have often complained that setting options throughout a system tree can
-be onerous...passing values from a parent group to subgroup etc. down to components
+be onerous...passing values from a parent group to subgroup to components
 can be a tedious, error-prone process.
 
 ## Proposed Solution
@@ -27,7 +27,7 @@ utilize for options to be passed to subsystems.
 This document proposes using that mechanism explicitly for the purpose of passing options down
 to subsystems.
 
-1. OpenMDAO will add a new key `'model_options'` to problem._metadata.
+1. OpenMDAO will add a new key `'model_options'` to `Problem._metadata`.
 
 `model_options` will be a standard python dictionary keyed by a pathname filter.
 Each value associated with a given pathname filter will be a dictionary of option names/values.
@@ -110,4 +110,4 @@ to adding a dependency to OpenMDAO to do so, but users are welcome to do so on t
 We may add such a standard approach when 3.11 (which includes TOML support) becomes the oldest supported Python version.
 
 Systems will support this functionality through a `load_model_options` method.
-Users will be able to override this method to impose custom behavior.
+Users may override this method to impose custom behavior.
