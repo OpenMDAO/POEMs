@@ -77,6 +77,7 @@ like this:
 self.add_output('M3', copy_shape=(['M1', 'M2'], shapefunc))
 ```
 
+or
 
 ```
 self.add_output('M3', copy_shape=(['M1', 'M2'], lambda shapes: (shapes['M1'][0], shapes['M2'][1])))
