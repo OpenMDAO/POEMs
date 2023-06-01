@@ -109,5 +109,8 @@ in a file format such as YAML or TOML. At this time we're not committing
 to adding a dependency to OpenMDAO to do so, but users are welcome to do so on their own.
 We may add such a standard approach when 3.11 (which includes TOML support) becomes the oldest supported Python version.
 
+Dictionaries are now ordered in Python so for options provided in multiple matching path filters,
+the latest one will take effect.
+
 Systems will support this functionality through a `load_model_options` method.
 Users may override this method to impose custom behavior.
