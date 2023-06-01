@@ -9,7 +9,7 @@ Status:
 
 - [x] Active
 - [ ] Requesting decision
-- [ ] Accepted 
+- [ ] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
@@ -27,17 +27,11 @@ The Phase class in dymos has enough information to know how to perform this inte
 
 ### OpenMDAO Implementation
 
-Each `System` in the OpenMDAO structure will get a new `load_case` method.
+The current `load_case` function in the `Problem` class will be updated to allow for the model or any of it's subsystems to have a custom `load_case` function.
 
-```
-def load_case(self, data):
-```
+The new `load_case` function on `Problem` will perform similarly as it does now by populating the input and output values in the model _except_ for values that belong to a System that provides it's own `load_case` method.
 
-For Groups, `load_case` will call `load_case` on its subsystems, passing the portion of data that pertains to that particular subsystem.
-
-For Components, `load_case` will use `self.set_val` to set the appropriate values of each of its inputs and outputs.
-
-Once implemented, this should reproduce the current `load_case` functionality for users.
+The base `System` class will get a default `load_case` method which a user must override in a subclass (Group or Component) to provide custom logic.
 
 ### Dymos Implementation
 
