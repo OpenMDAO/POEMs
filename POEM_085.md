@@ -9,7 +9,7 @@ Status:
 
 - [x] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
