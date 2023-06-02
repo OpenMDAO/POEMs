@@ -107,6 +107,7 @@ That way, github's built in notification system to get emails when things are ch
 | [074](POEM_074.md) | Suggest variables close in name on failed connection attempt | [Josh Anibal](https://github.com/joanibal) | integrated |
 | [075](POEM_075.md) | Convention for distributed/serial variables and when to allreduce | [Kevin Jacobson](https://github.com/kejacobson) | accepted |
 | [076](POEM_076.md) | Directional total derivative checks | [Kevin Jacobson](https://github.com/kejacobson) | accepted |
+| [077](POEM_077.md) | Derivative checks with multiple step sizes | [Kevin Jacobson](https://github.com/kejacobson) | accepted |
 | [078](POEM_078.md) | Add ability to filter inputs to only those that are connected to IndepVarComp. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [079](POEM_079.md) | Raise exception if the initial design point exceeds bounds. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [080](POEM_080.md) | Add an activation function to the standard component set. | [Rob Falck](https://github.com/robfalck) | rejected |
