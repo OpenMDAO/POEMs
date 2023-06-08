@@ -3,15 +3,15 @@ Title: Top-level setting of system options.
 authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: N/A
+Associated implementation PR: [PR 2931](https://github.com/OpenMDAO/OpenMDAO/pull/2931)
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted 
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 
