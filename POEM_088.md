@@ -3,7 +3,7 @@ Title: User-configurable load_case functionality.
 authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  N/A  
-Associated implementation PR: N/A
+Associated implementation PR: [#2937](https://github.com/OpenMDAO/OpenMDAO/pull/2937)  
 
 Status:
 
@@ -51,4 +51,4 @@ The user will tag inputs/outputs in their system with `'dymos.static_target'` if
 
 We will take the data that pertains to the subsystems within the Phase, interpolate it onto the number of nodes used within the phase (which may differ from that used in the Case), and pass that resulting data to the child subsystems `load_case` methods.
 
-Once that's done, we should be able to use the openmdao `load_case` function with Dymos, and not have to keep using our adhoc implementation that's currently in dymos.
+Once that's done, we should be able to use the openmdako `load_case` function with Dymos, and not have to keep using our adhoc implementation that's currently in dymos.
