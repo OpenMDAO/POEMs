@@ -17,7 +17,7 @@ Status:
 
 Users often build models where a few relatively expensive
 "pre-compute" components may need to be evaluated to determine 
-inputs for subsequent components during optimization, but these components no not need to
+inputs for subsequent components during optimization, but these components do not need to
 be evaluated again during the optimization process.
 
 Similarly, components that exist primarily to provide "auxiliary" outputs that are informational
@@ -29,7 +29,7 @@ The OpenMDAO development team intends to address this situation to make optimiza
 
 OpenMDAO Problem objects will get a new option, `"group_by_pre_opt_post"`.
 
-If set to True, subsystems in the top level of the model will be sorted into those where are needed pre-optimization,
+If set to True, subsystems in the top level of the model will be sorted into those which are needed pre-optimization,
 those which need to be evaluated during the optimization, and those whose evaluation can be delayed until
 the optimization has been completed.
 
@@ -41,5 +41,10 @@ Initially this capability will be documented as an experimental feature and will
 Users using this feature may notice different behavior in things like recording, since some systems are no
 longer being evaluated during each driver iteration.
 
-This applies only when the top level nonlinear solver is of type NonlinearRunOnce, as iterative
-top level solvers would in all likelihood need to evaluate all member subsystems.
+Any group having a nonlinear solver that computes gradients will be treated as atomic with respect to
+placement in pre/opt/post, meaning that if any component under that group is in opt, then all of that
+group's components (direct or indirect) will be in opt.
+In fact, if a given group has a NL solver using gradients then the only way its components will end up
+in pre or post is if all of them are in pre or all in post.
+If some are in pre and some in post then all will have to be placed in opt.
+For other groups not having a NL solver using gradients, their components can be split up among pre, opt, and/or post.
