@@ -26,7 +26,7 @@ always easy to determine the proper dataflow order, and if data flow order is vi
 This POEM proposes to add an option called `auto_order` to Group that will tell the framework to compute the proper
 subsystem order automatically using 
 [Tarjan's strongly connected components algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm).
-This algorithm groups the subsystems into strongly connected compnents (cycles) and topologically sorts those components.
+This algorithm groups the subsystems into strongly connected components (cycles) and topologically sorts those components.
 
 
 ## Example
