@@ -26,30 +26,14 @@ be the same as the shape of a single input but will instead be some function of 
 one or more of the component's input variables.
 
 
-## Proposed solutions
+## Proposed solution
 
-Altering the allowed values of `copy_shape` to include a tuple of the form 
-`(var_names, func)`, where:
-
-- `var_names` is a list of variable names
-- func is a function taking a dict arg of the form `{'var1': shape1, 'var2': shape2, ...}` 
-and returning the desired shape
-
-
-would allow the desired shape to be computed based on the shapes of multiple variables from 
-the same component if necessary.
-
-
-In the example below, the value of `copy_shape` is modified as to be a tuple as shown above, but
-this brings up another issue.  This new operation is not simply copying the shape of a specified
-variable, so the name `copy_shape` isn't really accurate any more.  There are three ways to address
-this.
-
-1) We just ignore it and allow `copy_shape` to have either its typical string value or the new tuple
-value
-2) We rename `copy_shape` to something else like `compute_shape` and deprecate `copy_shape`.
-3) We leave `copy_shape` as is and add a new metadata attribute called `compute_shape` that is
-required to have a tuple value as explained above.
+Since `copy_shape` doesn't properly describe the process of computing the shape based on the
+shapes of other variables, a new argument called `compute_shape` will be added to `add_output` and
+`add_input`. The value of `compute_shape` will be a function taking a single argument of the form 
+`{'var1': shape1, 'var2': shape2, ...}`.  The argument will be populated with shapes of
+all input variables to the component.  This will allow the final shape to be computed based on the
+shapes of multiple variables if necessary.
 
 
 ## Example
@@ -74,11 +58,11 @@ So, when adding output 'M3' to its parent component, the add_output call would l
 like this:
 
 ```
-self.add_output('M3', copy_shape=(['M1', 'M2'], shapefunc))
+self.add_output('M3', compute_shape=(shapefunc))
 ```
 
 or
 
 ```
-self.add_output('M3', copy_shape=(['M1', 'M2'], lambda shapes: (shapes['M1'][0], shapes['M2'][1])))
+self.add_output('M3', compute_shape=(lambda shapes: (shapes['M1'][0], shapes['M2'][1])))
 ```
