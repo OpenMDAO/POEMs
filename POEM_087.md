@@ -58,11 +58,11 @@ So, when adding output 'M3' to its parent component, the add_output call would l
 like this:
 
 ```
-self.add_output('M3', compute_shape=(shapefunc))
+self.add_output('M3', compute_shape=shapefunc)
 ```
 
 or
 
 ```
-self.add_output('M3', compute_shape=(lambda shapes: (shapes['M1'][0], shapes['M2'][1])))
+self.add_output('M3', compute_shape=lambda shapes: (shapes['M1'][0], shapes['M2'][1]))
 ```
