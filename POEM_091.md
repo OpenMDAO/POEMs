@@ -16,7 +16,8 @@ Status:
 
 ## Motivation
 
-Our current implementation allows a component to perform matrix free operations (`compute_jacvec_product` or `apply_linear`) and in addition compute sub-jacobians using `compute_partials` or `linearize`.  This makes it difficult to declare partials for that component in a way that results in the best performance.  OpenMDAO has a new relevance graph (or will have shortly after this POEM is submitted) that considers dependencies between individual inputs and outputs of the same component based on which partials are declared within that component, i.e., if no partial is declared for output y with respect to input x, then in the graph, y does not depend on x.
+Our current implementation allows a component to perform matrix free operations (`compute_jacvec_product` or `apply_linear`) and in addition compute sub-jacobians using `compute_partials` or `linearize`.  This makes it difficult to declare partials for that component in a way that results in the best performance.  OpenMDAO has a new relevance graph
+that considers dependencies between individual inputs and outputs of the same component based on which partials are declared within that component, i.e., if no partial is declared for output y with respect to input x, then in the graph, y does not depend on x.
 
 In order to take advantage of this new relevance graph, all components must accurately declare which of their partials are
 nonzero.  In the case of a matrix free component, the current implementation will allocate space to contain the corresponding
@@ -29,10 +30,10 @@ the new relevance graph accurately reflect any internal sparsity within that com
 ## Proposed solution
 
 We propose that OpenMDAO will no longer allow a single component to compute both matrix free and jacobian based derivatives.
-All components with either be 100% matrix free or 100% jacobian based.
+All components will be either 100% matrix free or 100% jacobian based.
 
 This means that a matrix free component can declare partials to inform the framework about its internal sparsity without
-unnecessarily allocating memory for sub-jacobians.
+allocating any memory for sub-jacobians.
 
 In order to maintain backward compatability, a matrix free component that declares no partials will be treated as if it
 declared dense partials, i.e., all outputs depend on all inputs.  However, if a matrix free component declares *any* partials,
