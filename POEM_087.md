@@ -3,7 +3,7 @@ Title: Expand functionality of dynamic shaping.
 authors: @naylor-b  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: 
+Associated implementation PR: [OpenMDAO/OpenMDAO#3000 : Implementation branch for POEM 87 Expand Functionality of Dynamic Shaping](https://github.com/OpenMDAO/OpenMDAO/pull/3000)  
 
 Status:
 
@@ -32,14 +32,14 @@ Since `copy_shape` doesn't properly describe the process of computing the shape 
 shapes of other variables, a new argument called `compute_shape` will be added to `add_output` and
 `add_input`. The value of `compute_shape` will be a function taking a single argument of the form 
 `{'var1': shape1, 'var2': shape2, ...}`.  The argument will be populated with shapes of
-all input variables to the component.  This will allow the final shape to be computed based on the
+all input variables in the component.  This will allow the final shape to be computed based on the
 shapes of multiple variables if necessary.
 
 
 ## Example
 
 A component has two dynamically shaped input matrices, 'M1' and 'M2', and an output matrix 'M3'
-that is the result of the matrix multiplication M1 * M2.  If 'M1' is shape (m, n) and 'M2' is
+that is the result of the matrix multiplication M1 @ M2.  If 'M1' is shape (m, n) and 'M2' is
 shape (n, p), then the desired shape of 'M3' is (m, p).  This can be computed using the function
 
 ```
