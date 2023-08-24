@@ -7,9 +7,9 @@ Associated implementation PR: [OpenMDAO/OpenMDAO#3000 : Implementation branch fo
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
