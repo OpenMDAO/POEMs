@@ -118,4 +118,5 @@ That way, github's built in notification system to get emails when things are ch
 | [086](POEM_086.md) | Top-level setting of system options. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [088](POEM_088.md) | User-configurable load_case functionality. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [089](POEM_089.md) | Optimization efficiency improvements (relevance reduction revisited). | [Rob Falck](https://github.com/robfalck) | integrated |
+| [090](POEM_090.md) | Auto ordering of Group subsystems. | [Bret Naylor](https://github.com/naylor-b) | accepted |
 
