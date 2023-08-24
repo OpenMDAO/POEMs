@@ -1,6 +1,6 @@
 POEM ID: 087  
 Title: Expand functionality of dynamic shaping.  
-authors: @naylor-b  
+authors: naylor-b (Bret Naylor)  
 Competing POEMs:  
 Related POEMs:  
 Associated implementation PR: [OpenMDAO/OpenMDAO#3000 : Implementation branch for POEM 87 Expand Functionality of Dynamic Shaping](https://github.com/OpenMDAO/OpenMDAO/pull/3000)  
