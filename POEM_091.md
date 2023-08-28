@@ -1,5 +1,5 @@
 POEM ID: 091  
-Title: Eliminate combined jacobian-based and matrix free capability in components.  
+Title: Eliminate combined jacobian-based and matrix free capability in a single component.  
 authors: @naylor-b  
 Competing POEMs:  
 Related POEMs:  
@@ -30,7 +30,8 @@ the new relevance graph accurately reflect any internal sparsity within that com
 ## Proposed solution
 
 We propose that OpenMDAO will no longer allow a single component to compute both matrix free and jacobian based derivatives.
-All components will be either 100% matrix free or 100% jacobian based.
+Each component will be either matrix free or jacobian based, but not both.  Note that matrix free components and jacobian
+based components may still be freely mixed within the same model.
 
 This means that a matrix free component can declare partials to inform the framework about its internal sparsity without
 allocating any memory for sub-jacobians.
