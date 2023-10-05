@@ -116,6 +116,7 @@ That way, github's built in notification system to get emails when things are ch
 | [084](POEM_084.md) | Add a set of jax functions and documentation on using jax with OpenMDAO. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [085](POEM_085.md) | Export view_connections to csv | [Carl Recine](https://github.com/crecine) | accepted |
 | [086](POEM_086.md) | Top-level setting of system options. | [Rob Falck](https://github.com/robfalck) | integrated |
+| [087](POEM_087.md) | Expand functionality of dynamic shaping. | [Bret Naylor](https://github.com/naylor-b) | accepted |
 | [088](POEM_088.md) | User-configurable load_case functionality. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [089](POEM_089.md) | Optimization efficiency improvements (relevance reduction revisited). | [Rob Falck](https://github.com/robfalck) | integrated |
 | [090](POEM_090.md) | Auto ordering of Group subsystems. | [Bret Naylor](https://github.com/naylor-b) | accepted |
