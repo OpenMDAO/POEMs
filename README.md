@@ -113,6 +113,7 @@ That way, github's built in notification system to get emails when things are ch
 | [080](POEM_080.md) | Add an activation function to the standard component set. | [Rob Falck](https://github.com/robfalck) | rejected |
 | [081](POEM_081.md) | Add Submodel Component to standard component set. | [Nate Steffen](https://github.com/nsteffen) | accepted |
 | [082](POEM_082.md) | Add ability to easily retrieve all independent variables within a Problem. | [Rob Falck](https://github.com/robfalck) | accepted |
+| [083](POEM_083.md) | Specifying order when adding a subsystem | [Rob Falck](https://github.com/robfalck) | rejected |
 | [084](POEM_084.md) | Add a set of jax functions and documentation on using jax with OpenMDAO. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [085](POEM_085.md) | Export view_connections to csv | [Carl Recine](https://github.com/crecine) | accepted |
 | [086](POEM_086.md) | Top-level setting of system options. | [Rob Falck](https://github.com/robfalck) | integrated |
