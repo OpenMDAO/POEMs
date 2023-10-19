@@ -1,9 +1,9 @@
 POEM ID: 068  
 Title:  Nonlinear Solver System Output Caching  
-authors: lamkina  (Andrew Lamkin)
+authors: lamkina (Andrew Lamkin)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: [PR 2590](https://github.com/OpenMDAO/OpenMDAO/pull/2590) 
+Associated implementation PR: [PR 2590](https://github.com/OpenMDAO/OpenMDAO/pull/2590)  
 
 Status:
 
