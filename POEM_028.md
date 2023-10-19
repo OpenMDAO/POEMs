@@ -1,6 +1,6 @@
 POEM ID:  028  
 Title: check_partials input warnings  
-authors: [@ehariton] (Eliot Aretskin-Hariton)   
+authors: ehariton (Eliot Aretskin-Hariton)   
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR:    

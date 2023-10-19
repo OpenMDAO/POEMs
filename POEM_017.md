@@ -1,6 +1,6 @@
 POEM ID: 017    
 Title: User can specify units when adding design variables, constraints, and objectives.  
-authors: [Kenneth-T-Moore]  
+authors: Kenneth-T-Moore (Ken Moore)   
 Competing POEMs: [N/A]   
 Related POEMs: [N/A]  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1265  

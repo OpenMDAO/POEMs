@@ -3,15 +3,15 @@ Title: Expand functionality of dynamic shaping.
 authors: naylor-b (Bret Naylor)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: [OpenMDAO/OpenMDAO#3000 : Implementation branch for POEM 87 Expand Functionality of Dynamic Shaping](https://github.com/OpenMDAO/OpenMDAO/pull/3000)  
+Associated implementation PR: [#3000](https://github.com/OpenMDAO/OpenMDAO/pull/3000)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation

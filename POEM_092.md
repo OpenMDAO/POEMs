@@ -3,15 +3,15 @@ Title: User-defined function hook for pre-processing option set.
 authors: Kenneth-T-Moore (Ken Moore)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: [PR xxx](https://github.com/OpenMDAO/OpenMDAO/pull/xxx)  
+Associated implementation PR: [PR 3040](https://github.com/OpenMDAO/OpenMDAO/pull/3040)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 

@@ -3,15 +3,15 @@ Title: Removal of matrix-matrix derivative APIs
 authors: [justinsgray, naylor-b]   
 Competing POEMs: N/A   
 Related POEMs: N/A   
-Associated implementation PR:   
+Associated implementation PR: [PR 2116](https://github.com/OpenMDAO/OpenMDAO/pull/2116)    
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation

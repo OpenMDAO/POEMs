@@ -1,9 +1,9 @@
 POEM ID: 091  
 Title: Eliminate combined jacobian-based and matrix free capability in a single component.  
-authors: @naylor-b  
+authors: naylor-b (Bret Naylor)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: 
+Associated implementation PR: [PR 3020](https://github.com/OpenMDAO/OpenMDAO/pull/3020) 
 
 Status:
 

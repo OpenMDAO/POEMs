@@ -1,6 +1,6 @@
 POEM ID: 034  
 Title:  Units library function to simplify units.  
-authors: Kenneth-T-Moore (optional real name)  
+authors: Kenneth-T-Moore (Ken Moore)  
 Competing POEMs: [list any other POEMs which are incompatible with this one]  
 Related POEMs: [list any other POEMs which are related (but still compatible) with this one]  
 Associated implementation PR:

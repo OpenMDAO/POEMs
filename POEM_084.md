@@ -3,15 +3,15 @@ Title: Add a set of jax functions and documentation on using jax with OpenMDAO.
 authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  [POEM 080: TanhActivationComp](https://github.com/OpenMDAO/POEMs/blob/master/POEM_080.md)  
-Associated implementation PR: N/A
+Associated implementation PR: [PR 2913](https://github.com/OpenMDAO/OpenMDAO/pull/2913)
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted 
+- [ ] Accepted 
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 

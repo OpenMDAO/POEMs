@@ -1,6 +1,6 @@
 POEM ID: 015  
 Title: Automatic creation of IndepVarComp outputs for all unconnected inputs  
-authors: [justingray]  
+authors: justingray (Justin Gray)   
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR:
