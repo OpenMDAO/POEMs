@@ -121,6 +121,6 @@ That way, github's built in notification system to get emails when things are ch
 | [088](POEM_088.md) | User-configurable load_case functionality. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [089](POEM_089.md) | Optimization efficiency improvements (relevance reduction revisited). | [Rob Falck](https://github.com/robfalck) | integrated |
 | [090](POEM_090.md) | Auto ordering of Group subsystems. | [Bret Naylor](https://github.com/naylor-b) | accepted |
-| [091](POEM_091.md) | Eliminate combined jacobian-based and matrix free capability in a single component. | @naylor-b | active |
+| [091](POEM_091.md) | Eliminate combined jacobian-based and matrix free capability in a single component. | @naylor-b | accepted |
 | [092](POEM_092.md) | User-defined function hook for pre-processing option set. | [Ken Moore](https://github.com/Kenneth-T-Moore) | accepted |
 
