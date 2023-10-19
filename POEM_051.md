@@ -1,17 +1,17 @@
 POEM ID:  051  
 Title:  Modifications to relative step sizing in finite difference  
-authors: [kenneth-t-moore]  
+authors: Kenneth-T-Moore (Ken Moore)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR:  
+Associated implementation PR:  [PR 2209](https://github.com/OpenMDAO/OpenMDAO/pull/2209)   
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 

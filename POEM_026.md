@@ -1,6 +1,6 @@
 POEM ID: 026  
 Title:   Remove support for factorial function in ExecComp  
-authors: [swryan]  
+authors: swryan (Steve Ryan)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1483  

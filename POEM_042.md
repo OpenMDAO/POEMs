@@ -1,6 +1,6 @@
 POEM ID:  042  
 Title:  DOEDriver different number of levels for different DVs.  
-authors: @onodip (Péter Onódi)  
+authors: onodip (Péter Onódi)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: [#1885](https://github.com/OpenMDAO/OpenMDAO/pull/1885)

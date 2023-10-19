@@ -1,6 +1,6 @@
 POEM ID: 005  
 Title: An OpenMDAO Plugin System  
-authors: [naylor-b]  
+authors: naylor-b (Bret Naylor)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR:  

@@ -1,17 +1,17 @@
 POEM ID: 044  
 Title: OpenMDAO-Specific Warnings  
-authors: [robfalck]  
+authors: robfalck (Rob Falck)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR:
+Associated implementation PR: [PR 1982](https://github.com/OpenMDAO/OpenMDAO/pull/1982)   
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 Motivation

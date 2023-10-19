@@ -3,15 +3,15 @@ Title: Add Submodel Component to standard component set.
 authors: nsteffen (Nate Steffen)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: #2817  
+Associated implementation PR: [#2817](https://github.com/OpenMDAO/OpenMDAO/pull/2817)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted 
+- [ ] Accepted 
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 

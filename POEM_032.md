@@ -1,6 +1,6 @@
 POEM ID: 032  
 Title: Detailed Driver Scaling Report  
-authors: [justinsgray, Eliot Aretskin-Hariton]    
+authors: justinsgray (Justin Gray), ehariton   
 Competing POEMs: N/A   
 Related POEMs: N/A  
 Associated implementation PR:  

@@ -1,6 +1,6 @@
 POEM ID:  004  
 Title:   Creating Interpolant Class For 1D Splines  
-authors: [DKilkenny]  
+authors: DKilkenny (Danny Kilkenny)  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated Implementation PR:  

@@ -1,17 +1,17 @@
 POEM ID: 069  
 Title: Declare residual names for implicit components  
-authors: @joanibal, @eytanadler  
+authors: joanibal (Josh Anibal), eytanadler  (Eytan Adler)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR: [#2589](https://github.com/OpenMDAO/OpenMDAO/pull/2589)
+Associated implementation PR: [#2589](https://github.com/OpenMDAO/OpenMDAO/pull/2589) (Proposed) [#2709](https://github.com/OpenMDAO/OpenMDAO/pull/2709) (Implemented)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation

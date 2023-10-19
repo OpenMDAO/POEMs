@@ -1,6 +1,6 @@
 POEM ID: 039  
 Title: User Function Registration in ExecComp   
-authors: [@justinsgray, @robfalck]  
+authors: justinsgray (Justin Gray), robfalck (Rob Falck)  
 Competing POEMs: N/A    
 Related POEMs: N/A   
 Associated implementation PR:

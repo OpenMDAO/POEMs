@@ -3,15 +3,15 @@ Title: Export view_connections to csv
 Author: crecine (Carl Recine)   
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: 2925  
+Associated implementation PR: [#2925](https://github.com/OpenMDAO/OpenMDAO/pull/2925)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 Motivation
 ==========

@@ -1,6 +1,6 @@
 POEM ID: 071  
 Title: POEM_071 - Change ExecComp to use `declare_coloring`  
-authors: @robfalck  
+authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  
 Associated implementation PR: [#2696](https://github.com/OpenMDAO/OpenMDAO/pull/2696) 
@@ -9,9 +9,9 @@ Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 
 ## Motivation

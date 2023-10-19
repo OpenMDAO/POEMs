@@ -1,6 +1,6 @@
 POEM ID: 018  
 Title: indices and src_indices can contain slices  
-authors: [Kenneth-T-Moore]  
+authors: Kenneth-T-Moore (Ken Moore)  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated implementation PR:                                                                    

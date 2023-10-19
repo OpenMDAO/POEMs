@@ -1,6 +1,6 @@
 POEM ID: 002  
 Title: New capability for user to send a termination signal to an OpenMDAO process so that SNOPT in pyoptsparse can terminate cleanly.  
-Authors: [Kenneth-T-Moore]  
+Authors: Kenneth-T-Moore (Ken Moore)  
 Competing POEMs: [N/A]  
 Related POEMs: [N/A]  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/1138 (43dcc0a3e0ca5ebcce9f8712f1be620b8b1d3089)   

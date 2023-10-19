@@ -1,6 +1,6 @@
 POEM ID: 025  
 Title: allow GA to seek pareto frontier  
-authors: [Kenneth-T-Moore]  
+authors: Kenneth-T-Moore (Ken Moore)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR:  [#1459](https://github.com/OpenMDAO/OpenMDAO/pull/1459)

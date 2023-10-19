@@ -1,6 +1,6 @@
 POEM ID: 041  
 Title: Add expressions to ExecComp after instantiation  
-authors: [@robfalck]  
+authors: [robfalck]  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: [#1977](https://github.com/OpenMDAO/OpenMDAO/pull/1977)

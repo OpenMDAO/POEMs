@@ -3,15 +3,15 @@ Title:  Derivative checks with multiple step sizes
 authors: kejacobson (Kevin Jacobson)  
 Competing POEMs:  
 Related POEMs: 076  
-Associated implementation PR:  
+Associated implementation PR: [#2927](https://github.com/OpenMDAO/OpenMDAO/pull/2927)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 <Note: two space are required after every line of the header to create proper linebreaks in the markdown>
 

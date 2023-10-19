@@ -3,15 +3,16 @@ Title: Convention for distributed/serial variables and when to allreduce
 authors: kejacobson (Kevin Jacobson)  
 Competing POEMs: N/A  
 Related POEMs: 046  
-Associated implementation PR:  
+Associated implementation PR: [PR 2751](https://github.com/OpenMDAO/OpenMDAO/pull/2751)   
+
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 <Note: two space are required after every line of the header to create proper linebreaks in the markdown>
 

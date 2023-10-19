@@ -1,6 +1,6 @@
 POEM ID: 035  
 Title: More generalized behavior in promoted inputs.  
-authors: [robfalck]  
+authors: [robfalck] (Rob Falck)   
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR:
