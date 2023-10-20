@@ -16,14 +16,14 @@ Status:
 ## Motivation
 When computing derivatives with a hierarchical linear solver, OpenMDAO may re-solve the same subsystem-level linear system multiple times, which is redundant.
 Examples of such problems will be provided later.  
-This POEM proposes to remove this redundancy and accelerate the total derivatives computation by caching the subsystem-level linear solutions.
+This POEM proposes to remove this redundancy and accelerate the total derivative computation by caching the subsystem-level linear solutions.
 
 ## Description
 We suggest caching the right-hand side (RHS) vector `b` and the corresponding linear system solution `x` within the subsystem's linear solver.
-The caching can be optional; by default, it would not cache the solution to  avoid unnecessary overhead of saving/checking the cache.  
-When the user enabled caching, the linear solver checks if the given RHS vector `b` is parallel to a cached vector `b_cache` before solving the linear system.
+The caching can be optional; by default, it would not cache the solution to  avoid the unnecessary overhead of saving/checking the cache.  
+When the user enables caching, the linear solver checks if the given RHS vector `b` is parallel to a cached vector `b_cache` before solving the linear system.
 If they are parallel, it returns the linear system solution by `x = x_cache * (|b| / |b_cache|)` without solving the linear system.
-Otherwise, it solves the linear solver and add the solution and corresponding RHS vector to the cache.
+Otherwise, it solves the linear solver and adds the solution and corresponding RHS vector to the cache.
 
 ## API change proposal
 
@@ -43,14 +43,14 @@ For example,
 ```python
 subsystem.use_cache(mode='rev', cache_inputs=None, cache_outputs=['Lift'])
 ```
-would enable caching only for the `Lift` output in the reverse mode, but not for other outputs.
+would enable caching only for the `Lift` output in the reverse mode but not for other outputs.
 
 ## Prototype implementation
 We implemented a prototype of the linear solution caching in a custom PETScKrylov solver and Direct solver, which are available [here](POEM_093/).
 
-Note that this prototype caches all the inputs or outputs of a subsystem (i.e., it implements the proposal 1 above).
-The implementation of the caching for specific inputs or outputs (proposal 2) would require a different approach (which we don't have a good idea of how it can be done).  
-Also note that this prototype does not implement the cache resetting, which should be done every optimization iterations.
+Note that this prototype caches all the inputs or outputs of a subsystem (i.e., it implements proposal 1 above).
+The implementation of the caching for specific inputs or outputs (proposal 2) would require a different approach (we don't have a good idea of how it can be done).  
+Also note that this prototype does not implement the cache resetting, which should be done every optimization iteration.
 
 Here, we explain how the caching would be implemented for a Krylov solver.
 It works mostly the same for a Direct solver.
@@ -97,7 +97,7 @@ def _linearize(self):
         self._sol_cache_list = []
 ```
 
-In the `solve` method, it checks and reuses the cached solution if applicable.
+The `solve` method compares the given RHS to caches RHSs, and it reuses a cached solution if applicable.
 Otherwise, it adds the RHS vector and the solution to the cache at the end.
 ```python
 def solve(self, mode, rel_systems=None):
@@ -187,7 +187,7 @@ def solve(self, mode, rel_systems=None):
 ```
 
 ## Examples of Caching: 
-### 2-point Aerostructural optimization
+### Two-point aerostructural optimization
 Here is an [OpenAeroStruct multipoint optimization example](POEM_093/example1.py) to demonstrate the solution caching.
 We consider the following optimization problem:
 ```
@@ -196,8 +196,8 @@ subject to: CL0 = 0.6
             CL1 - CL0 = 0.2
 ```
 
-For the second operating point, we impose the CL constraint in a way that it also depends on the first point's CL.
-To compute the total derivatives, we use PETScKrylov solver for aerostructural coupling.
+For the second operating point, we impose the CL constraint in a way that also depends on the first point's CL.
+To compute the total derivatives, we use the PETScKrylov solver for aerostructural coupling.
 The solver outputs of `compute_totals()` look as follows:
 ```
 # dCD0/dx
@@ -232,7 +232,7 @@ LN: PETScKrylov 3 ; 1.82688692e-11 1.92001608e-09
 Derivatives of CL_diff w.r.t. twist_cp = [[-2.17863550e-05 -3.79972743e-05 -4.59107509e-05 -4.77229851e-05]]
 ```
 We can observe that there were 5 aerostructural adjoint solves: 2 for objective, 1 for the first CL constraint, and 2 for the second CL constraint.
-However, there are duplicated adjoint solve for `dCL0/dx` because `CL0` is used for both the first and second CL constraints.
+However, there are duplicated adjoint solves for `dCL0/dx` because `CL0` is used for both the first and second CL constraints.
 
 This duplicated adjoint solves can be avoided using the solution caching.
 Using [the prototype solver](POEM_093/petsc_ksp_custom.py), we get the following solver outputs:
@@ -269,13 +269,13 @@ LN: PETScKrylov 3 ; 1.19985619e-11 1.25990231e-09
 # verification print
 Derivatives of CL_diff w.r.t. twist_cp = [[-2.17863550e-05 -3.79972743e-05 -4.59107509e-05 -4.77229851e-05]]
 ```
-The caching removed the redundant `dCL0/dx` solve but still gave the identical total derivatives (verified by printed CL_diff w.r.t. twist_cp).
+The caching removed the redundant `dCL0/dx` solve but gave identical total derivatives (verified by printed CL_diff w.r.t. twist_cp).
 
 ### More practical multipoint problem
 In the above example, we formulate the second CL constraint in a weird way to demonstrate the caching.
 However, the above model structure represents practical problems.
 
-As an example, we again consider [another multipoint problem](POEM_093/example2.py) (cruise point + manuever point), but now with more practical objective and constraints:  
+As an example, we again consider [another multipoint problem](POEM_093/example2.py) (cruise point + maneuver point), but now with more practical objective and constraints:  
 ```
 minimize:   fuel burn  
 subject to: L = W at cruise point
@@ -283,11 +283,11 @@ subject to: L = W at cruise point
 ```
 
 The `L=W` constraints depend on the fuel burn, which is computed using the cruise drag.
-Therefore, `L=W` constraint at the maneuver point depends on the fuel burn (or cruise drag) of the cruise point.
+Therefore, the `L=W` constraint at the maneuver point depends on the fuel burn (or cruise drag) of the cruise point.
 This introduces the redundant adjoint solves, i.e., the adjoint for maneuver point `L=W` calls the adjoint for cruise point.
 
 The linear solution caching can avoid this redundancy.
-The following is the linear solver outputs with caching:
+The following are the linear solver outputs with caching:
 ```
 # adjoint for fuelburn (cruise point OAS adjoint)
 LN: PETScKrylov 0 ; 244.940409 1
@@ -303,7 +303,7 @@ LN: PETScKrylov 2 ; 2.89301257e-09 3.67159618e-07
 LN: PETScKrylov 3 ; 1.68153368e-12 2.13407736e-10
 *** solved in Krylov | time = 9.81E-03 s ***
 
-# adjoint for L=W at maneuver point. This uses cache from the cruise point adjoint
+# adjoint for L=W at maneuver point. This uses the cache from the cruise point adjoint
 LN: PETScKrylov 0 ; 1.70385305e-05 1
 LN: PETScKrylov 1 ; 1.50491383e-06 0.0883241564
 LN: PETScKrylov 2 ; 9.45843606e-10 5.55120411e-05
@@ -312,3 +312,8 @@ LN: PETScKrylov 3 ; 5.54498891e-13 3.25438213e-08
 *** use caching in Krylov with scaler = 1.19E-05 | time = 4.44E-04 s ***
 ```
 
+## Package versions
+We used the following package versions for the demonstrations above.
+- openmdao 3.28.1.dev0
+- openaerostruct 2.7.0
+- petsc 3.18.5
