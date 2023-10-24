@@ -14,16 +14,20 @@ Status:
 - [ ] Integrated
 
 ## Motivation
-When computing derivatives with a hierarchical linear solver, OpenMDAO may re-solve the same subsystem-level linear system multiple times, which is redundant.
+When computing derivatives with a hierarchical linear solver, OpenMDAO may re-solve the same subsystem-level linear system with the same right-hand-side (RHS) multiple times, which is redundant.
 Examples of such problems will be provided later.  
 This POEM proposes to remove this redundancy and accelerate the total derivative computation by caching the subsystem-level linear solutions.
 
 ## Description
-We suggest caching the right-hand side (RHS) vector `b` and the corresponding linear system solution `x` within the subsystem's linear solver.
-The caching can be optional; by default, it would not cache the solution to  avoid the unnecessary overhead of saving/checking the cache.  
+We suggest caching the RHS vector `b` and the corresponding linear system solution `x` within the subsystem's linear solver.
+The caching can be optional; by default, it would not cache the solution to avoid the unnecessary overhead of saving and checking the cache.  
 When the user enables caching, the linear solver checks if the given RHS vector `b` is parallel to a cached vector `b_cache` before solving the linear system.
 If they are parallel, it returns the linear system solution by `x = x_cache * (|b| / |b_cache|)` without solving the linear system.
 Otherwise, it solves the linear solver and adds the solution and corresponding RHS vector to the cache.
+
+In this POEM, we focus on the specific approach of storing the solutions and only re-using them when the new RHS is parallel to the previous one.
+In the more general case, deflated and augmented Krylov subspace techniques [[Chapman and Saad, 1997](https://doi.org/10.1002/(SICI)1099-1506(199701/02)4:1%3C43::AID-NLA99%3E3.0.CO;2-Z)] can be used to accelerate convergence of the solutions with multiple RHS vectors.
+
 
 ## API change proposal
 
