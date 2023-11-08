@@ -56,6 +56,24 @@ Return the current feasibility tolerance for the optimizer. This provides a cons
 
 Get the lagrange multipliers for optimizers which provide them, in an optimizer-independent way. This will be useful for evaluating post-optimality sensititivity.
 
+## Autoscale API
+
+Autoscaler will provide a `scale` method with a signaiture
+
+```
+def scale(problem, desvar_scaling, constraint_scaling, objective_scaling)
+```
+
+Problem provides access to both the model and the driver, so we can interrogate things like optimizer settings.
+The other arguments are output dictionaries each keyed by the desvar, constraint, or objective name.
+For each key in these dictionaries, the user can provide the scaler, adder, ref, or ref0.
+
+```
+# scale x by dividing by it's initial value
+x_val = problem.get_val('x')
+desvar_scaling['x']['scaler'] = 1 / x_val
+```
+
 ## Proposed Initial Autoscalers
 
 ### `SimpleAutoscaler`
