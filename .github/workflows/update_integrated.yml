@@ -1,0 +1,61 @@
+# This workflow updates the status of a POEM to 'Integrated'
+
+name: Update POEM status to Integrated
+
+on:
+  workflow_dispatch:
+    inputs:
+      poem_integrated:
+        description: 'ID of POEM to be marked as Integrated'
+        required: true
+        default: 0
+
+jobs:
+  integrate_poem:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Run script
+      env:
+        POEM_ID: ${{ github.event.inputs.poem_integrated }}
+      run: python ./.github/scripts/update_integrated.py $POEM_ID
+
+    - name: Commit and push if changed
+      env:
+        POEM_ID: ${{ github.event.inputs.poem_integrated }}
+      run: |
+        git add .
+        git diff
+        git config --global user.email "github-action@github.com"
+        git config --global user.name "GitHub Action"
+        POEM_NO="$(echo $POEM_ID | sed 's/^0*//')"
+        POEM_ID="$(printf '%03d' $POEM_NO)"
+        git commit -m "Mark POEM_$POEM_ID as Integrated" -a || echo "No changes to commit"
+        git push
+
+    - name: Notify slack
+      uses: act10ns/slack@v2.0.0
+      with:
+        webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        status: ${{ job.status }}
+        message: |
+          Status of POEM_${{ github.event.inputs.poem_integrated }} was transitioned to `Integrated`.
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      if: success()
+
+    - name: Notify slack
+      uses: act10ns/slack@v2.0.0
+      with:
+        webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        status: ${{ job.status }}
+        message: |
+          Status of POEM_${{ github.event.inputs.poem_integrated }} WAS NOT transitioned to `Integrated`.
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      if: failure()
