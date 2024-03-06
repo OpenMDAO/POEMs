@@ -1,9 +1,9 @@
-POEM ID: 095
-Title: Support user/developer defined callback functions
-authors: A-CGray (Alasdair Christison Gray), eytanadler (Eytan Adler), hajdik (Hannah Hajdik)
-Competing POEMs:
-Related POEMs:
-Associated implementation PR: N/A
+POEM ID: 095  
+Title: Support user/developer defined callback functions.  
+authors: A-CGray (Alasdair Christison Gray), eytanadler (Eytan Adler), hajdik (Hannah Hajdik)  
+Competing POEMs:  
+Related POEMs:  
+Associated implementation PR: N/A  
 
 Status:
 
