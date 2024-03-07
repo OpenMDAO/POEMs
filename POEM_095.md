@@ -134,5 +134,8 @@ class CFDSolverComponent(om.ImplicitComponent):
 
 ## Similarity with recorders
 
-Maybe this can be integrated with the recorder system since it follows a similar principle of being applicable at different levels of the model hierarchy, and the recorder is called after the execution of the thing it is attached to.
-The idea would be to be able to attach a callback to a recorder, and then the recorder would call the callback each time it records something.
+Maybe this can be integrated with the recorder system since it follows a similar principle of being applicable at different levels of the model hierarchy and being used to record things.
+The two main differences I see between this proposal and the current recorders are:
+
+- The callback is only called once per evaluation of the whole model, whereas a recorder is called every time the thing it's attached to is called (I think)
+- A recorder always has to be added by the person writing the OpenMDAO problem, whereas these callbacks could be defined either by the user or the people writing the components (e.g in the component level callback shown above)
