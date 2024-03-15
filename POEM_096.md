@@ -14,7 +14,7 @@ Status:
 - [ ] Integrated
 
 ## Overview  
-This PEOM propose the addition of an option at the problem or driver level to alternatively minimize the sum of the constraint violation rather than the objective.
+This POEM propose the addition of an option at the problem or driver level to alternatively minimize the sum of the constraint violation rather than the objective.
 
 ## Motivation  
 There are three motivativing cases for the addition of this functionality.
@@ -107,7 +107,7 @@ y     [2.]  1
 
 We can see by looking at the results that despite `feasible_con` being feasible, the optimizer makes no attempt to bring it into the feasible region. If we imagine a problem with hundreds of constraints where one single constraint is infeasible, the user may look at a final output of a failed optimization with hundreds of constraint violations and have no guidance towards which is the single (or set of) infeasbile constraints.
 
-Using the new functionality proposed in this PEOM, following a failed opt of this manner, the user could run the minimization of constraint violation to check if the problem is feasible at all. Ideally this minimization would leave only the infeasible constraints violated. The user can then correct their configuration paramteres to ensure the problem is feasible and then re-run objective minimization problem. A user could choose to run the feasibility checks could also be run prior to the objective minimization if desired.
+Using the new functionality proposed in this POEM, following a failed opt of this manner, the user could run the minimization of constraint violation to check if the problem is feasible at all. Ideally this minimization would leave only the infeasible constraints violated. The user can then correct their configuration paramteres to ensure the problem is feasible and then re-run objective minimization problem. A user could choose to run the feasibility checks could also be run prior to the objective minimization if desired.
 
 **2. Finding a "good enough" point**  
 In some engineering problems, a "good enough" solution is often acceptable. If a problem is infeasible, running a minimization of constraint violation can get a solution that is "as close to feasible as possible" which might be alright or at least worth looking at in some applications.
@@ -117,7 +117,7 @@ Although most modern optimizers can already deal with this problem, many optimiz
 
 
 ## Description
-An option would be added to toggle between optimizing the objective function or the sum of the constraint violation at the problem or driver level. This PEOM is being submitted without a suggested implementation.
+An option would be added to toggle between optimizing the objective function or the sum of the constraint violation at the problem or driver level. This POEM is being submitted without a suggested implementation.
 
 
 
