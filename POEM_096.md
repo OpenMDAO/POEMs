@@ -1,9 +1,9 @@
-POEM ID:  096
-Title:  Option to Minimize Constraint Violation
-authors: @andrewellis55
-Competing POEMs: N/A
-Related POEMs: N/A
-Associated implementation PR: N/A
+POEM ID:  096  
+Title:  Option to Minimize Constraint Violation  
+authors: @andrewellis55  
+Competing POEMs: N/A  
+Related POEMs: N/A  
+Associated implementation PR: N/A  
 
 Status:
 
@@ -13,8 +13,6 @@ Status:
 - [ ] Rejected
 - [ ] Integrated
 
-<Note: two space are required after every line of the header to create proper linebreaks in the markdown>
-
 ## Overview  
 This PEOM propose the addition of an option at the problem or driver level to alternatively minimize the sum of the constraint violation rather than the objective.
 
@@ -22,7 +20,7 @@ This PEOM propose the addition of an option at the problem or driver level to al
 There are three motivativing cases for the addition of this functionality.
 
 **1. Finding root cause of misconfigured optimizations/checking if problem is feasible**  
-Many optimization runs fail to converge. When the reason for this is an incorrect partial or poor scaling, there are many tools available to help debug this. In other instances where there are many user configuration options avaialble, it is more common that the user may have simply select a configuration for which no feasible solution space exists. Some optimizers are better than others at alerting the user to this, however the standard optimizer that ships with OpenMDAO (scipy optimize SLSQP) does not communicate this very effectively.
+Many optimization runs fail to converge. When the reason for this is an incorrect partial or poor scaling, there are many tools available to help debug this. In other instances where there are many user configuration options are avaialble, it is more common that the user may have simply select a configuration for which no feasible solution space exists. Some optimizers are better than others at alerting the user to this, however the standard optimizer that ships with OpenMDAO (scipy optimize SLSQP) does not communicate this very effectively.
 
 Take the following example problem. There are two constraints that conflict with each other and one that is completely feasible.
 
@@ -115,7 +113,7 @@ Using the new functionality proposed in this PEOM, following a failed opt of thi
 In some engineering problems, a "good enough" solution is often acceptable. If a problem is infeasible, running a minimization of constraint violation can get a solution that is "as close to feasible as possible" which might be alright or at least worth looking at in some applications.
 
 **3. Finding a feasible starting point**  
-Althought most modern optimizers can already deal with this problem, many optimizers do perform better if starting from a feasible starting point. Minimizing the sum of the constraint violation can help a user get to a feasible starting point before beginning the optimization. While many modern optimizers can account for infeasile starts, it could be a "nice to have" in the framework.
+Although most modern optimizers can already deal with this problem, many optimizers do perform better if starting from a feasible starting point. Minimizing the sum of the constraint violation can help a user get to a feasible starting point before beginning the optimization. While many modern optimizers can account for infeasile starts, it could be a "nice to have" in the framework.
 
 
 ## Description
