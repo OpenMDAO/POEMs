@@ -3,7 +3,7 @@ Title: Linear solution caching
 authors: kanekosh (Shugo Kaneko) and anilyil (Anil Yildirim)  
 Competing POEMs:   
 Related POEMs:  
-Associated implementation PR:  
+Associated implementation PR: [#3185](https://github.com/OpenMDAO/OpenMDAO/pull/3185)  
 
 Status:
 
