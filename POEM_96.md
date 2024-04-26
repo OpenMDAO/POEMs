@@ -1,9 +1,15 @@
 POEM ID:  096
+
 Title:  Research and Pseudocode of Manual Reverse Mode differentiation
+
 authors: jsrogan, coleyoung5
+
 Competing POEMs:  N/A
+
 Related POEMs: N/A
+
 Associated implementation PR: N/A
+
 
 Status:
 
