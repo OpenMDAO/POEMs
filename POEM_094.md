@@ -26,13 +26,20 @@ No autoscaling algorithm works for all use-cases, but if we can ease the burden 
 
 This POEM consists of a few thrusts.
 
-1. We will refactor the Driver class to implement `OptimizationDriver` and `AnalysisDriver`.
+### We will refactor the Driver class to implement `OptimizationDriver` and `AnalysisDriver`.
 
 `OptimizationDriver` will be associated with optmization and will support some methods that just don't make sense in an Analysis standpoint. This will be the parent class for `ScipyOptimizeDriver`, `pyOptSparseDriver`, `SimpleGADriver`, and `DifferentialEvolutionDriver`.
 
-`AnalysisDriver` will support design exploration, but the notion of scaling doesn't apply here, as this driver will not support objectives or constraints, but just "responses". This will be the parent class for `DOEDriver`.
+`AnalysisDriver` will support design exploration, but the notion of scaling doesn't apply here.
 
-2. Driver runs will return a DriverResults object.
+- AnalysisDriver will replace a deprecated DOEDriver.
+- Different ways of providing run points to AnalysisDriver will dictate if it acts like a run-once driver, a DOE driver, a monte-carlo driver, etc.
+- AnalysisDriver will have a recorder attached by default.
+- Drivers will support `add_constraint`, `add_objective`, and `add_design_var` (just passed through to apply to the underlying model.)
+- AnalysisDriver will support `add_response`, an output to be recorded but the notion of a constraint or objective doesn't really make sense in the context.
+- AnalysisDriver will record all design vars, constraints, objectives, responses by default - those are probably what the user is keen in recording.
+
+### Driver runs will return a DriverResults object.
 
 The current return value of `failed` doesn't provide any information on the optimization and forces the user to go digging through the optimizers to find things like iteration counts, informs/exit status, Lagrange multipliers, etc.
 
@@ -44,20 +51,18 @@ Any aspect that we expect to be common across several drivers should be an attri
 
 This will include:
 - `success`: Flag that is `True` if the optimization was successful.
-- `f_eval`: The number of objective evaluations.
-- `g_eval`: The number of gradient evaluations.
-- `objectives`: A dictionary containing the objective name, units, and optimal value.
-- `design_vars`: A dictionary of design variable names, units, and their optimal values.
-- `constraints`: A dictionary of the constraint names, units, and their values at the optimal point.
+- `message`: The driver-specific exit message.
+- `model_evals`: The number of executions of model.solve_nonlinear()
+- `deriv_evals`: The number of executions of compute_totals.
 
 `DriverResults` will contain an attribute/property `success` that is a boolean indicating whether the driver successfully ended.  The meaning of this flag will vary from driver to driver (and optimizer to optmizer).  For instance, SLSQP has a rather straight-forward success criteria, while SNOPT has multiple inform results that might indicate success.
 
 **Note: These changes are backwards incompatible and will impact anyone who is checking the return value of `run_driver`,
 since this object (as most Python objects), will evaluate to `True`.
 
-4. OptimizationDrivers will support the notion of an `Autoscaler` that is called early in their `run`. The autoscaler will be set using `driver.set_autoscaler(AutoscalerClass())`.
+### OptimizationDrivers will support the notion of an `Autoscaler` that is called early in their `run`. The autoscaler will be set using `driver.set_autoscaler(AutoscalerClass())`.
 
-5. OpenMDAO will provide some default set of Autoscalers (discussed below), and allow users to implement their own.
+### OpenMDAO will provide some default set of Autoscalers (discussed below), and allow users to implement their own.
 
 ## Changes to OptimizationDriver
 
