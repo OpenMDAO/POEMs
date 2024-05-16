@@ -7,9 +7,9 @@ Associated implementation PR: N/A.
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
-- [ ] Accepted 
+- [x] Accepted 
 - [ ] Rejected
 - [ ] Integrated
 
@@ -53,7 +53,9 @@ This will include:
 - `success`: Flag that is `True` if the optimization was successful.
 - `message`: The driver-specific exit message.
 - `model_evals`: The number of executions of model.solve_nonlinear()
+- `model_time`: Time spent evaluating model.solve_nonlinear()
 - `deriv_evals`: The number of executions of compute_totals.
+- `deriv_time`: Time spent executing compute_totals.
 
 `DriverResults` will contain an attribute/property `success` that is a boolean indicating whether the driver successfully ended.  The meaning of this flag will vary from driver to driver (and optimizer to optmizer).  For instance, SLSQP has a rather straight-forward success criteria, while SNOPT has multiple inform results that might indicate success.
 
