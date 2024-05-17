@@ -21,7 +21,7 @@ For instance, you might have a model parameter associated with physical units bu
 ### Why adding a `units` argument to OptionsDictionary declare_options won't work.
 
 Some users have experiemented with passing tuples as options, where the second value contains units.
-This isn't ideal since another unit may expect a tuple that doesn't involve units, leading to ambiguity.
+This isn't ideal since another option may expect a tuple that doesn't involve units, leading to ambiguity.
 
 We could implement a set_val/get_val with units, as we do with OpenMDAO vectors.  The existing `OptionsDictionary.set(**kwargs)` and `OptionsDictionary.temporary(**kwargs)` are not compatible with this, nor is the abiltiy to pass options as keyword arguments to to OpenMDAO Systems.
 
