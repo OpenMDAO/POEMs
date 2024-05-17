@@ -37,15 +37,15 @@ Quantity will, at a minimum, have a `val` and `units` attributes.
 
 ### Uses of `om.Quantity`
 
-Quantities will be allowed to be the values for options.
+- Quantities may be used as the values for options.
 
-`Problem.__setitem__` will allow values to be set using a Quantity.
+- `Problem.__setitem__` will allow values to be set using a Quantity.
 
-`Problem.__getitem__` will **NOT** return a quantity, to maintain backwards compatibility.
+- `Problem.__getitem__` will **NOT** return a quantity, to maintain backwards compatibility.
 
-For consistency, we will allow them in the `set_val` method, though using them along with the `units` argument will raise an exception.
+- For consistency, we will allow them in the `set_val` method, though using them along with the `units` argument will raise an exception.
 
-In the future we could examine returning them from `__getitem__` and `get_val` but that would likely break too much existing code.\
+In the future we could examine returning them from `__getitem__` and `get_val` but that would likely break too much existing code.
 
 ### Differences with the `set_val` API.
 
@@ -86,7 +86,7 @@ prob.set_val('initial_mass', val=om.Quantity(312.5, 'kg'), units='kg')
 Retrieving values without units
 
 ```python
-span = self.options['span'].val
+span = self.options['span']
 
 print(f'span is {span.val} {span.units})
 ```
