@@ -1,9 +1,9 @@
-POEM ID: 097
-Title: Quantities to associate values with units.
-authors: robfalck (Rob Falck)
-Competing POEMs:
-Related POEMs:
-Associated implementation PR:
+POEM ID: 097  
+Title: Quantities to associate values with units.  
+authors: robfalck (Rob Falck)  
+Competing POEMs:  
+Related POEMs:  
+Associated implementation PR:  
 
 Status:
 
