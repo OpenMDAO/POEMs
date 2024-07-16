@@ -33,7 +33,9 @@ OpenMDAO currently allows inputs and outputs to be shaped based upon connections
 
 This is similar to the issues that drove the need for a `setup_partials` method which allowed partials to be declared in `final_setup`, once the sizes of all inputs and outputs ad been resolved.
 
-As of a result, OpenMDAO components will get a `setup_residuals` method which will allow `add_residual` to be called once sizes have been resolved.c
+As of a result, OpenMDAO components will get a `setup_residuals` method which will allow `add_residual` to be called once sizes have been resolved.
+
+- It is an error to define `setup_residuals` in an ExplicitComponent
 
 ## Example
 
