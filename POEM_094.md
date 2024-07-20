@@ -32,7 +32,7 @@ This POEM consists of a few thrusts.
 
 `AnalysisDriver` will support design exploration, but the notion of scaling doesn't apply here.
 
-- AnalysisDriver will replace a deprecated DOEDriver.
+- AnalysisDriver will allow changes to any variable, and potentially provide all inputs to `set_val` (for each name, provide an associated `val`, with optional `units`, and `indices`).
 - Different ways of providing run points to AnalysisDriver will dictate if it acts like a run-once driver, a DOE driver, a monte-carlo driver, etc.
 - AnalysisDriver will have a recorder attached by default.
 - Drivers will support `add_constraint`, `add_objective`, and `add_design_var` (just passed through to apply to the underlying model.)
