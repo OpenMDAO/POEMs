@@ -124,4 +124,5 @@ That way, github's built in notification system to get emails when things are ch
 | [091](POEM_091.md) | Eliminate combined jacobian-based and matrix free capability in a single component. | [Bret Naylor](https://github.com/naylor-b) | integrated |
 | [092](POEM_092.md) | User-defined function hook for pre-processing option set. | [Ken Moore](https://github.com/Kenneth-T-Moore) | integrated |
 | [093](POEM_093.md) | Linear solution caching | [Shugo Kaneko](https://github.com/kanekosh) | integrated |
+| [099](POEM_099.md) | InputResidsComp | [Rob Falck](https://github.com/robfalck) | accepted |
 
