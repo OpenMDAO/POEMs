@@ -3,15 +3,15 @@ Title: InputResidsComp
 authors: robfalck (Rob Falck)  
 Competing POEMs:  
 Related POEMs:  
-Associated implementation PR:  
+Associated implementation PR: [#3295](https://github.com/OpenMDAO/OpenMDAO/pull/3295)  
 
 Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Motivation
 
