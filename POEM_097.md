@@ -36,6 +36,7 @@ Aside from reports, these files aren't associated with a particular problem whic
 
 ```
 ./outer_problem_out
+    .openmdao_out
     coloring_files
     driver_rec.db
     openmdao_checks.out
@@ -43,6 +44,7 @@ Aside from reports, these files aren't associated with a particular problem whic
     reports/
        n2.html
     sub_problem_out/
+       .openmdao_out
        coloring_files/
        openmdao_checks.out
        reports/
@@ -58,4 +60,16 @@ Aside from reports, these files aren't associated with a particular problem whic
 
 - The `coloring_dir` will be used for loading in existing colorings, but problems should save the used colorings to `f'{output_dir}/coloring_files'`.
 
-- Recording files should be specified as filename only, and will be placed in the `f'{outputs_dir}'`
+- Recording files will be placed in the `f'{outputs_dir}'` if given as filename online. For backwards compatibility, OpenMDAO will respect recording files specified as paths containing separators.
+
+## Cleaning up output directories.
+
+This change intends to prevent various OpenMDAO runs from "stepping on" each others outputs. The downside to this behavior is that OpenMDAO will now generate a new directory for every problem that is run. In situations where many problems are executed, such as running test suites for OpenMDAO or OpenMDAO-derived projects, hundreds of directories may be created.
+
+To deal with this, a new utility `openmdao.utils.file_utils.clean_outputs` is created. This function will recurse through a given path, finding and removing any output directories created by OpenMDAO.
+
+This utility will be available from the command via `openmdao clean`.
+
+This utility will allow the user to specify paths to be removed, or it will recurse through a given path to perform the cleanup.
+
+OpenMDAO will add a special file `.openmdao_out` to the directories that it creates.  The clean utility will use the presence of this file, in addition to the `_out` suffix to the directory name, to identify directories that were created by OpenMDAO.
