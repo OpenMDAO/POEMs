@@ -3,7 +3,7 @@ Title:  Option to Minimize Constraint Violation
 authors: @andrewellis55  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: N/A  
+Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/3360 
 
 Status:
 
@@ -117,7 +117,7 @@ Although most modern optimizers can already deal with this problem, many optimiz
 
 
 ## Description
-An option would be added to toggle between optimizing the objective function or the sum of the constraint violation at the problem or driver level. This POEM is being submitted without a suggested implementation.
+See https://github.com/OpenMDAO/OpenMDAO/pull/3360
 
 
 
