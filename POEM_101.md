@@ -1,4 +1,4 @@
-POEM ID: 100  
+POEM ID: 101  
 Title: Input checking utility  
 authors: lamkina (Andrew Lamkin)  
 Competing POEMs:  
