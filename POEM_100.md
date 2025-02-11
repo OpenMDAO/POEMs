@@ -18,23 +18,22 @@ Status:
 
 ## Motivation
 
-Sensitivity profilers are useful for three use-cases: 
+Sensitivity profilers are useful for three at least three use-cases: 
 
-1. Debugging models by interactively by inspecting trends and behaviors
-2. Decision-making by: 
-    * Identifying important local sensitivities between inputs an outputs 
-    * Understanding the effect of interactions between inputs  
-
+1. Debugging models by interactively inspecting trends and behaviors
+2. Understanding local sensitivities of ouptuts wr.t. inputs
+3. Identifying and explaining interactions between inputs  
 
 ## Description
 
-It is proposed to offer a new visualization feature using Jupyter Widgets: interactive sensitivity profilers. This can be accomplished by creating an upstream dependency to [ipysenstivityprofiler](https://pypi.org/project/ipysensitivityprofiler/) accessed via the openmdao api. 
+It is proposed to offer a new visualization tool using Jupyter Widgets: interactive sensitivity profilers. This could be accomplished by creating an upstream dependency to [ipysenstivityprofiler](https://pypi.org/project/ipysensitivityprofiler/) accessed via the openmdao api. 
 
-### Prototype Example
+### Notional Prototype Example
 
 ```
+prob = om.Problem(model=Sellar()).setup()
 profiler = om.profiler(
-    problem=om.Problem(model=Sellar()).setup(),
+    problem=prob,
     inputs=[
         ("x", 0, 10, None), 
         ("z1", 0, 3, None), 
@@ -66,7 +65,7 @@ show(profiler.controller)
 
 
 ![](sellar.gif)
-See example notebook [here](https://github.com/shb84/ipysensitivityprofiler/blob/main/notebooks/openmdao_example/openmdao_example.ipynb) (or try it on [binder](https://mybinder.org/v2/gh/shb84/ipysensitivityprofiler.git/main))
+View example notebook [here](https://github.com/shb84/ipysensitivityprofiler/blob/main/notebooks/openmdao_example/openmdao_example.ipynb) (or run it on [binder](https://mybinder.org/v2/gh/shb84/ipysensitivityprofiler.git/main))
 
 ### Limitations 
 
