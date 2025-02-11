@@ -1,17 +1,17 @@
-POEM ID: 100
-Title:  Interactive Sensitivity Profilers
+POEM ID: 100  
+Title:  Interactive Sensitivity Profilers  
 authors: shb84 (Steven H. Berguin)  
-Competing POEMs: None
-Related POEMs:  None
+Competing POEMs: None  
+Related POEMs:  None  
 Associated implementation PR: N/A  
 
-Status:
+Status:  
 
-- [x] Active
-- [ ] Requesting decision
-- [ ] Accepted
-- [ ] Rejected
-- [ ] Integrated
+- [x] Active  
+- [ ] Requesting decision  
+- [ ] Accepted  
+- [ ] Rejected  
+- [ ] Integrated  
 
 <Note: two space are required after every line of the header to create proper linebreaks in the markdown>
 
