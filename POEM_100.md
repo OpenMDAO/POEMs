@@ -7,13 +7,13 @@ Associated implementation PR: N/A
 
 Status:  
 
-- [x] Active  
+- [ ] Active  
 - [ ] Requesting decision  
 - [ ] Accepted  
-- [ ] Rejected  
+- [x] Rejected  
 - [ ] Integrated  
 
-<Note: two space are required after every line of the header to create proper linebreaks in the markdown>
+We're marking this as rejected but hope that it will be implemented as a plug-in for OpenMDAO rather than being part of OpenMDAO itself.
 
 
 ## Motivation
