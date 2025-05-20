@@ -1,7 +1,6 @@
 POEM ID: 103  
-Title:  N2 Color & Legends Revamp ++  
+Title: N2 Color & Legends Revamp ++  
 authors: ehariton (Eliot Aretskin-Hariton)
-reviewers: Ken Moore, Rob Falck  
 Competing POEMs: None  
 Related POEMs:  None  
 Associated implementation PR: N/A  
