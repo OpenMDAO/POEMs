@@ -19,10 +19,9 @@ Status:
 The default implementation of DirectSolver, which uses Scipy's implementation of SuperLU is sometimes slower than other direct linear solvers available, notably umfpack and klu.
 
 
-
 ## Description
 
-These linear solvers are available in PETSc, which is already a dependency of OpenMDAO. These solvers will be available via the new `PETScDirectSolver` class.
+These linear solvers are available in PETSc, which is already an optional dependency of OpenMDAO. These solvers will be available via the new `PETScDirectSolver` class.
 
 The linear solver solves the system `Ax = b`, and in OpenMDAO this is generally used to solve for total derivatives using the unified derivatives equations.
 
