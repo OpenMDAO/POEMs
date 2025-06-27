@@ -127,4 +127,5 @@ That way, github's built in notification system to get emails when things are ch
 | [097](POEM_097.md) | Output file reorganization. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [099](POEM_099.md) | InputResidsComp | [Rob Falck](https://github.com/robfalck) | integrated |
 | [100](POEM_100.md) | Interactive Sensitivity Profilers | [Steven H. Berguin](https://github.com/shb84) | rejected |
+| [104](POEM_104.md) | Add PETSc Linear Solvers | [Rob Falck](https://github.com/robfalck) | requesting decision |
 
