@@ -1,15 +1,15 @@
 POEM ID:  096  
 Title:  Option to Minimize Constraint Violation  
-authors: @andrewellis55  
+authors: @andrewellis55 and @robfalck  
 Competing POEMs: N/A  
 Related POEMs: N/A  
-Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/3360 
+Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/3360 and https://github.com/OpenMDAO/OpenMDAO/pull/3593
 
 Status:
 
 - [ ] Active
-- [x] Requesting decision
-- [ ] Accepted
+- [ ] Requesting decision
+- [x] Accepted
 - [ ] Rejected
 - [ ] Integrated
 
@@ -107,7 +107,7 @@ y     [2.]  1
 
 We can see by looking at the results that despite `feasible_con` being feasible, the optimizer makes no attempt to bring it into the feasible region. If we imagine a problem with hundreds of constraints where one single constraint is infeasible, the user may look at a final output of a failed optimization with hundreds of constraint violations and have no guidance towards which is the single (or set of) infeasbile constraints.
 
-Using the new functionality proposed in this POEM, following a failed opt of this manner, the user could run the minimization of constraint violation to check if the problem is feasible at all. Ideally this minimization would leave only the infeasible constraints violated. The user can then correct their configuration paramteres to ensure the problem is feasible and then re-run objective minimization problem. A user could choose to run the feasibility checks could also be run prior to the objective minimization if desired.
+Using the new functionality proposed in this POEM, following a failed opt of this manner, the user could run the minimization of constraint violation to check if the problem is feasible at all. Ideally this minimization would leave only the infeasible constraints violated. The user can then correct their configuration paramters to ensure the problem is feasible and then re-run objective minimization problem. A user could choose to run the feasibility checks could also be run prior to the objective minimization if desired.
 
 **2. Finding a "good enough" point**  
 In some engineering problems, a "good enough" solution is often acceptable. If a problem is infeasible, running a minimization of constraint violation can get a solution that is "as close to feasible as possible" which might be alright or at least worth looking at in some applications.
@@ -115,9 +115,14 @@ In some engineering problems, a "good enough" solution is often acceptable. If a
 **3. Finding a feasible starting point**  
 Although most modern optimizers can already deal with this problem, many optimizers do perform better if starting from a feasible starting point. Minimizing the sum of the constraint violation can help a user get to a feasible starting point before beginning the optimization. While many modern optimizers can account for infeasile starts, it could be a "nice to have" in the framework.
 
+## Implementation
+
+This behavior can be achieved by using `scipy.optimize.least_squares` to vary the design variables such that the L2 norm of the constraint violations is minimized.
+Scipy's `least_squares` method observes bounds of design variables and allows for other norms to be minimized, such as a "soft_l1" approximation.
 
 ## Description
 See https://github.com/OpenMDAO/OpenMDAO/pull/3360
+See https://github.com/OpenMDAO/OpenMDAO/pull/3593
 
 
 
