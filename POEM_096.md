@@ -1,6 +1,6 @@
 POEM ID:  096  
 Title:  Option to Minimize Constraint Violation  
-authors: @andrewellis55 and @robfalck  
+authors: andrewellis55 (Andrew Ellis) and robfalck (Rob Falck)  
 Competing POEMs: N/A  
 Related POEMs: N/A  
 Associated implementation PR: https://github.com/OpenMDAO/OpenMDAO/pull/3360 and https://github.com/OpenMDAO/OpenMDAO/pull/3593
