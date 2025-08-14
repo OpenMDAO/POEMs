@@ -78,13 +78,17 @@ since this object (as most Python objects), will evaluate to `True`.
 
 ### New Methods
 
-- `get_feasibility_tol`
+- `_find_feasible`
 
-Return the current feasibility tolerance for the optimizer. This provides a consistent optimizer-independent way of getting the feasibility tolerance for optimizers which support this concept. This is useful for scaling and potentially working out the active set of constraints from the OpenMDAO side of things. This can be obtained as option `Major Feasilibity Tol` from SNOPT or `constraint_viol_tol` from IPOPT, for instance.
+Use a least-squares solver to minimize the constraint violations. I
 
-- `get_lagrange_multipliers`
+- `compute_lagrange_multipliers`
 
 Get the lagrange multipliers for optimizers which provide them, in an optimizer-independent way. This will be useful for evaluating post-optimality sensititivity.
+
+- `compute_post_optimality_sensitivities`
+
+Provide the sensitivities/derivatives of the objective and design variable values _through_ the optimization.
 
 ## Autoscale API
 
