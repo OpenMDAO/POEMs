@@ -124,11 +124,12 @@ That way, github's built in notification system to get emails when things are ch
 | [091](POEM_091.md) | Eliminate combined jacobian-based and matrix free capability in a single component. | [Bret Naylor](https://github.com/naylor-b) | integrated |
 | [092](POEM_092.md) | User-defined function hook for pre-processing option set. | [Ken Moore](https://github.com/Kenneth-T-Moore) | integrated |
 | [093](POEM_093.md) | Linear solution caching | [Shugo Kaneko](https://github.com/kanekosh) | integrated |
-| [095](POEM_095.md) | Support user/developer defined callback functions. | [Alasdair Christison Gray](https://github.com/A-CGray) | active |
+| [095](POEM_095.md) | Support user/developer defined callback functions. | [Alasdair Christison Gray](https://github.com/A-CGray) | rejected |
 | [096](POEM_096.md) | Option to Minimize Constraint Violation | @andrewellis55 and @robfalck | accepted |
 | [097](POEM_097.md) | Output file reorganization. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [099](POEM_099.md) | InputResidsComp | [Rob Falck](https://github.com/robfalck) | integrated |
 | [100](POEM_100.md) | Interactive Sensitivity Profilers | [Steven H. Berguin](https://github.com/shb84) | rejected |
+| [102](POEM_102.md) | Units by Connection capability | [Rob Falck](https://github.com/robfalck) | active |
 | [104](POEM_104.md) | Add PETSc Linear Solvers | [Rob Falck](https://github.com/robfalck) | integrated |
 | [105](POEM_105.md) | Add a "validate" Method to Linear Systems | [Rob Hetterich](https://github.com/rob-hetterich) | integrated |
 
