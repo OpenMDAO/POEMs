@@ -7,11 +7,13 @@ Associated implementation PR: N/A
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
+
+Theres been a lack of activity on this PR.  Marking it as ejecting it in favor of [POEM 105](https://github.com/OpenMDAO/POEMs/blob/master/POEM_105.md).
 
 <!-- <Note: two space are required after every line of the header to create proper linebreaks in the markdown> -->
 
