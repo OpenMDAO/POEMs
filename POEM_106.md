@@ -7,10 +7,10 @@ Associated implementation PR: N/A
 
 Status:
 
-- [x] Active
+- [ ] Active
 - [ ] Requesting decision
 - [ ] Accepted
-- [ ] Rejected
+- [x] Rejected
 - [ ] Integrated
 
 Motivation
