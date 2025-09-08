@@ -1,9 +1,9 @@
 POEM ID: 107  
-Title:  Allow Input-Input Connections (Semantic Sugar) 
+Title:  Allow Input-Input Connections (Semantic Sugar)  
 authors: robfalck (Rob Falck)   
 Competing POEMs: None  
 Related POEMs:  None  
-Associated implementation PR:  TBD  
+Associated implementation PR:  [#3610](https://github.com/OpenMDAO/OpenMDAO/pull/3610)  
 
 Status:  
 
