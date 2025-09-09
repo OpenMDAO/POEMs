@@ -3,15 +3,15 @@ Title:  Units by Connection capability
 authors: robfalck (Rob Falck)  
 Competing POEMs: None  
 Related POEMs:  None  
-Associated implementation PR: N/A  
+Associated implementation PR: [#3587](https://github.com/OpenMDAO/OpenMDAO/pull/3587)  
 
 Status:  
 
 - [ ] Active  
 - [ ] Requesting decision  
-- [x] Accepted  
+- [ ] Accepted  
 - [ ] Rejected  
-- [ ] Integrated  
+- [x] Integrated  
 
 
 ## Motivation
