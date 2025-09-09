@@ -126,7 +126,7 @@ That way, github's built in notification system to get emails when things are ch
 | [093](POEM_093.md) | Linear solution caching | [Shugo Kaneko](https://github.com/kanekosh) | integrated |
 | [094](POEM_094.md) | Driver Autoscaling and Refactor. | [Rob Falck](https://github.com/robfalck) | accepted |
 | [095](POEM_095.md) | Support user/developer defined callback functions. | [Alasdair Christison Gray](https://github.com/A-CGray) | rejected |
-| [096](POEM_096.md) | Option to Minimize Constraint Violation | [Andrew Ellis](https://github.com/andrewellis55) | accepted |
+| [096](POEM_096.md) | Option to Minimize Constraint Violation | [Andrew Ellis](https://github.com/andrewellis55) | integrated |
 | [097](POEM_097.md) | Output file reorganization. | [Rob Falck](https://github.com/robfalck) | integrated |
 | [099](POEM_099.md) | InputResidsComp | [Rob Falck](https://github.com/robfalck) | integrated |
 | [100](POEM_100.md) | Interactive Sensitivity Profilers | [Steven H. Berguin](https://github.com/shb84) | rejected |
