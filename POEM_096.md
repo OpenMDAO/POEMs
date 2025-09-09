@@ -9,9 +9,9 @@ Status:
 
 - [ ] Active
 - [ ] Requesting decision
-- [x] Accepted
+- [ ] Accepted
 - [ ] Rejected
-- [ ] Integrated
+- [x] Integrated
 
 ## Overview  
 This POEM propose the addition of an option at the problem or driver level to alternatively minimize the sum of the constraint violation rather than the objective.
