@@ -134,4 +134,5 @@ That way, github's built in notification system to get emails when things are ch
 | [104](POEM_104.md) | Add PETSc Linear Solvers | [Rob Falck](https://github.com/robfalck) | integrated |
 | [105](POEM_105.md) | Add a "validate" Method to Linear Systems | [Rob Hetterich](https://github.com/rob-hetterich) | integrated |
 | [106](POEM_106.md) | Expose JAX vectorization to users | [Michael T. Fang](https://github.com/mtfang) | rejected |
+| [107](POEM_107.md) | Allow Input-Input Connections (Semantic Sugar) | [Rob Falck](https://github.com/robfalck) | active |
 
