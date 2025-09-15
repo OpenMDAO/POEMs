@@ -32,17 +32,25 @@ to document various implementation details so they won't be forgotten if we revi
 
 To use Pydantic, the first step is to declare a class for the data model that inherits from
 Pydantic's BaseModel class.  Type information specified for class attributes
-(called fields by Pydantic) is used for validation.  
+(called fields by Pydantic) is used for validation.  A field in a pydantic data model corresponds
+to an option in an OptionsDictionary.
 
 An input dict can be validated by a pydantic data model class by passing the dict to the
 `model_validate` class method, which returns an instantiated data model.
 
-A data model instance can be serialized by calling `model_dump` on it.
+A data model instance can be serialized to a dict by calling `model_dump` on it.  Calling
+`model_dump_json` will serialize to a JSON-encoded string.
 
 
 ### OptionsDictionary Replacement
 
 An OpenMDAO OptionsDictionary can be replaced with a Pydantic data model, with a few caveats:
+
+- Fields in a pydantic data model must have valid python names, so fields containing characters like
+':' would no longer be legal.
+
+- Fields cannot be added to a data model dynamically.  They must be known when the data model class
+is declared.
 
 - Pydantic data models don't have a dict-like interface like OptionsDictionary does, but it was easy
 enough to declare an OptionsBaseModel data model with __getitem__, __setitem__, etc., defined.
@@ -55,11 +63,13 @@ say this may impact performance.
 
 - OpenMDAO's OptionsDictionary allows an option to be declared with a `values` arg, which specifies
 a set of allowed values for that option.  To mimic that in Pydantic, you have to create an Enum 
-class and use that as the type of the data model field.
+class and use that as the type of the data model field, or a Union of Literals.
 
 - Pydantic does allow for certain fields to be required to be set, but doesn't work well in OpenMDAO
 because the check for the required field happens too early.  A workaround for that is to default the
 value to None and explicitly check for a non-None value at some later point.
+
+
 
 Here's an example of what the replacement for ExplicitComponent options looks like:
 
@@ -118,7 +128,7 @@ In order to be able to create an OpenMDAO model based on the contents of a dict 
 from a json or yaml string), there has to be some kind of declaration in the dict that tells python
 which class to instantiate.  This was done by having a 'type' field in our data classes that 
 specifies the full module path name of a class.  A `TypeBaseModel` data model class was created 
-that contained this 'type' field, along with 'args' and 'kwargs'.  These three fields provide all
+that contained this 'type' field, along with optional 'args' and 'kwargs'.  These three fields provide all
 of the information necessary to instantiate a class.  Any OpenMDAO data model classes needing this
 runtime class lookup functionality are inherited from `TypeBaseModel`.
 
