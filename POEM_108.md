@@ -52,9 +52,6 @@ An OpenMDAO OptionsDictionary can be replaced with a Pydantic data model, with a
 - Fields cannot be added to a data model dynamically.  They must be known when the data model class
 is declared.
 
-- Pydantic data models don't have a dict-like interface like OptionsDictionary does, but it was easy
-enough to declare an OptionsBaseModel data model with __getitem__, __setitem__, etc., defined.
-
 - Pydantic models by default do validation only on instantiation of a data model, not during assignment
 to attributes of a data model instance. This won't work for OpenMDAO since we allow users to set options
 at various times.  We activate on-assignment validation by setting 
@@ -69,6 +66,9 @@ class and use that as the type of the data model field, or a Union of Literals.
 because the check for the required field happens too early.  A workaround for that is to default the
 value to None and explicitly check for a non-None value at some later point.
 
+- The current implementation of serialization does not preserve the specific values of input or output 
+variables.  It only provides a way to save certain parts of the model state, for example, the model
+hierarchy, system options, connections, promotions, and design variables and constraints.
 
 
 Here's an example of what the replacement for ExplicitComponent options looks like:
@@ -99,6 +99,10 @@ class ExplicitComponentOptions(SystemOptions):
 Note that the class above inherits from SystemOptions.  Pydantic data models can inherit fields from
 base classes and override them if needed.  However, they cannot delete base class fields, so we can't
 `undeclare` options like we could with OptionsDictionary.
+
+Pydantic data models don't have a dict-like interface like OptionsDictionary does, but it was easy
+enough to declare an OptionsBaseModel data model with __getitem__, __setitem__, etc., defined.
+
 
 
 ### OpenMDAO class vs. data model
