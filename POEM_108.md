@@ -47,7 +47,8 @@ A data model instance can be serialized to a dict by calling `model_dump` on it.
 An OpenMDAO OptionsDictionary can be replaced with a Pydantic data model, with a few caveats:
 
 - Fields in a pydantic data model must have valid python names, so fields containing characters like
-':' would no longer be legal.
+':' would no longer be legal.  This is a major issue for projects like Aviary which use ':' to
+indicate levels in a conceptual aircraft hierarchy.
 
 - Fields cannot be added to a data model dynamically.  They must be known when the data model class
 is declared.
@@ -70,8 +71,9 @@ value to None and explicitly check for a non-None value at some later point.
 at data model class definition time.  OptionsDictionary allowed read-only status to be specified 
 during dynamic field addition, which pydantic doesn't support.  This means that certain use cases,
 like when ScipyOptimizeDriver sets the 'supports' attributes at driver creation time based on the
-value of the `optimizer` option and then sets them to read-only can only be supported if we
-create new a new data model class at that time.
+value of the `optimizer` option and then sets them to read-only can only be supported using a workaround
+where we create a new data model class at runtime and declare its fields with the appropriate
+read-only behavior.
 
 - The current implementation of serialization does not preserve the specific values of input or output 
 variables.  It only provides a way to save the 'structural state' of a model, for example, the model
