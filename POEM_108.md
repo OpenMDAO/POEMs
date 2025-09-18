@@ -3,7 +3,7 @@ Title:  Using Pydantic for validation/serialization/deserialization
 authors: naylor-b (Bret Naylor)  
 Competing POEMs: None  
 Related POEMs:  None  
-Associated implementation PR: N/A  
+Associated implementation: https://github.com/naylor-b/OpenMDAO/tree/pydantic2  
 
 Status:  
 
@@ -66,18 +66,24 @@ class and use that as the type of the data model field, or a Union of Literals.
 because the check for the required field happens too early.  A workaround for that is to default the
 value to None and explicitly check for a non-None value at some later point.
 
+- Pydantic model fields can be set to 'fixed' which makes them read-only, but this has to be done
+at data model class definition time.  OptionsDictionary allowed read-only status to be specified 
+during dynamic field addition, which pydantic doesn't support.  This means that certain use cases,
+like when ScipyOptimizeDriver sets the 'supports' attributes at driver creation time based on the
+value of the `optimizer` option and then sets them to read-only can only be supported if we
+create new a new data model class at that time.
+
 - The current implementation of serialization does not preserve the specific values of input or output 
-variables.  It only provides a way to save certain parts of the model state, for example, the model
-hierarchy, system options, connections, promotions, and design variables and constraints.
+variables.  It only provides a way to save the 'structural state' of a model, for example, the model
+hierarchy, system options, connections, promotions, and design variables and constraints.  This is
+enough information to recreate the structure of the model, but the starting values of the inputs
+and outputs will just be default values.
 
 
-Here's an example of what the replacement for ExplicitComponent options looks like:
+Here's an example of how ExplicitComponent was refactored to support pydantic data models:
 
 ```python
-class ExplicitComponentOptions(SystemOptions):
-    distributed: bool = Field(default=False,
-                             desc='If True, set all variables in this component as distributed '
-                                  'across multiple processes')
+class NonDistributedExplicitComponentOptions(SystemOptions):
     run_root_only: bool = Field(default=False,
                              desc='If True, call compute, compute_partials, linearize, '
                                   'apply_linear, apply_nonlinear, solve_linear, solve_nonlinear, '
@@ -94,11 +100,26 @@ class ExplicitComponentOptions(SystemOptions):
                              desc='Default shape for variables that do not set val to a non-scalar '
                              'value or set shape, shape_by_conn, copy_shape, or compute_shape.'
                              ' Default is (1,).')
+
+
+class ExplicitComponentOptions(NonDistributedExplicitComponentOptions):
+    distributed: bool = Field(default=False,
+                             desc='If True, set all variables in this component as distributed '
+                                  'across multiple processes')
+
+
+@dmm.register(ExplicitComponent)
+class ExplicitComponentModel(SystemModel):
+    options: ExplicitComponentOptions = Field(default_factory=ExplicitComponentOptions)
 ```
 
-Note that the class above inherits from SystemOptions.  Pydantic data models can inherit fields from
+Note that the NonDistributedExplicitComponentOptions class above inherits from SystemOptions.  
+Pydantic data models can inherit fields from
 base classes and override them if needed.  However, they cannot delete base class fields, so we can't
-`undeclare` options like we could with OptionsDictionary.
+`undeclare` options like we could with OptionsDictionary.  This is why we've split the options up
+into two different data models, one for non-distributed ExplicitComponents and one for distributed
+ones.  The ExecComp, for example, which inherits from ExplicitComponent, doesn't support the 
+`distributed` option.
 
 Pydantic data models don't have a dict-like interface like OptionsDictionary does, but it was easy
 enough to declare an OptionsBaseModel data model with __getitem__, __setitem__, etc., defined.
