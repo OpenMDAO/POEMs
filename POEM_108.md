@@ -87,27 +87,27 @@ Here's an example of how ExplicitComponent was refactored to support pydantic da
 ```python
 class NonDistributedExplicitComponentOptions(SystemOptions):
     run_root_only: bool = Field(default=False,
-                             desc='If True, call compute, compute_partials, linearize, '
-                                  'apply_linear, apply_nonlinear, solve_linear, solve_nonlinear, '
-                                  'and compute_jacvec_product only on rank 0 and broadcast the '
-                                  'results to the other ranks.')
+                                desc='If True, call compute, compute_partials, linearize, '
+                                'apply_linear, apply_nonlinear, solve_linear, solve_nonlinear, '
+                                'and compute_jacvec_product only on rank 0 and broadcast the '
+                                'results to the other ranks.')
     always_opt: bool = Field(default=False,
                              desc='If True, force nonlinear operations on this component to be '
-                                  'included in the optimization loop even if this component is not '
-                                  'relevant to the design variables and responses.')
+                             'included in the optimization loop even if this component is not '
+                             'relevant to the design variables and responses.')
     use_jit: bool = Field(default=True,
-                             desc='If True, attempt to use jit on compute_primal, assuming jax or '
-                             'some other AD package capable of jitting is active.')
+                          desc='If True, attempt to use jit on compute_primal, assuming jax or '
+                          'some other AD package capable of jitting is active.')
     default_shape: tuple = Field(default=(1,),
-                             desc='Default shape for variables that do not set val to a non-scalar '
-                             'value or set shape, shape_by_conn, copy_shape, or compute_shape.'
-                             ' Default is (1,).')
+                                 desc='Default shape for variables that do not set val to a non-scalar '
+                                 'value or set shape, shape_by_conn, copy_shape, or compute_shape.'
+                                 ' Default is (1,).')
 
 
 class ExplicitComponentOptions(NonDistributedExplicitComponentOptions):
     distributed: bool = Field(default=False,
-                             desc='If True, set all variables in this component as distributed '
-                                  'across multiple processes')
+                              desc='If True, set all variables in this component as distributed '
+                              'across multiple processes')
 
 
 @dmm.register(ExplicitComponent)
@@ -142,9 +142,9 @@ shown below:
 @DataModelManager.register(Group)
 class GroupModel(SystemModel):
     options: GroupOptions = Field(default_factory=GroupOptions)
-    connections: List[ConnectionData] = Field(default_factory=list)
+    connections: List[ConnectionModel] = Field(default_factory=list)
     subsystems: List[PolymorphicModel] = Field(default_factory=list)
-    input_defaults: List[InputDefaultData] = Field(default_factory=list)
+    input_defaults: List[InputDefaultModel] = Field(default_factory=list)
     linear_solver: LinearSolverModel = Field(default_factory=LinearSolverModel)
     nonlinear_solver: NonlinearSolverModel = Field(default_factory=NonlinearSolverModel)
 ```
@@ -155,7 +155,7 @@ In order to be able to create an OpenMDAO model based on the contents of a dict 
 from a json or yaml string), there has to be some kind of declaration in the dict that tells python
 which class to instantiate.  This was done by having a 'type' field in our data classes that 
 specifies the full module path name of a class.  A `TypeBaseModel` data model class was created 
-that contained this 'type' field, along with optional 'args' and 'kwargs'.  These three fields provide all
+that contains this 'type' field, along with optional 'args' and 'kwargs'.  These three fields provide all
 of the information necessary to instantiate a class.  Any OpenMDAO data model classes needing this
 runtime class lookup functionality are inherited from `TypeBaseModel`.
 
