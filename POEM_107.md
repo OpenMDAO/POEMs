@@ -1,5 +1,5 @@
 POEM ID: 107  
-Title:  Allow Input-Input Connections (Semantic Sugar)  
+Title:  Allow Input-Input Connections (Syntactic Sugar)  
 authors: robfalck (Rob Falck)   
 Competing POEMs: None  
 Related POEMs:  None  
