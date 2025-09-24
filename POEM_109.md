@@ -26,7 +26,7 @@ The goal of this enhancement is to allow the colon (:) to remain valid at the gr
 
 ```python
 self.add_input('chord', val=3.5, units='m**2', alias="aircraft:wing:chord")
-self.add_output('drag', val=3.5, units='m**2', alias="mission:summary:chord")
+self.add_output('drag', val=3.5, units='m**2', alias="mission:summary:drag")
 ```
 
 Note that the full alias is unique in the data hierarchy, but the pythonic name on the component does not have to be unique. Any openmdao interaction with this component will use the alias:
