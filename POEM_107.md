@@ -3,15 +3,15 @@ Title:  Allow Input-Input Connections (Syntactic Sugar)
 authors: robfalck (Rob Falck)   
 Competing POEMs: None  
 Related POEMs:  None  
-Associated implementation PR:  [#3610](https://github.com/OpenMDAO/OpenMDAO/pull/3610)  
+Associated implementation PR:  ~[#3610](https://github.com/OpenMDAO/OpenMDAO/pull/3610)~ [#3671](https://github.com/OpenMDAO/OpenMDAO/pull/3671)
 
 Status:  
 
-- [x] Active  
+- [ ] Active  
 - [ ] Requesting decision  
 - [ ] Accepted  
 - [ ] Rejected  
-- [ ] Integrated  
+- [x] Integrated  
 
 
 ## Motivation
