@@ -78,24 +78,68 @@ since this object (as most Python objects), will evaluate to `True`.
 
 ### New Methods
 
-- `_find_feasible`
+- `_find_feasible` 🟢
 
-Use a least-squares solver to minimize the constraint violations. I
+Use a least-squares solver to minimize the constraint violations. 
 
-- `compute_lagrange_multipliers`
+- `compute_lagrange_multipliers` 🟢
 
 Get the lagrange multipliers for optimizers which provide them, in an optimizer-independent way. This will be useful for evaluating post-optimality sensititivity.
 
-- `compute_post_optimality_sensitivities`
+- `compute_post_optimality_sensitivities` 🔴
 
-Provide the sensitivities/derivatives of the objective and design variable values _through_ the optimization.
+Provide the sensitivities/derivatives of the objective and design variable values _across_ the optimization.
+The sensitivities of design variable changes will require computing or approximating second derivatives.
 
-## Autoscale API
+## Autoscale API 🟡
 
-Autoscaler will provide a `scale` method with a signaiture
+Autoscaler will provide various `scale` methods.  Note that in OpenMDAO, the general nomenclature is that the
+model values are _unscaled_ and the corresponding optimizer values are _scaled_.
 
 ```
-def scale(problem, desvar_scaling, constraint_scaling, objective_scaling)
+def unscale_desvars(self, driver):
+    """
+    Scale the design variables from the optimizer space to the model space.
+
+
+    This will be called at every iteration and should therefore be as efficient as possible. Several implementations
+    of autoscaling effectively compute it as "x_model = M @ x_optimizer". In large problems, M will need to be sparse
+    or be a linear operator to save memory.
+    """
+```
+
+```
+def scale_desvars(self, driver):
+    """
+    Scale the design variables from the model space to the optimizer space.
+
+    This will be called to initialize the optimizers design variable vector.
+
+    In the previous example, this would effectively apply "x_optimizer = M^{-1} @ x_model
+    """
+```
+
+```
+def scale_cons(self, driver):
+    """
+    Used in get_constraint_values, provides a scaling function that converts the model constraint values
+    to the optimizer space.
+    """
+```
+
+```
+def scale_objs(self, driver):
+   """
+   Used in get_objective_values, provides a scaling function that converts the model-space objective values
+   to the optimizer space.
+   """
+```
+
+```
+def setup(self, driver):
+    """
+    Called when the driver is being setup, this should be used to provide scaling based on the initial state of the model.
+    """
 ```
 
 Problem provides access to both the model and the driver, so we can interrogate things like optimizer settings.
@@ -110,6 +154,16 @@ desvar_scaling['x']['scaler'] = 1 / x_val
 
 ## Proposed Initial Autoscalers
 
+### `DefaultAutoscaler`
+
+DefaultAutoscaler will use the `total_scaler` information from design variables, optimizers, and constraints and apply that.
+Equivalent to existing OpenMDAO behavior, but implemented in a more general way.
+
+For example, unscale_desvars could be implemented as `x_model = [total_scaler]^{-1} @ x_optimizer - [total_adder]` where `[total_scaler]` is a matrix with the total scaler of each design variable on its diagonal.
+
+**Other autoscalers should probably include the option to use/disregard any scaling that the user has placed on individual design variables and responses, but all will need to take into 
+account any unit-conversions defined when the design variables or responses were added.**
+
 ### `SimpleAutoscaler`
 
 SimpleAutoscaler will enforce that the design variable vector is scaled to have a norm of approximately 1.0.
@@ -119,6 +173,10 @@ Otherwise, if scaler/adder/ref/ref0 are `None`, DefaultAutoscaler use the recipr
 Constraints will have a option, autoscale_tolerance, which will default to 1.0E-3. This specifies the number of decimal places to which the constraint should be satisfied. The scale factor can then be computed from this as `scaler = autoscale_tolerance / feasibility_tolerance`.
 
 If a specific driver used does not support the notion of feasibility tolerance, raise an error so that this Autoscaler may not be used.
+
+### `HessianAutoScaler`
+
+Provides scaling based on the work of Habeeb Idris and Prof. Jason Hicken [Reference](https://arc.aiaa.org/doi/epdf/10.2514/6.2025-3738)
 
 ### `PJRNAutoscaler`
 
